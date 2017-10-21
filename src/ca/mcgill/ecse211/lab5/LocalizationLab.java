@@ -30,8 +30,8 @@ public class LocalizationLab {
 	//static values
 	public static final int FORWARD_SPEED = 70;		  // the speed at which the robot is traveling straight
 	public static final int ROTATE_SPEED = 70;		  // the speed at which the robot is rotating
-	public static final double RADIUS = 2.12; 		  // radius of the wheel
-	public static final double TRACK = 11.87; 		  // distance between wheels
+	public static final double RADIUS = 2.16; 		  // radius of the wheel
+	public static final double TRACK = 10.58; 		  // distance between wheels
 	public static final int DISTANCE_THRESHOLD = 30;  // the distance from which the ultrasonic sensor detects the wall
 	public static final int NOISE_MARGIN = 1;	  	  // the noice margin
 	public static final double SQUARE_LENGTH = 30.48; // the length of the square tile
