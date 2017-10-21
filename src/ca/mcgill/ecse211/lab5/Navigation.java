@@ -56,10 +56,10 @@ public class Navigation{
 		double travellingDis = Math.sqrt(Math.pow(x-nowX, 2) + Math.pow(y-nowY, 2));
 
 		//drive forward
-		leftMotor.setSpeed(LocalizationLab.FORWARD_SPEED);
-		rightMotor.setSpeed(LocalizationLab.FORWARD_SPEED);
-		leftMotor.rotate(convertDistance(LocalizationLab.RADIUS, travellingDis), true);
-		rightMotor.rotate(convertDistance(LocalizationLab.RADIUS, travellingDis), true);
+		leftMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
+		rightMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
+		leftMotor.rotate(convertDistance(ZiplineLab.RADIUS, travellingDis), true);
+		rightMotor.rotate(convertDistance(ZiplineLab.RADIUS, travellingDis), true);
 
 		//keep calling turnto and checking the distance
 		isNavigating=false;
@@ -71,12 +71,12 @@ public class Navigation{
 	 * @param theta 		angle of rotation
 	 */
 	void makeTurn(double theta) {
-	    leftMotor.setSpeed(LocalizationLab.ROTATE_SPEED);
-	    rightMotor.setSpeed(LocalizationLab.ROTATE_SPEED);
+	    leftMotor.setSpeed(ZiplineLab.ROTATE_SPEED);
+	    rightMotor.setSpeed(ZiplineLab.ROTATE_SPEED);
 
 	    // Rotate to new angle
-	    leftMotor.rotate(convertAngle(LocalizationLab.RADIUS, LocalizationLab.TRACK, theta), true);
-	    rightMotor.rotate(-convertAngle(LocalizationLab.RADIUS, LocalizationLab.TRACK, theta), true);
+	    leftMotor.rotate(convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, theta), true);
+	    rightMotor.rotate(-convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, theta), true);
 	  }
 
 
@@ -88,12 +88,12 @@ public class Navigation{
 	void makeMinimumTurn(double theta){
 		 theta = ((theta % 360) + 360) % 360;
 		 if (theta >= 180) theta-=360;
-		 leftMotor.setSpeed(LocalizationLab.ROTATE_SPEED);
-		 rightMotor.setSpeed(LocalizationLab.ROTATE_SPEED);
+		 leftMotor.setSpeed(ZiplineLab.ROTATE_SPEED);
+		 rightMotor.setSpeed(ZiplineLab.ROTATE_SPEED);
 
 		 // Rotate to new angle
-		 leftMotor.rotate(convertAngle(LocalizationLab.RADIUS, LocalizationLab.TRACK, theta), true);
-		 rightMotor.rotate(-convertAngle(LocalizationLab.RADIUS, LocalizationLab.TRACK, theta), false);
+		 leftMotor.rotate(convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, theta), true);
+		 rightMotor.rotate(-convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, theta), false);
 	}
 	
 	/**

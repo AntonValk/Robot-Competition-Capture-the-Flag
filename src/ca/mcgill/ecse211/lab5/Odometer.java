@@ -48,15 +48,15 @@ public class Odometer extends Thread {
 	      int nowRightMotorTachoCount = rightMotor.getTachoCount();
 
 	      //Get wheel displacements
-	      double distanceLeft = Math.PI * LocalizationLab.RADIUS * (nowLeftMotorTachoCount - getLeftMotorTachoCount()) / 180;
-	      double distanceRight = Math.PI * LocalizationLab.RADIUS * (nowRightMotorTachoCount - getRightMotorTachoCount()) / 180;
+	      double distanceLeft = Math.PI * ZiplineLab.RADIUS * (nowLeftMotorTachoCount - getLeftMotorTachoCount()) / 180;
+	      double distanceRight = Math.PI * ZiplineLab.RADIUS * (nowRightMotorTachoCount - getRightMotorTachoCount()) / 180;
 
 	      //Save new tacho counts
 	      setLeftMotorTachoCount(nowLeftMotorTachoCount);
 	      setRightMotorTachoCount(nowRightMotorTachoCount);
 
 	      double deltaD = 0.5 * (distanceLeft + distanceRight); //Vehicle displacement
-	      double deltaT = (distanceLeft - distanceRight) / LocalizationLab.TRACK; //Change in heading
+	      double deltaT = (distanceLeft - distanceRight) / ZiplineLab.TRACK; //Change in heading
 	      
 	      double deltaX = deltaD * Math.sin((getTheta() * Math.PI) / 180); //X component (convert theta to radians)
 	      double deltaY = deltaD * Math.cos((getTheta() * Math.PI) / 180); //Y component (convert theta to radians)

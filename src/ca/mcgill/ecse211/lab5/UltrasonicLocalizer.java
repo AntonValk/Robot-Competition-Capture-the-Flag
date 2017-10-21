@@ -29,7 +29,6 @@ public class UltrasonicLocalizer extends Thread{
 
 	//This is the constructor
 	public UltrasonicLocalizer(int choice, Navigation navigation, Odometer odometer) {
-		this.choice = choice;
 		this.na = navigation;
 		this.odometer = odometer;
 
@@ -81,12 +80,12 @@ public class UltrasonicLocalizer extends Thread{
 		double theta2 = 0;
 		// Detect the first angle where the robot sees a wall from the distance. 
 		// wait until the distance is greater than the threshold + noise margin + 1
-		while(distance > (LocalizationLab.DISTANCE_THRESHOLD + LocalizationLab.NOISE_MARGIN+1)){
+		while(distance > (ZiplineLab.DISTANCE_THRESHOLD + ZiplineLab.NOISE_MARGIN+1)){
 		}
 		if(!firstPointDetected){
 			theta1 = odometer.getTheta();
 			// The second theta is detected if the distance is smaller than the threshold - noise margin - 1
-			if (distance <= (LocalizationLab.DISTANCE_THRESHOLD - LocalizationLab.NOISE_MARGIN - 1)){
+			if (distance <= (ZiplineLab.DISTANCE_THRESHOLD - ZiplineLab.NOISE_MARGIN - 1)){
 				theta2 = odometer.getTheta();
 				Sound.playNote(Sound.FLUTE, 440, 250);
 			}
@@ -105,13 +104,13 @@ public class UltrasonicLocalizer extends Thread{
 
 		// Detect the second angle where the robot sees a wall from the distance. 
 		// wait until the distance is greater than the threshold + noise margin + 1
-		while(distance > (LocalizationLab.DISTANCE_THRESHOLD + LocalizationLab.NOISE_MARGIN+1)){
+		while(distance > (ZiplineLab.DISTANCE_THRESHOLD + ZiplineLab.NOISE_MARGIN+1)){
 		}
 		if (!secondPointDetected){
 			theta1 = odometer.getTheta();
 
 			// The second theta is detected if the distance is smaller than the threshold - noise margin - 1
-			if (distance <= (LocalizationLab.DISTANCE_THRESHOLD - LocalizationLab.NOISE_MARGIN - 1)){
+			if (distance <= (ZiplineLab.DISTANCE_THRESHOLD - ZiplineLab.NOISE_MARGIN - 1)){
 				theta2 = odometer.getTheta();
 				Sound.playNote(Sound.FLUTE, 440, 250);
 			}
@@ -140,12 +139,12 @@ public class UltrasonicLocalizer extends Thread{
 
 		// Detect the first angle where the robot sees a wall from the distance. 
 		// wait until the distance is smaller than the threshold - noise margin - 1
-		while(distance < (LocalizationLab.DISTANCE_THRESHOLD - LocalizationLab.NOISE_MARGIN-1)){
+		while(distance < (ZiplineLab.DISTANCE_THRESHOLD - ZiplineLab.NOISE_MARGIN-1)){
 		}
 		if (!firstPointDetected){
 			theta1 = odometer.getTheta();
 			// The second theta is detected if the distance is greater than the threshold + noise margin + 1
-			if (distance >= (LocalizationLab.DISTANCE_THRESHOLD + LocalizationLab.NOISE_MARGIN + 1)){
+			if (distance >= (ZiplineLab.DISTANCE_THRESHOLD + ZiplineLab.NOISE_MARGIN + 1)){
 				theta2 = odometer.getTheta();
 				Sound.playNote(Sound.FLUTE, 440, 250);
 			}
@@ -164,12 +163,12 @@ public class UltrasonicLocalizer extends Thread{
 
 		// Detect the second angle where the robot sees a wall from the distance. 
 		// wait until the distance is smaller than the threshold - noise margin - 1
-		while(distance < (LocalizationLab.DISTANCE_THRESHOLD - LocalizationLab.NOISE_MARGIN-1)){
+		while(distance < (ZiplineLab.DISTANCE_THRESHOLD - ZiplineLab.NOISE_MARGIN-1)){
 		}
 		if(!secondPointDetected){
 			theta1 = odometer.getTheta();
 			// wait until the distance is greater than the threshold + noise margin + 1
-			if (distance >= (LocalizationLab.DISTANCE_THRESHOLD + LocalizationLab.NOISE_MARGIN + 1)){
+			if (distance >= (ZiplineLab.DISTANCE_THRESHOLD + ZiplineLab.NOISE_MARGIN + 1)){
 				theta2 = odometer.getTheta();
 				Sound.playNote(Sound.FLUTE, 440, 250);
 			}
@@ -192,11 +191,11 @@ public class UltrasonicLocalizer extends Thread{
 	public void correctAngleAndLocation(){		  
 		locationTheta = (firstAngle + (360 - secondAngle) - 90) / 2 ;
 		if (choice == 0){
-			locationX = LocalizationLab.DISTANCE_THRESHOLD * Math.cos(Math.toRadians(locationTheta));
-			locationY = LocalizationLab.DISTANCE_THRESHOLD * Math.cos(Math.toRadians(locationTheta));
+			locationX = ZiplineLab.DISTANCE_THRESHOLD * Math.cos(Math.toRadians(locationTheta));
+			locationY = ZiplineLab.DISTANCE_THRESHOLD * Math.cos(Math.toRadians(locationTheta));
 		}else if (choice == 1){
-			locationX = LocalizationLab.DISTANCE_THRESHOLD * Math.sin(Math.toRadians(locationTheta));
-			locationY = LocalizationLab.DISTANCE_THRESHOLD * Math.sin(Math.toRadians(locationTheta));
+			locationX = ZiplineLab.DISTANCE_THRESHOLD * Math.sin(Math.toRadians(locationTheta));
+			locationY = ZiplineLab.DISTANCE_THRESHOLD * Math.sin(Math.toRadians(locationTheta));
 		}
 
 		firstAngle = ((firstAngle % 360) + 360) % 360;
