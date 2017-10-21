@@ -108,5 +108,33 @@ public class LightLocalizer extends Thread {
 		}
 		// apply angle correction - according to the tutorial formula
 		navigation.makeMinimumTurn(-odometer.getTheta() + thetaYminus - 270 - thetaY); //I think this will take care of theta, if the test fails I will implement the math from tutorial that I proved on your notebook yesterday
+		while (navigation.isNavigating()) {
+		}
+		switch (ZiplineLab.cornerCounter) {
+		case 0:
+			odometer.setX(ZiplineLab.CORNERS[0][0]*ZiplineLab.SQUARE_LENGTH);
+			odometer.setY(ZiplineLab.CORNERS[0][1]*ZiplineLab.SQUARE_LENGTH);
+			odometer.setTheta(ZiplineLab.CORNERS[0][2]);
+			System.out.println("         set 0!");
+			break;
+		case 1:
+			odometer.setX(ZiplineLab.CORNERS[1][0]*ZiplineLab.SQUARE_LENGTH);
+			odometer.setY(ZiplineLab.CORNERS[1][1]*ZiplineLab.SQUARE_LENGTH);
+			odometer.setTheta(ZiplineLab.CORNERS[1][2]);
+			System.out.println("         set 1!");
+			break;
+		case 2:
+			odometer.setX(ZiplineLab.CORNERS[2][0]*ZiplineLab.SQUARE_LENGTH);
+			odometer.setY(ZiplineLab.CORNERS[2][1]*ZiplineLab.SQUARE_LENGTH);
+			odometer.setTheta(ZiplineLab.CORNERS[2][2]);
+			System.out.println("         set 2!");
+			break;
+		case 3:
+			odometer.setX(ZiplineLab.CORNERS[3][0]*ZiplineLab.SQUARE_LENGTH);
+			odometer.setY(ZiplineLab.CORNERS[3][1]*ZiplineLab.SQUARE_LENGTH);
+			odometer.setTheta(ZiplineLab.CORNERS[3][2]);
+			System.out.println("         set 3!");
+			break;
+		} 
 	}
 }

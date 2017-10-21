@@ -23,7 +23,7 @@ public class ZiplineLab {
 	private static LightLocalizer lightLoc;
 	
 	//static values
-	public static final int FORWARD_SPEED = 70;		  // the speed at which the robot is traveling straight
+	public static final int FORWARD_SPEED = 140;		  // the speed at which the robot is traveling straight
 	public static final int ROTATE_SPEED = 70;		  // the speed at which the robot is rotating
 	public static final double RADIUS = 2.12; 		  // radius of the wheel
 	public static final double TRACK = 11.87; 		  // distance between wheels
@@ -36,11 +36,11 @@ public class ZiplineLab {
 		{7,7,180},
 		{1,7,90}
 	}; // the coordinates of corners
-
+	public static int cornerCounter;
 	
 	public static void main(String[] args) {
 		int buttonChoice;
-		int cornerCounter = 0;
+		cornerCounter = 0;
 		int bestCorner = 0;
 		int xoCounter = 0;
 		int yoCounter = 0;
@@ -94,15 +94,15 @@ public class ZiplineLab {
 			buttonChoice = Button.waitForAnyPress();
 			if(buttonChoice == Button.ID_LEFT){
 				xoCounter++;
-				if (xoCounter > 3) xoCounter = 0;
+				if (xoCounter > 8) xoCounter = 0;
 			}
 			if(buttonChoice == Button.ID_RIGHT){
 				yoCounter++;
-				if (yoCounter > 3) yoCounter = 0;
+				if (yoCounter > 8) yoCounter = 0;
 			}
 		} while (buttonChoice != Button.ID_ENTER);
 		
-		double minDis = Integer.MAX_VALUE;
+		double minDis = Double.MAX_VALUE;
 		bestCorner = 4;
 		for (int i = 0; i < CORNERS.length; i++){
 			double dis = Math.pow(CORNERS[i][0] - xoCounter, 2) + Math.pow(CORNERS[i][1] - yoCounter, 2);
@@ -124,11 +124,11 @@ public class ZiplineLab {
 			buttonChoice = Button.waitForAnyPress();
 			if(buttonChoice == Button.ID_LEFT){
 				xcCounter++;
-				if (xcCounter > 3) xcCounter = 0;
+				if (xcCounter > 8) xcCounter = 0;
 			}
 			if(buttonChoice == Button.ID_RIGHT){
 				ycCounter++;
-				if (ycCounter > 3) ycCounter = 0;
+				if (ycCounter > 8) ycCounter = 0;
 			}
 		} while (buttonChoice != Button.ID_ENTER);
 		
@@ -141,6 +141,8 @@ public class ZiplineLab {
 
 		usPoller.start();
 		ultraLoc.start();
+		
+		Button.waitForAnyPress();
 
 		try { 
 			Thread.sleep(1000);
@@ -165,42 +167,111 @@ public class ZiplineLab {
 		while(na.isNavigating()){
 		}
 		lightLoc.start();
-		
-		switch (cornerCounter) {
-		case 0:
-			odometer.setX(CORNERS[0][0]);
-			odometer.setY(CORNERS[0][1]);
-			odometer.setTheta(CORNERS[0][2]);
-			break;
-		case 1:
-			odometer.setX(CORNERS[1][0]);
-			odometer.setY(CORNERS[1][1]);
-			odometer.setTheta(CORNERS[0][2]);
-			break;
-		case 2:
-			odometer.setX(CORNERS[2][0]);
-			odometer.setY(CORNERS[2][1]);
-			odometer.setTheta(CORNERS[0][2]);
-			break;
-		case 3:
-			odometer.setX(CORNERS[3][0]);
-			odometer.setY(CORNERS[3][1]);
-			odometer.setTheta(CORNERS[0][2]);
-			break;
+		while(na.isNavigating()){
 		}
-		
+	
+//		switch (cornerCounter) {
+//		case 0:
+//			odometer.setX(CORNERS[0][0]*SQUARE_LENGTH);
+//			odometer.setY(CORNERS[0][1]*SQUARE_LENGTH);
+//			odometer.setTheta(CORNERS[0][2]);
+//			System.out.println("         set 0!");
+//			break;
+//		case 1:
+//			odometer.setX(CORNERS[1][0]*SQUARE_LENGTH);
+//			odometer.setY(CORNERS[1][1]*SQUARE_LENGTH);
+//			odometer.setTheta(CORNERS[1][2]);
+//			System.out.println("         set 1!");
+//			break;
+//		case 2:
+//			odometer.setX(CORNERS[2][0]*SQUARE_LENGTH);
+//			odometer.setY(CORNERS[2][1]*SQUARE_LENGTH);
+//			odometer.setTheta(CORNERS[2][2]);
+//			System.out.println("         set 2!");
+//			break;
+//		case 3:
+//			odometer.setX(CORNERS[3][0]*SQUARE_LENGTH);
+//			odometer.setY(CORNERS[3][1]*SQUARE_LENGTH);
+//			odometer.setTheta(CORNERS[3][2]);
+//			System.out.println("         set 3!");
+//			break;
+//		} 
+	
 		Button.waitForAnyPress();
 		int curCorner = cornerCounter;
+
 		while (bestCorner-curCorner > 0) {
-			na.travelTo(CORNERS[curCorner+1][0], CORNERS[curCorner+1][1]);
+			int curBlock;
+			int travelBlock = Math.abs(CORNERS[curCorner+1][0]-CORNERS[curCorner][0]+CORNERS[curCorner+1][1]-CORNERS[curCorner][1]);
+			switch(curCorner){
+			case 0:
+				curBlock = 1;
+				while (curBlock <= travelBlock){
+					na.travelTo((CORNERS[curCorner][0] + curBlock)*SQUARE_LENGTH, CORNERS[curCorner][1]*SQUARE_LENGTH);
+					while(na.isNavigating()){
+					}
+					curBlock++;
+				}
+				break;
+			case 1:
+				curBlock = 1;
+				while (curBlock <= travelBlock){
+					na.travelTo(CORNERS[curCorner][0]*SQUARE_LENGTH, (CORNERS[curCorner][1]+curBlock)*SQUARE_LENGTH);
+					while(na.isNavigating()){
+					}
+					curBlock++;
+				}
+				break;
+			case 2:
+				curBlock = 1;
+				while (curBlock <= travelBlock){
+					na.travelTo((CORNERS[curCorner][0] - curBlock)*SQUARE_LENGTH, CORNERS[curCorner][1]*SQUARE_LENGTH);
+					while(na.isNavigating()){
+					}
+					curBlock++;
+				}
+				break;
+			
+			}
 			curCorner++;
 		}
 		while (bestCorner-curCorner < 0) {
-			na.travelTo(CORNERS[curCorner-1][0], CORNERS[curCorner-1][1]);
+			int curBlock;
+			int travelBlock = Math.abs(CORNERS[curCorner+1][0]-CORNERS[curCorner][0]+CORNERS[curCorner+1][1]-CORNERS[curCorner][1]);
+			switch(curCorner){
+			case 3:
+				curBlock = 1;
+				while (curBlock <= travelBlock){
+					na.travelTo((CORNERS[curCorner][0] + curBlock)*SQUARE_LENGTH, CORNERS[curCorner][1]*SQUARE_LENGTH);
+					while(na.isNavigating()){
+					}
+					curBlock++;
+				}
+				break;
+			case 2:
+				curBlock = 1;
+				while (curBlock <= travelBlock){
+					na.travelTo(CORNERS[curCorner][0]*SQUARE_LENGTH, (CORNERS[curCorner][1]-curBlock)*SQUARE_LENGTH);
+					while(na.isNavigating()){
+					}
+					curBlock++;
+				}
+				break;
+			case 1:
+				curBlock = 1;
+				while (curBlock <= travelBlock){
+					na.travelTo((CORNERS[curCorner][0] - curBlock)*SQUARE_LENGTH, CORNERS[curCorner][1]*SQUARE_LENGTH);
+					while(na.isNavigating()){
+					}
+					curBlock++;
+				}
+				break;
+			
+			}
 			curCorner--;
 		}
-		
-		na.travelTo(xcCounter, ycCounter);
+	
+		na.travelTo(xoCounter*SQUARE_LENGTH, yoCounter*SQUARE_LENGTH);
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 	}
