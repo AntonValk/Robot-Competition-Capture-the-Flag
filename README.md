@@ -10,8 +10,13 @@
 ## Members of the team:
 
 Antonios Valkanas
+
 Ezz Aboulezz
+
 Borui Tao
+
 Raphael Di Piazza
+
 Oscar Deceus
+
 Heejung Hailey Kang
