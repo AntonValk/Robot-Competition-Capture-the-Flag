@@ -1,4 +1,4 @@
-package ca.mcgill.ecse211.lab4;
+package ca.mcgill.ecse211.lab5;
 
 /** This class takes care of the robot navigation. It controls the movement by
  * 	implementing movement, turning, distance & angle methods.
