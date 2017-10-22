@@ -152,8 +152,8 @@ public class ZiplineLab {
 		lightLoc = new LightLocalizer(odometer, na);
 		double x = ultraLoc.getLocX();
 		double y = ultraLoc.getLocY();
-		System.out.println("Fin US localization");
-		System.out.println("X: "+x+" - Y: "+y);
+		//System.out.println("Fin US localization");
+		//System.out.println("X: "+x+" - Y: "+y);
 
 		/**
 		 * Set the x and y to be measured location and make the robot travel to the point (0,0)
@@ -163,8 +163,8 @@ public class ZiplineLab {
 		 */
 		odometer.setX(x-SQUARE_LENGTH);
 		odometer.setY(y-SQUARE_LENGTH);
-		System.out.println("Set new coordinates minus length");
-		System.out.println("X: "+odometer.getX()+" - Y: "+odometer.getY());
+		//System.out.println("Set new coordinates minus length");
+		//System.out.println("X: "+odometer.getX()+" - Y: "+odometer.getY());
 		na.travelTo(0, 0);
 		
 
@@ -174,8 +174,8 @@ public class ZiplineLab {
 		lightLoc.start();
 		while(na.isNavigating()){
 		}
-		System.out.println("Are coordinates set to 0 ?");
-		System.out.println("X: "+odometer.getX()+" - Y: "+odometer.getY() + " - Theta: " + odometer.getTheta());
+		//System.out.println("Are coordinates set to 0 ?");
+		//System.out.println("X: "+odometer.getX()+" - Y: "+odometer.getY() + " - Theta: " + odometer.getTheta());
 	
 //		switch (cornerCounter) {
 //		case 0:
@@ -275,30 +275,31 @@ public class ZiplineLab {
 			}
 			curCorner--;
 		}*/
-		System.out.println("You are at: X: "+ odometer.getX() +" - Y: " +odometer.getY() + " - Theta: " + odometer.getTheta());
-		System.out.println("travelling to:");//I have no idea why but the travelTo method "inverses" x and y
+		//System.out.println("You are at: X: "+ odometer.getX() +" - Y: " +odometer.getY() + " - Theta: " + odometer.getTheta());
+		//System.out.println("travelling to:");//I have no idea why but the travelTo method "inverses" x and y
 		if(yoCounter == ycCounter){
-			System.out.println("X: "+xoCounter*SQUARE_LENGTH +" - Y: " +odometer.getY());
+			//System.out.println("X: "+xoCounter*SQUARE_LENGTH +" - Y: " +odometer.getY());
 			//na.travelTo(odometer.getY(), xoCounter*SQUARE_LENGTH);
 			na.raphTravelTo(xoCounter*SQUARE_LENGTH,odometer.getY());
 		}else{
-			System.out.println("X: "+odometer.getX() +" - Y: " +yoCounter*SQUARE_LENGTH);
+			//System.out.println("X: "+odometer.getX() +" - Y: " +yoCounter*SQUARE_LENGTH);
 			//na.travelTo(yoCounter*SQUARE_LENGTH,odometer.getX());
 			na.raphTravelTo(odometer.getX(),yoCounter*SQUARE_LENGTH);
 		}
-		System.out.println("finished first travel, the robot is now at: X: "+ odometer.getX() +" - Y: " +odometer.getY());
-		System.out.println("now it is going to: X: "+ xoCounter*SQUARE_LENGTH +" - Y: " + yoCounter*SQUARE_LENGTH);
+		//perform correction here
+		//System.out.println("finished first travel, the robot is now at: X: "+ odometer.getX() +" - Y: " +odometer.getY());
+		//System.out.println("now it is going to: X: "+ xoCounter*SQUARE_LENGTH +" - Y: " + yoCounter*SQUARE_LENGTH);
 		na.raphTravelTo(xoCounter*SQUARE_LENGTH,yoCounter*SQUARE_LENGTH);
 		if(ycCounter > yoCounter){
-			na.makeTurn(0);
+			na.raphTurnTo(0);
 		}else if(xcCounter > xoCounter){
-			na.makeTurn(90);
+			na.raphTurnTo(90);
 		}else if(ycCounter < yoCounter){
-			na.makeTurn(180);
+			na.raphTurnTo(180);
 		}else if(xcCounter < xoCounter){
-			na.makeTurn(270);
+			na.raphTurnTo(270);
 		}
-		System.out.println("You are at: X: "+ odometer.getX() +" - Y: " +odometer.getY() + " - Theta: " + odometer.getTheta());
+		//System.out.println("You are at: X: "+ odometer.getX() +" - Y: " +odometer.getY() + " - Theta: " + odometer.getTheta());
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 	}

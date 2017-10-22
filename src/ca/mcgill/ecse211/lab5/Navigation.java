@@ -195,6 +195,7 @@ public class Navigation{
 	}
 	
 	public void raphTurnTo(double theta){
+		nowTheta = odometer.getTheta();
 		//get the displacement (difference between the current angle and where you want to go.
 		double displacement = Math.abs(nowTheta - theta);
 		//turn accordingly, making sure it is the minimal angles
