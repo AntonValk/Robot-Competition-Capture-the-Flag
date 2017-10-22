@@ -22,6 +22,7 @@ public class Navigation{
 	private double nowX;
 	private double nowY;
 	private double nowTheta;
+	private double thetaObj;
 
 	//constructor
 	public Navigation(Odometer odometer,EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
@@ -149,4 +150,73 @@ public class Navigation{
 	private static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
+	
+	
+	//Raphael's methods
+	public void raphTravelTo(double x, double y){
+		//get the current values for x, y and theta
+		nowX = odometer.getX();
+		nowY = odometer.getY();
+		nowTheta = odometer.getTheta();
+		double alpha;
+		//get the distance in cm for x and y
+		//x *= 30.48;
+		//y *= 30.48;
+		alpha = Math.atan(Math.abs(x-nowX)/Math.abs(y-nowY));//get the angle alpha 
+		alpha = (180*alpha)/(Math.PI);					//convert in degrees
+		//in this if conditions, it will get the real angle it has to go (from the "origin", the y axis)
+		if(y > nowY){
+			if(x < nowX){
+				thetaObj = 360 - alpha;
+			}else if(x > nowX){
+				thetaObj = alpha;
+			}else{
+				thetaObj = 0;
+			}
+		}else if(y < nowY){
+			if(x < nowX){
+				thetaObj = 180 + alpha;
+			}else if(x > nowX){
+				thetaObj = 180 - alpha;
+			}else{
+				thetaObj = 180;
+			}
+		}else if(x < nowX){ //here y = yCur
+			thetaObj = 270;
+		}else{ //here y = yCur and x > xCur
+			thetaObj = 90;
+		}
+		raphTurnTo(thetaObj);//turn to this angle
+	    //calculate the distance the robot has to cover
+	    double distance = Math.sqrt(Math.pow(y-nowY,2) + Math.pow(x-nowX,2));
+	    ///rotate for this distance in cm
+		leftMotor.rotate(convertDistance(ZiplineLab.RADIUS, distance), true);
+	    rightMotor.rotate(convertDistance(ZiplineLab.RADIUS, distance), false);
+	}
+	
+	public void raphTurnTo(double theta){
+		//get the displacement (difference between the current angle and where you want to go.
+		double displacement = Math.abs(nowTheta - theta);
+		//turn accordingly, making sure it is the minimal angles
+		if (theta < nowTheta){
+			if(displacement < 180){
+				leftMotor.rotate(-convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, displacement), true);
+				rightMotor.rotate(convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, displacement), false);
+			}else{
+				displacement = 360 - displacement;
+				leftMotor.rotate(convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, displacement), true);
+				rightMotor.rotate(-convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, displacement), false);
+			}
+		}else{
+			if(displacement < 180){
+				leftMotor.rotate(convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, displacement), true);
+				rightMotor.rotate(-convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, displacement), false);
+			}else{
+				displacement = 360 - displacement;
+				leftMotor.rotate(-convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, displacement), true);
+				rightMotor.rotate(convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, displacement), false);
+			}
+		}
+	}
+	
 }

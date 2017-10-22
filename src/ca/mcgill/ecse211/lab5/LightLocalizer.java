@@ -20,7 +20,7 @@ public class LightLocalizer extends Thread {
 	private float[] lightValue; //saves the sensor data
 	private float prevLightValue; // previous value of light sensor
 	private int lineCounter; // keeps track of the amount of lines crossed
-	private final int DISTANCE = 13; //distance from light sensor to center of rotation
+	private final double DISTANCE = 13.2; //distance from light sensor to center of rotation
 	
 	// constructor
 	public LightLocalizer(Odometer odometer, Navigation navigation) {

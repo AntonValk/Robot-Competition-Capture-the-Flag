@@ -26,8 +26,8 @@ public class ZiplineLab {
 	public static final int FORWARD_SPEED = 140;		  // the speed at which the robot is traveling straight
 	public static final int ROTATE_SPEED = 70;		  // the speed at which the robot is rotating
 	public static final double RADIUS = 2.12; 		  // radius of the wheel
-	public static final double TRACK = 10.3; 		  // distance between wheels
-	public static final int DISTANCE_THRESHOLD = 30;  // the distance from which the ultrasonic sensor detects the wall
+	public static final double TRACK = 10.8; 		  // distance between wheels
+	public static final int DISTANCE_THRESHOLD = 35;  // the distance from which the ultrasonic sensor detects the wall
 	public static final int NOISE_MARGIN = 1;	  	  // the noice margin
 	public static final double SQUARE_LENGTH = 30.48; // the length of the square tile
 	public static final int[][] CORNERS = new int[][] {
@@ -161,21 +161,11 @@ public class ZiplineLab {
 		 * which navigates the robot to the exact (0,0) point.
 		 * 
 		 */
-		
-		/*not the best way to get to the "origin"*/
 		odometer.setX(x-SQUARE_LENGTH);
 		odometer.setY(y-SQUARE_LENGTH);
 		System.out.println("Set new coordinates minus length");
 		System.out.println("X: "+odometer.getX()+" - Y: "+odometer.getY());
 		na.travelTo(0, 0);
-		System.out.println("Travel to:");
-		System.out.println("X: "+CORNERS[cornerCounter][0]+" - Y: "+CORNERS[cornerCounter][1]);
-		System.out.println("Are coordinates set to 0 ?");
-		System.out.println("X: "+odometer.getX()+" - Y: "+odometer.getY() + " - Theta: " + odometer.getTheta());
-		//odometer.setX(CORNERS[cornerCounter][0]*SQUARE_LENGTH);
-		//odometer.setY(CORNERS[cornerCounter][1]*SQUARE_LENGTH);
-		//odometer.setTheta(0);
-		/*need to stay where we are while making sure the sensor will hit the 4 axis when turning on itself*/
 		
 
 		//Wait until the robot stops moving, start the lightLocalization thread
@@ -184,6 +174,8 @@ public class ZiplineLab {
 		lightLoc.start();
 		while(na.isNavigating()){
 		}
+		System.out.println("Are coordinates set to 0 ?");
+		System.out.println("X: "+odometer.getX()+" - Y: "+odometer.getY() + " - Theta: " + odometer.getTheta());
 	
 //		switch (cornerCounter) {
 //		case 0:
@@ -283,15 +275,20 @@ public class ZiplineLab {
 			}
 			curCorner--;
 		}*/
+		System.out.println("You are at: X: "+ odometer.getX() +" - Y: " +odometer.getY() + " - Theta: " + odometer.getTheta());
 		System.out.println("travelling to:");//I have no idea why but the travelTo method "inverses" x and y
 		if(yoCounter == ycCounter){
-			System.out.println("X: "+xoCounter +" - Y: " +odometer.getY());
-			na.travelTo(odometer.getY(), xoCounter*SQUARE_LENGTH);
+			System.out.println("X: "+xoCounter*SQUARE_LENGTH +" - Y: " +odometer.getY());
+			//na.travelTo(odometer.getY(), xoCounter*SQUARE_LENGTH);
+			na.raphTravelTo(xoCounter*SQUARE_LENGTH,odometer.getY());
 		}else{
-			System.out.println("X: "+odometer.getX() +" - Y: " +yoCounter);
-			na.travelTo(yoCounter*SQUARE_LENGTH,odometer.getX());
+			System.out.println("X: "+odometer.getX() +" - Y: " +yoCounter*SQUARE_LENGTH);
+			//na.travelTo(yoCounter*SQUARE_LENGTH,odometer.getX());
+			na.raphTravelTo(odometer.getX(),yoCounter*SQUARE_LENGTH);
 		}
-		na.travelTo(yoCounter*SQUARE_LENGTH,xoCounter*SQUARE_LENGTH);
+		System.out.println("finished first travel, the robot is now at: X: "+ odometer.getX() +" - Y: " +odometer.getY());
+		System.out.println("now it is going to: X: "+ xoCounter*SQUARE_LENGTH +" - Y: " + yoCounter*SQUARE_LENGTH);
+		na.raphTravelTo(xoCounter*SQUARE_LENGTH,yoCounter*SQUARE_LENGTH);
 		if(ycCounter > yoCounter){
 			na.makeTurn(0);
 		}else if(xcCounter > xoCounter){
@@ -301,6 +298,7 @@ public class ZiplineLab {
 		}else if(xcCounter < xoCounter){
 			na.makeTurn(270);
 		}
+		System.out.println("You are at: X: "+ odometer.getX() +" - Y: " +odometer.getY() + " - Theta: " + odometer.getTheta());
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 	}
