@@ -26,7 +26,7 @@ public class ZiplineLab {
 	public static final int FORWARD_SPEED = 140;		  // the speed at which the robot is traveling straight
 	public static final int ROTATE_SPEED = 70;		  // the speed at which the robot is rotating
 	public static final double RADIUS = 2.12; 		  // radius of the wheel
-	public static final double TRACK = 11.87; 		  // distance between wheels
+	public static final double TRACK = 10.3; 		  // distance between wheels
 	public static final int DISTANCE_THRESHOLD = 30;  // the distance from which the ultrasonic sensor detects the wall
 	public static final int NOISE_MARGIN = 1;	  	  // the noice margin
 	public static final double SQUARE_LENGTH = 30.48; // the length of the square tile
@@ -152,6 +152,8 @@ public class ZiplineLab {
 		lightLoc = new LightLocalizer(odometer, na);
 		double x = ultraLoc.getLocX();
 		double y = ultraLoc.getLocY();
+		System.out.println("Fin US localization");
+		System.out.println("X: "+x+" - Y: "+y);
 
 		/**
 		 * Set the x and y to be measured location and make the robot travel to the point (0,0)
@@ -159,9 +161,20 @@ public class ZiplineLab {
 		 * which navigates the robot to the exact (0,0) point.
 		 * 
 		 */
-		odometer.setX(x-SQUARE_LENGTH);
-		odometer.setY(y-SQUARE_LENGTH);
-		na.travelTo(0, 0);
+		
+		/*not the best way to get to the "origin"*/
+		//odometer.setX(x-SQUARE_LENGTH);
+		//odometer.setY(y-SQUARE_LENGTH);
+		odometer.setX(x);
+		odometer.setY(y);
+		System.out.println("Set new coordinates minus length");
+		System.out.println("X: "+odometer.getX()+" - Y: "+odometer.getY());
+		//na.travelTo(0, 0);
+		System.out.println("Travel to:");
+		System.out.println("X: "+CORNERS[cornerCounter][0]+" - Y: "+CORNERS[cornerCounter][1]);
+		na.travelTo(CORNERS[cornerCounter][0]*SQUARE_LENGTH,CORNERS[cornerCounter][1]*SQUARE_LENGTH); //travel to the "origin" which is different for every start corner.
+		/*need to stay where we are while making sure the sensor will hit the 4 axis when turning on itself*/
+		
 
 		//Wait until the robot stops moving, start the lightLocalization thread
 		while(na.isNavigating()){
@@ -195,11 +208,10 @@ public class ZiplineLab {
 //			odometer.setTheta(CORNERS[3][2]);
 //			System.out.println("         set 3!");
 //			break;
-//		} 
-	
+//		}
 		Button.waitForAnyPress();
+		/* Borui's work
 		int curCorner = cornerCounter;
-
 		while (bestCorner-curCorner > 0) {
 			int curBlock;
 			int travelBlock = Math.abs(CORNERS[curCorner+1][0]-CORNERS[curCorner][0]+CORNERS[curCorner+1][1]-CORNERS[curCorner][1]);
@@ -266,14 +278,15 @@ public class ZiplineLab {
 					curBlock++;
 				}
 				break;
-			
 			}
 			curCorner--;
-		}
-	
-		na.travelTo(xoCounter*SQUARE_LENGTH, yoCounter*SQUARE_LENGTH);
+		}*/
+		System.out.println("travelling to:");
+		System.out.println("X: "+xoCounter +" - Y: " +yoCounter);
+		//na.travelTo(xoCounter*SQUARE_LENGTH, yoCounter*SQUARE_LENGTH);
+		//I have no idea why but the travelTo method "inverses" x and y
+		na.travelTo(yoCounter*SQUARE_LENGTH, xoCounter*SQUARE_LENGTH);
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 	}
-	
 }

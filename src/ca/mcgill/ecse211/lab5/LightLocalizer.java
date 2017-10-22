@@ -15,13 +15,13 @@ public class LightLocalizer extends Thread {
 	private static final long CORRECTION_PERIOD = 11;
 	private Odometer odometer;
 	private Navigation navigation;
-	private static EV3ColorSensor lightSensor = new EV3ColorSensor(LocalEV3.get().getPort("S2")); //setup light sensor
+	private static EV3ColorSensor lightSensor = new EV3ColorSensor(LocalEV3.get().getPort("S4")); //setup light sensor
 	private static SampleProvider colorSensor = lightSensor.getMode("Red"); 
 	private float[] lightValue; //saves the sensor data
 	private float prevLightValue; // previous value of light sensor
 	private int lineCounter; // keeps track of the amount of lines crossed
 	private final int DISTANCE = 13; //distance from light sensor to center of rotation
-
+	
 	// constructor
 	public LightLocalizer(Odometer odometer, Navigation navigation) {
 		this.navigation = navigation;
