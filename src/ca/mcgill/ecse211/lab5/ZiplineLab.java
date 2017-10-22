@@ -16,7 +16,10 @@ public class ZiplineLab {
 
 	private static final EV3LargeRegulatedMotor rightMotor =
 			new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
-
+	
+	private static final EV3LargeRegulatedMotor ziplineMotor =
+			new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
+	
 	private static final Port usPort = LocalEV3.get().getPort("S1");
 
 	private static UltrasonicLocalizer ultraLoc;
@@ -30,6 +33,7 @@ public class ZiplineLab {
 	public static final int DISTANCE_THRESHOLD = 35;  // the distance from which the ultrasonic sensor detects the wall
 	public static final int NOISE_MARGIN = 1;	  	  // the noice margin
 	public static final double SQUARE_LENGTH = 30.48; // the length of the square tile
+	public static final double ZIPLENGTH =70;
 	public static final int[][] CORNERS = new int[][] {
 		{1,1,0},
 		{7,1,270},
@@ -58,7 +62,7 @@ public class ZiplineLab {
 
 		final TextLCD t = LocalEV3.get().getTextLCD();
 		Odometer odometer = new Odometer(leftMotor, rightMotor);
-		Navigation na = new Navigation(odometer,leftMotor, rightMotor);
+		Navigation na = new Navigation(odometer,leftMotor, rightMotor, ziplineMotor);
 
 		do {
 			// clear the display
@@ -299,7 +303,11 @@ public class ZiplineLab {
 		}else if(xcCounter < xoCounter){
 			na.raphTurnTo(270);
 		}
-		//System.out.println("You are at: X: "+ odometer.getX() +" - Y: " +odometer.getY() + " - Theta: " + odometer.getTheta());
+		while(na.isNavigating()){
+			
+		}
+		na.travelTo(xcCounter, ycCounter);
+		na.doZipline(ZIPLENGTH);
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 	}

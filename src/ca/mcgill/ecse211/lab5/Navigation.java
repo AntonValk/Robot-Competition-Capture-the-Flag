@@ -14,6 +14,7 @@ public class Navigation{
 	private Odometer odometer; 
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
+	private EV3LargeRegulatedMotor ziplineMotor;
 
 	//changing variables 
 	private boolean isNavigating;
@@ -25,10 +26,11 @@ public class Navigation{
 	private double thetaObj;
 
 	//constructor
-	public Navigation(Odometer odometer,EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
+	public Navigation(Odometer odometer,EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, EV3LargeRegulatedMotor ziplineMotor) {
 		this.odometer = odometer;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
+		this.ziplineMotor = ziplineMotor;
 	} 
 
 	/**
@@ -66,6 +68,16 @@ public class Navigation{
 		isNavigating=false;
 	}
 	
+	void doZipline(double distance){
+		//drive forward
+		leftMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
+		rightMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
+		leftMotor.rotate(convertDistance(ZiplineLab.RADIUS, distance), true);
+		rightMotor.rotate(convertDistance(ZiplineLab.RADIUS, distance), true);
+		
+		ziplineMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
+		ziplineMotor.rotate(convertDistance(ZiplineLab.RADIUS, distance), true);
+	}
 	
 	/**
 	 * This method makes the robot turn theta degrees.
