@@ -163,16 +163,18 @@ public class ZiplineLab {
 		 */
 		
 		/*not the best way to get to the "origin"*/
-		//odometer.setX(x-SQUARE_LENGTH);
-		//odometer.setY(y-SQUARE_LENGTH);
-		odometer.setX(x);
-		odometer.setY(y);
+		odometer.setX(x-SQUARE_LENGTH);
+		odometer.setY(y-SQUARE_LENGTH);
 		System.out.println("Set new coordinates minus length");
 		System.out.println("X: "+odometer.getX()+" - Y: "+odometer.getY());
-		//na.travelTo(0, 0);
+		na.travelTo(0, 0);
 		System.out.println("Travel to:");
 		System.out.println("X: "+CORNERS[cornerCounter][0]+" - Y: "+CORNERS[cornerCounter][1]);
-		na.travelTo(CORNERS[cornerCounter][0]*SQUARE_LENGTH,CORNERS[cornerCounter][1]*SQUARE_LENGTH); //travel to the "origin" which is different for every start corner.
+		System.out.println("Are coordinates set to 0 ?");
+		System.out.println("X: "+odometer.getX()+" - Y: "+odometer.getY() + " - Theta: " + odometer.getTheta());
+		//odometer.setX(CORNERS[cornerCounter][0]*SQUARE_LENGTH);
+		//odometer.setY(CORNERS[cornerCounter][1]*SQUARE_LENGTH);
+		//odometer.setTheta(0);
 		/*need to stay where we are while making sure the sensor will hit the 4 axis when turning on itself*/
 		
 
@@ -281,11 +283,24 @@ public class ZiplineLab {
 			}
 			curCorner--;
 		}*/
-		System.out.println("travelling to:");
-		System.out.println("X: "+xoCounter +" - Y: " +yoCounter);
-		//na.travelTo(xoCounter*SQUARE_LENGTH, yoCounter*SQUARE_LENGTH);
-		//I have no idea why but the travelTo method "inverses" x and y
-		na.travelTo(yoCounter*SQUARE_LENGTH, xoCounter*SQUARE_LENGTH);
+		System.out.println("travelling to:");//I have no idea why but the travelTo method "inverses" x and y
+		if(yoCounter == ycCounter){
+			System.out.println("X: "+xoCounter +" - Y: " +odometer.getY());
+			na.travelTo(odometer.getY(), xoCounter*SQUARE_LENGTH);
+		}else{
+			System.out.println("X: "+odometer.getX() +" - Y: " +yoCounter);
+			na.travelTo(yoCounter*SQUARE_LENGTH,odometer.getX());
+		}
+		na.travelTo(yoCounter*SQUARE_LENGTH,xoCounter*SQUARE_LENGTH);
+		if(ycCounter > yoCounter){
+			na.makeTurn(0);
+		}else if(xcCounter > xoCounter){
+			na.makeTurn(90);
+		}else if(ycCounter < yoCounter){
+			na.makeTurn(180);
+		}else if(xcCounter < xoCounter){
+			na.makeTurn(270);
+		}
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 	}
