@@ -51,7 +51,7 @@ public class Navigation{
 		nowX = odometer.getX();
 		nowY = odometer.getY();
 		//calculate the angle we need to turn to
-		double theta1 = Math.atan((y-nowY)/(x-nowX))*360.0/(2*Math.PI);
+		double theta1 = Math.atan((x-nowX)/(y-nowY))*360.0/(2*Math.PI);
 		if(x-nowX<0) theta1= 180.0 + theta1;
 		//turn to the proper angle
 		makeMinimumTurn(theta1);
@@ -72,11 +72,16 @@ public class Navigation{
 		//drive forward
 		leftMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
 		rightMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
-		leftMotor.rotate(convertDistance(ZiplineLab.RADIUS, distance), true);
-		rightMotor.rotate(convertDistance(ZiplineLab.RADIUS, distance), true);
+		leftMotor.rotate(convertDistance(ZiplineLab.RADIUS, distance/2), true);
+		rightMotor.rotate(convertDistance(ZiplineLab.RADIUS, distance/2), true);
 		
-		ziplineMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
-		ziplineMotor.rotate(convertDistance(ZiplineLab.RADIUS, distance), true);
+		ziplineMotor.setSpeed(2*ZiplineLab.FORWARD_SPEED);
+		ziplineMotor.rotate(-convertDistance(ZiplineLab.RADIUS, 6*ZiplineLab.ZIPLENGTH), false);
+		
+		leftMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
+		rightMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
+		leftMotor.rotate(convertDistance(ZiplineLab.RADIUS, 5), true);
+		rightMotor.rotate(convertDistance(ZiplineLab.RADIUS, 5), true);
 	}
 	
 	/**
@@ -201,7 +206,10 @@ public class Navigation{
 		raphTurnTo(thetaObj);//turn to this angle
 	    //calculate the distance the robot has to cover
 	    double distance = Math.sqrt(Math.pow(y-nowY,2) + Math.pow(x-nowX,2));
-	    ///rotate for this distance in cm
+	    ///rotate for this distance in cm'
+		leftMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
+		rightMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
+		
 		leftMotor.rotate(convertDistance(ZiplineLab.RADIUS, distance), true);
 	    rightMotor.rotate(convertDistance(ZiplineLab.RADIUS, distance), false);
 	}
