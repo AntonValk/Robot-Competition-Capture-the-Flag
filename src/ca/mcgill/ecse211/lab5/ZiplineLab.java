@@ -29,9 +29,9 @@ public class ZiplineLab {
 	public static final int FORWARD_SPEED = 140;		  // the speed at which the robot is traveling straight
 	public static final int ROTATE_SPEED = 70;		  // the speed at which the robot is rotating
 	public static final double RADIUS = 2.12; 		  // radius of the wheel
-	public static final double TRACK = 10.8; 		  // distance between wheels
-	public static final int DISTANCE_THRESHOLD = 35;  // the distance from which the ultrasonic sensor detects the wall
-	public static final int NOISE_MARGIN = 1;	  	  // the noice margin
+	public static final double TRACK = 11.72; 		  // distance between wheels
+	public static final int DISTANCE_THRESHOLD = 30;  // the distance from which the ultrasonic sensor detects the wall
+	public static final int NOISE_MARGIN = 1;	  	  // the noise margin
 	public static final double SQUARE_LENGTH = 30.48; // the length of the square tile
 	public static final double ZIPLENGTH =70;
 	public static final int[][] CORNERS = new int[][] {
@@ -149,7 +149,7 @@ public class ZiplineLab {
 		Button.waitForAnyPress();
 
 		try { 
-			Thread.sleep(1000);
+			Thread.sleep(500);
 		} catch (Exception e) {
 		}
 
@@ -169,7 +169,7 @@ public class ZiplineLab {
 		odometer.setY(y-SQUARE_LENGTH);
 		//System.out.println("Set new coordinates minus length");
 		//System.out.println("X: "+odometer.getX()+" - Y: "+odometer.getY());
-		na.travelTo(0, 0);
+		na.travelTo(3, 3);
 		
 
 		//Wait until the robot stops moving, start the lightLocalization thread
@@ -180,133 +180,167 @@ public class ZiplineLab {
 		}
 		//System.out.println("Are coordinates set to 0 ?");
 		//System.out.println("X: "+odometer.getX()+" - Y: "+odometer.getY() + " - Theta: " + odometer.getTheta());
-	
-//		switch (cornerCounter) {
-//		case 0:
-//			odometer.setX(CORNERS[0][0]*SQUARE_LENGTH);
-//			odometer.setY(CORNERS[0][1]*SQUARE_LENGTH);
-//			odometer.setTheta(CORNERS[0][2]);
-//			System.out.println("         set 0!");
-//			break;
-//		case 1:
-//			odometer.setX(CORNERS[1][0]*SQUARE_LENGTH);
-//			odometer.setY(CORNERS[1][1]*SQUARE_LENGTH);
-//			odometer.setTheta(CORNERS[1][2]);
-//			System.out.println("         set 1!");
-//			break;
-//		case 2:
-//			odometer.setX(CORNERS[2][0]*SQUARE_LENGTH);
-//			odometer.setY(CORNERS[2][1]*SQUARE_LENGTH);
-//			odometer.setTheta(CORNERS[2][2]);
-//			System.out.println("         set 2!");
-//			break;
-//		case 3:
-//			odometer.setX(CORNERS[3][0]*SQUARE_LENGTH);
-//			odometer.setY(CORNERS[3][1]*SQUARE_LENGTH);
-//			odometer.setTheta(CORNERS[3][2]);
-//			System.out.println("         set 3!");
-//			break;
-//		}
 		Button.waitForAnyPress();
-		/* Borui's work
-		int curCorner = cornerCounter;
-		while (bestCorner-curCorner > 0) {
-			int curBlock;
-			int travelBlock = Math.abs(CORNERS[curCorner+1][0]-CORNERS[curCorner][0]+CORNERS[curCorner+1][1]-CORNERS[curCorner][1]);
-			switch(curCorner){
-			case 0:
-				curBlock = 1;
-				while (curBlock <= travelBlock){
-					na.travelTo((CORNERS[curCorner][0] + curBlock)*SQUARE_LENGTH, CORNERS[curCorner][1]*SQUARE_LENGTH);
-					while(na.isNavigating()){
-					}
-					curBlock++;
-				}
-				break;
-			case 1:
-				curBlock = 1;
-				while (curBlock <= travelBlock){
-					na.travelTo(CORNERS[curCorner][0]*SQUARE_LENGTH, (CORNERS[curCorner][1]+curBlock)*SQUARE_LENGTH);
-					while(na.isNavigating()){
-					}
-					curBlock++;
-				}
-				break;
-			case 2:
-				curBlock = 1;
-				while (curBlock <= travelBlock){
-					na.travelTo((CORNERS[curCorner][0] - curBlock)*SQUARE_LENGTH, CORNERS[curCorner][1]*SQUARE_LENGTH);
-					while(na.isNavigating()){
-					}
-					curBlock++;
-				}
-				break;
-			
-			}
-			curCorner++;
-		}
-		while (bestCorner-curCorner < 0) {
-			int curBlock;
-			int travelBlock = Math.abs(CORNERS[curCorner+1][0]-CORNERS[curCorner][0]+CORNERS[curCorner+1][1]-CORNERS[curCorner][1]);
-			switch(curCorner){
-			case 3:
-				curBlock = 1;
-				while (curBlock <= travelBlock){
-					na.travelTo((CORNERS[curCorner][0] + curBlock)*SQUARE_LENGTH, CORNERS[curCorner][1]*SQUARE_LENGTH);
-					while(na.isNavigating()){
-					}
-					curBlock++;
-				}
-				break;
-			case 2:
-				curBlock = 1;
-				while (curBlock <= travelBlock){
-					na.travelTo(CORNERS[curCorner][0]*SQUARE_LENGTH, (CORNERS[curCorner][1]-curBlock)*SQUARE_LENGTH);
-					while(na.isNavigating()){
-					}
-					curBlock++;
-				}
-				break;
-			case 1:
-				curBlock = 1;
-				while (curBlock <= travelBlock){
-					na.travelTo((CORNERS[curCorner][0] - curBlock)*SQUARE_LENGTH, CORNERS[curCorner][1]*SQUARE_LENGTH);
-					while(na.isNavigating()){
-					}
-					curBlock++;
-				}
-				break;
-			}
-			curCorner--;
-		}*/
+	
 		//System.out.println("You are at: X: "+ odometer.getX() +" - Y: " +odometer.getY() + " - Theta: " + odometer.getTheta());
 		//System.out.println("travelling to:");//I have no idea why but the travelTo method "inverses" x and y
 		if(yoCounter == ycCounter){
-			//System.out.println("X: "+xoCounter*SQUARE_LENGTH +" - Y: " +odometer.getY());
 			//na.travelTo(odometer.getY(), xoCounter*SQUARE_LENGTH);
-			na.raphTravelTo(xoCounter*SQUARE_LENGTH,odometer.getY());
+			double curX = odometer.getX();
+			double curY = odometer.getY();
+			
+			//first light localization
+			na.raphTravelTo((xoCounter*SQUARE_LENGTH + curX)/2,curY);
+			double curTheta = odometer.getTheta();
+			while(na.isNavigating()){
+				
+			}
+			odometer.setTheta(90);
+			lightLoc = new LightLocalizer(odometer, na);
+			lightLoc.doLightLocalization();
+			while(na.isNavigating()){
+				
+			}
+			na.makeTurn(90);
+			while(na.isNavigating()){
+				
+			}
+			odometer.setX((xoCounter*SQUARE_LENGTH + curX)/2);
+			odometer.setY(curY);
+			odometer.setTheta(curTheta);
+			
+			//second light localization
+			na.raphTravelTo(xoCounter*SQUARE_LENGTH,curY);
+			curX = odometer.getX();
+			curY = odometer.getY();
+			curTheta = odometer.getTheta();
+			odometer.setTheta(90);
+			lightLoc = new LightLocalizer(odometer, na);
+			lightLoc.doLightLocalization();
+			while(na.isNavigating()){
+				
+			}
+			na.makeTurn(90);
+			while(na.isNavigating()){
+				
+			}
+			odometer.setX(xoCounter*SQUARE_LENGTH);
+			odometer.setY(curY);
+			odometer.setTheta(curTheta);
+
 		}else{
 			//System.out.println("X: "+odometer.getX() +" - Y: " +yoCounter*SQUARE_LENGTH);
 			//na.travelTo(yoCounter*SQUARE_LENGTH,odometer.getX());
-			na.raphTravelTo(odometer.getX(),yoCounter*SQUARE_LENGTH);
-		}
-		//perform correction here
-		//System.out.println("finished first travel, the robot is now at: X: "+ odometer.getX() +" - Y: " +odometer.getY());
-		//System.out.println("now it is going to: X: "+ xoCounter*SQUARE_LENGTH +" - Y: " + yoCounter*SQUARE_LENGTH);
-		na.raphTravelTo(xoCounter*SQUARE_LENGTH,yoCounter*SQUARE_LENGTH);
-		if(ycCounter > yoCounter){
-			na.raphTurnTo(0);
-		}else if(xcCounter > xoCounter){
-			na.raphTurnTo(90);
-		}else if(ycCounter < yoCounter){
-			na.raphTurnTo(180);
-		}else if(xcCounter < xoCounter){
-			na.raphTurnTo(270);
+			//na.travelTo(odometer.getY(), xoCounter*SQUARE_LENGTH);
+			double curX = odometer.getX();
+			double curY = odometer.getY();
+			double curTheta = odometer.getTheta();
+			
+			//first light localization
+			na.raphTravelTo(curX, (yoCounter*SQUARE_LENGTH + curY)/2);
+			while(na.isNavigating()){
+				
+			}
+			odometer.setTheta(90);
+			lightLoc = new LightLocalizer(odometer, na);
+			lightLoc.doLightLocalization();
+			while(na.isNavigating()){
+				
+			}
+			na.makeTurn(90);
+			while(na.isNavigating()){
+				
+			}
+			odometer.setX(curX);
+			odometer.setY((yoCounter*SQUARE_LENGTH + curY)/2);
+			odometer.setTheta(curTheta);
+			
+			//second light localization
+			na.raphTravelTo(curX,yoCounter*SQUARE_LENGTH);
+			curX = odometer.getX();
+			curY = odometer.getY();
+			curTheta = odometer.getTheta();
+			odometer.setTheta(90);
+			lightLoc = new LightLocalizer(odometer, na);
+			lightLoc.doLightLocalization();
+			while(na.isNavigating()){
+				
+			}
+			na.makeTurn(90);
+			while(na.isNavigating()){
+				
+			}
+			odometer.setX(curX);
+			odometer.setY(yoCounter*SQUARE_LENGTH);
+			odometer.setTheta(curTheta);
 		}
 		while(na.isNavigating()){
 			
 		}
-		na.travelTo(xcCounter, ycCounter);
+		
+		//perform correction here
+		//System.out.println("finished first travel, the robot is now at: X: "+ odometer.getX() +" - Y: " +odometer.getY());
+		//System.out.println("now it is going to: X: "+ xoCounter*SQUARE_LENGTH +" - Y: " + yoCounter*SQUARE_LENGTH);
+		//The third localization
+		double curX = odometer.getX();
+		double curY = odometer.getY();
+		double curTheta = odometer.getTheta();
+		na.raphTravelTo((curX + 1*SQUARE_LENGTH)/2, (curY + 7*SQUARE_LENGTH)/2);
+		odometer.setTheta(90);
+		lightLoc = new LightLocalizer(odometer, na);
+		lightLoc.doLightLocalization();
+		while(na.isNavigating()){
+			
+		}
+		na.makeTurn(90);
+		while(na.isNavigating()){
+			
+		}
+		odometer.setX(curX);
+		odometer.setY(curY);
+		odometer.setTheta(curTheta);
+		
+		
+		//The fourth localization
+		na.raphTravelTo(xoCounter*SQUARE_LENGTH,yoCounter*SQUARE_LENGTH);
+		curX = odometer.getX();
+		curY = odometer.getY();
+		curTheta = odometer.getTheta();
+		odometer.setTheta(90);
+		lightLoc = new LightLocalizer(odometer, na);
+		lightLoc.doLightLocalization();
+		while(na.isNavigating()){
+			
+		}
+		na.makeTurn(90);
+		while(na.isNavigating()){
+			
+		}
+		odometer.setX(curX);
+		odometer.setY(curY);
+		odometer.setTheta(curTheta);
+		
+		if(ycCounter > yoCounter){
+			na.makeTurn(0);
+		}else if(xcCounter > xoCounter){
+			na.makeTurn(90);
+		}else if(ycCounter < yoCounter){
+			na.makeTurn(180);
+		}else if(xcCounter < xoCounter){
+			na.makeTurn(270);
+		}
+		while(na.isNavigating()){
+			
+		}
+		Button.waitForAnyPress();
+		
+		
+		na.travelTo(xcCounter*SQUARE_LENGTH,ycCounter*SQUARE_LENGTH);
+		while(na.isNavigating()){
+		
+		}
+		odometer.setX(xcCounter*SQUARE_LENGTH);
+		odometer.setY(ycCounter*SQUARE_LENGTH);
 		na.doZipline(ZIPLENGTH);
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
