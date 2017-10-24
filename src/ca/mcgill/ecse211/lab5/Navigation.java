@@ -153,7 +153,7 @@ public class Navigation{
 	 * @param distance 		the distance between the wheels. 
 	 * @return 			    the distance that has been calculated 
 	 */
-	private static int convertDistance(double radius, double distance) {
+	public static int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
 	
@@ -164,7 +164,7 @@ public class Navigation{
 	 * @param angle			the angle we wish to convert 
 	 * @return 				conversion from angle to wheel rotation distance
 	 */
-	private static int convertAngle(double radius, double width, double angle) {
+	public static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
 	
