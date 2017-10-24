@@ -50,8 +50,11 @@ public class ZiplineLab {
 		int yoCounter = 0;
 		int xcCounter = 0;
 		int ycCounter = 0;
-		
-
+	
+		double curX;
+		double curY;
+		double curTheta;
+	
 		// clear the display
 		@SuppressWarnings("resource")							    // Because we don't bother to close this resource
 		SensorModes ultrasonicSensor = new EV3UltrasonicSensor(usPort);		// usSensor is the instance
@@ -186,12 +189,12 @@ public class ZiplineLab {
 		//System.out.println("travelling to:");//I have no idea why but the travelTo method "inverses" x and y
 		if(yoCounter == ycCounter && CORNERS[cornerCounter][0] != xoCounter){
 			//na.travelTo(odometer.getY(), xoCounter*SQUARE_LENGTH);
-			double curX = odometer.getX();
-			double curY = odometer.getY();
+			curX = odometer.getX();
+			curY = odometer.getY();
 			
 			//first light localization
 			na.raphTravelTo((xoCounter*SQUARE_LENGTH + curX)/2,curY);
-			double curTheta = odometer.getTheta();
+			curTheta = odometer.getTheta();
 			while(na.isNavigating()){
 				
 			}
@@ -230,12 +233,9 @@ public class ZiplineLab {
 
 		}else if(xoCounter == xcCounter && CORNERS[cornerCounter][1] != yoCounter){
 
-			//System.out.println("X: "+odometer.getX() +" - Y: " +yoCounter*SQUARE_LENGTH);
-			//na.travelTo(yoCounter*SQUARE_LENGTH,odometer.getX());
-			//na.travelTo(odometer.getY(), xoCounter*SQUARE_LENGTH);
-			double curX = odometer.getX();
-			double curY = odometer.getY();
-			double curTheta = odometer.getTheta();
+			curX = odometer.getX();
+			curY = odometer.getY();
+			curTheta = odometer.getTheta();
 			
 			//first light localization
 			na.raphTravelTo(curX, (yoCounter*SQUARE_LENGTH + curY)/2);
@@ -284,25 +284,25 @@ public class ZiplineLab {
 		//System.out.println("now it is going to: X: "+ xoCounter*SQUARE_LENGTH +" - Y: " + yoCounter*SQUARE_LENGTH);
 		
 		//The third localization
-		double curX = odometer.getX();
-		double curY = odometer.getY();
-		double curTheta = odometer.getTheta();
-		na.raphTravelTo((curX + CORNERS[bestCorner][0]*SQUARE_LENGTH)/2, (curY + CORNERS[bestCorner][1]*SQUARE_LENGTH)/2);
-		odometer.setTheta(90);
-		lightLoc = new LightLocalizer(odometer, na);
-		lightLoc.doLightLocalization();
-		while(na.isNavigating()){
-			
+		if (cornerCounter != bestCorner){
+			curX = odometer.getX();
+			curY = odometer.getY();
+			curTheta = odometer.getTheta();
+			na.raphTravelTo((curX + CORNERS[bestCorner][0]*SQUARE_LENGTH)/2, (curY + CORNERS[bestCorner][1]*SQUARE_LENGTH)/2);
+			odometer.setTheta(90);
+			lightLoc = new LightLocalizer(odometer, na);
+			lightLoc.doLightLocalization();
+			while(na.isNavigating()){
+				
+			}
+			na.makeTurn(90);
+			while(na.isNavigating()){
+				
+			}
+			odometer.setX((curX + CORNERS[bestCorner][0]*SQUARE_LENGTH)/2);
+			odometer.setY((curY + CORNERS[bestCorner][1]*SQUARE_LENGTH)/2);
+			odometer.setTheta(curTheta);
 		}
-		na.makeTurn(90);
-		while(na.isNavigating()){
-			
-		}
-		odometer.setX((curX + CORNERS[bestCorner][0]*SQUARE_LENGTH)/2);
-		odometer.setY((curY + CORNERS[bestCorner][1]*SQUARE_LENGTH)/2);
-		odometer.setTheta(curTheta);
-		
-		
 		//The fourth localization
 		na.raphTravelTo(xoCounter*SQUARE_LENGTH,yoCounter*SQUARE_LENGTH);
 		while(na.isNavigating()){
@@ -325,7 +325,14 @@ public class ZiplineLab {
 		odometer.setY(curY);
 		odometer.setTheta(curTheta);
 		
+		//hardcode (don't comment)
+		if (cornerCounter == 2 || cornerCounter == 3)
+			na.makeTurn(-90);
+		else 
+			na.makeTurn(90);
+		//
 		
+		//should comment
 		if(ycCounter > yoCounter){
 			na.makeTurn(0);
 		}else if(xcCounter > xoCounter){
@@ -338,14 +345,19 @@ public class ZiplineLab {
 		while(na.isNavigating()){
 			
 		}
-		//hardcode
-		na.makeTurn(-6);
+		
+		//hardcode (don't comment)
+		na.makeTurn(-7);
+		odometer.setTheta(90);
+		//
+		
+		
 		while(na.isNavigating()){
 			
 		}
 		Button.waitForAnyPress();
 		
-		//na.raphTravelTo(xcCounter*SQUARE_LENGTH+10,ycCounter*SQUARE_LENGTH);
+		na.raphTravelTo(xcCounter*SQUARE_LENGTH+10,ycCounter*SQUARE_LENGTH);
 
 		//hardcode
 	//	odometer.setX(xcCounter*SQUARE_LENGTH+10);
