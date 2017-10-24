@@ -184,7 +184,7 @@ public class ZiplineLab {
 	
 		//System.out.println("You are at: X: "+ odometer.getX() +" - Y: " +odometer.getY() + " - Theta: " + odometer.getTheta());
 		//System.out.println("travelling to:");//I have no idea why but the travelTo method "inverses" x and y
-		if(yoCounter == ycCounter){
+		if(yoCounter == ycCounter && CORNERS[cornerCounter][0] != xoCounter){
 			//na.travelTo(odometer.getY(), xoCounter*SQUARE_LENGTH);
 			double curX = odometer.getX();
 			double curY = odometer.getY();
@@ -228,7 +228,8 @@ public class ZiplineLab {
 			odometer.setY(curY);
 			odometer.setTheta(curTheta);
 
-		}else{
+		}else if(xoCounter == xcCounter && CORNERS[cornerCounter][1] != yoCounter){
+
 			//System.out.println("X: "+odometer.getX() +" - Y: " +yoCounter*SQUARE_LENGTH);
 			//na.travelTo(yoCounter*SQUARE_LENGTH,odometer.getX());
 			//na.travelTo(odometer.getY(), xoCounter*SQUARE_LENGTH);
@@ -281,11 +282,12 @@ public class ZiplineLab {
 		//perform correction here
 		//System.out.println("finished first travel, the robot is now at: X: "+ odometer.getX() +" - Y: " +odometer.getY());
 		//System.out.println("now it is going to: X: "+ xoCounter*SQUARE_LENGTH +" - Y: " + yoCounter*SQUARE_LENGTH);
+		
 		//The third localization
 		double curX = odometer.getX();
 		double curY = odometer.getY();
 		double curTheta = odometer.getTheta();
-		na.raphTravelTo((curX + 1*SQUARE_LENGTH)/2, (curY + 7*SQUARE_LENGTH)/2);
+		na.raphTravelTo((curX + CORNERS[bestCorner][0]*SQUARE_LENGTH)/2, (curY + CORNERS[bestCorner][1]*SQUARE_LENGTH)/2);
 		odometer.setTheta(90);
 		lightLoc = new LightLocalizer(odometer, na);
 		lightLoc.doLightLocalization();
@@ -296,13 +298,16 @@ public class ZiplineLab {
 		while(na.isNavigating()){
 			
 		}
-		odometer.setX(curX);
-		odometer.setY(curY);
+		odometer.setX((curX + CORNERS[bestCorner][0]*SQUARE_LENGTH)/2);
+		odometer.setY((curY + CORNERS[bestCorner][1]*SQUARE_LENGTH)/2);
 		odometer.setTheta(curTheta);
 		
 		
 		//The fourth localization
 		na.raphTravelTo(xoCounter*SQUARE_LENGTH,yoCounter*SQUARE_LENGTH);
+		while(na.isNavigating()){
+			
+		}
 		curX = odometer.getX();
 		curY = odometer.getY();
 		curTheta = odometer.getTheta();
@@ -320,6 +325,7 @@ public class ZiplineLab {
 		odometer.setY(curY);
 		odometer.setTheta(curTheta);
 		
+		
 		if(ycCounter > yoCounter){
 			na.makeTurn(0);
 		}else if(xcCounter > xoCounter){
@@ -332,16 +338,19 @@ public class ZiplineLab {
 		while(na.isNavigating()){
 			
 		}
+		//hardcode
+		na.makeTurn(-6);
+		while(na.isNavigating()){
+			
+		}
 		Button.waitForAnyPress();
 		
-		
-		na.travelTo(xcCounter*SQUARE_LENGTH,ycCounter*SQUARE_LENGTH);
-		while(na.isNavigating()){
-		
-		}
-		odometer.setX(xcCounter*SQUARE_LENGTH);
-		odometer.setY(ycCounter*SQUARE_LENGTH);
-		na.doZipline(ZIPLENGTH);
+		//na.raphTravelTo(xcCounter*SQUARE_LENGTH+10,ycCounter*SQUARE_LENGTH);
+
+		//hardcode
+	//	odometer.setX(xcCounter*SQUARE_LENGTH+10);
+		//odometer.setY(ycCounter*SQUARE_LENGTH);
+		na.doZipline(3*ZIPLENGTH);
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 	}
