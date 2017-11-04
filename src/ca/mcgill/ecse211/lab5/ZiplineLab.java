@@ -149,10 +149,15 @@ public class ZiplineLab {
 		usPoller.start();
 		ultraLoc.start();
 		
-		Button.waitForAnyPress();
-
+		//Button.waitForAnyPress();
+		try {
+			ultraLoc.join();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		try { 
-			Thread.sleep(500);
+			Thread.sleep(2000);
 		} catch (Exception e) {
 		}
 
@@ -181,14 +186,18 @@ public class ZiplineLab {
 		lightLoc.start();
 		while(na.isNavigating()){
 		}
-		//System.out.println("Are coordinates set to 0 ?");
-		//System.out.println("X: "+odometer.getX()+" - Y: "+odometer.getY() + " - Theta: " + odometer.getTheta());
-		Button.waitForAnyPress();
+
 	
-		//System.out.println("You are at: X: "+ odometer.getX() +" - Y: " +odometer.getY() + " - Theta: " + odometer.getTheta());
-		//System.out.println("travelling to:");//I have no idea why but the travelTo method "inverses" x and y
+		//Button.waitForAnyPress();
+		try {
+			lightLoc.join();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	
+
 		if(yoCounter == ycCounter && CORNERS[cornerCounter][0] != xoCounter){
-			//na.travelTo(odometer.getY(), xoCounter*SQUARE_LENGTH);
 			curX = odometer.getX();
 			curY = odometer.getY();
 			
@@ -279,10 +288,6 @@ public class ZiplineLab {
 			
 		}
 		
-		//perform correction here
-		//System.out.println("finished first travel, the robot is now at: X: "+ odometer.getX() +" - Y: " +odometer.getY());
-		//System.out.println("now it is going to: X: "+ xoCounter*SQUARE_LENGTH +" - Y: " + yoCounter*SQUARE_LENGTH);
-		
 		//The third localization
 		if (cornerCounter != bestCorner){
 			curX = odometer.getX();
@@ -330,10 +335,9 @@ public class ZiplineLab {
 			na.makeTurn(-90);
 		else 
 			na.makeTurn(90);
-		//
 		
-		//should comment
-		if(ycCounter > yoCounter){
+		//make a last turn depending on xc/yc
+		/*if(ycCounter > yoCounter){
 			na.makeTurn(0);
 		}else if(xcCounter > xoCounter){
 			na.makeTurn(90);
@@ -341,13 +345,15 @@ public class ZiplineLab {
 			na.makeTurn(180);
 		}else if(xcCounter < xoCounter){
 			na.makeTurn(270);
-		}
+		}*/
 		while(na.isNavigating()){
 			
 		}
 		
 		//hardcode (don't comment)
-		na.makeTurn(-7);
+		na.makeTurn(-5.5);
+		odometer.setX(xoCounter*SQUARE_LENGTH);
+		odometer.setY(yoCounter*SQUARE_LENGTH);
 		odometer.setTheta(90);
 		//
 		
@@ -357,7 +363,16 @@ public class ZiplineLab {
 		}
 		Button.waitForAnyPress();
 		
-		na.raphTravelTo(xcCounter*SQUARE_LENGTH+10,ycCounter*SQUARE_LENGTH);
+		if (cornerCounter == 2){
+			//na.makeTurn(180);
+			//leftMotor.rotate(180, true);
+			//rightMotor.rotate(-180, false);
+		}
+		leftMotor.setSpeed(FORWARD_SPEED);
+		rightMotor.setSpeed(FORWARD_SPEED);
+		leftMotor.rotate(Navigation.convertDistance(ZiplineLab.RADIUS, SQUARE_LENGTH+10), true);
+		rightMotor.rotate(Navigation.convertDistance(ZiplineLab.RADIUS, SQUARE_LENGTH+10), false);
+		//na.raphTravelTo(xcCounter*SQUARE_LENGTH*1.5,ycCounter*SQUARE_LENGTH);
 
 		//hardcode
 	//	odometer.setX(xcCounter*SQUARE_LENGTH+10);
