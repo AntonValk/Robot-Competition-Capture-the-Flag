@@ -1,4 +1,4 @@
-package ca.mcgill.ecse211.lab5;
+package ca.mcgill.ecse211.project;
 
 /** This class takes care of the robot navigation. It controls the movement by
  * 	implementing movement, turning, distance & angle methods.
@@ -59,10 +59,10 @@ public class Navigation{
 		double travellingDis = Math.sqrt(Math.pow(x-nowX, 2) + Math.pow(y-nowY, 2));
 
 		//drive forward
-		leftMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
-		rightMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
-		leftMotor.rotate(convertDistance(ZiplineLab.RADIUS, travellingDis), true);
-		rightMotor.rotate(convertDistance(ZiplineLab.RADIUS, travellingDis), true);
+		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
+		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
+		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, travellingDis), true);
+		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, travellingDis), true);
 
 		//keep calling turnto and checking the distance
 		isNavigating=false;
@@ -70,18 +70,18 @@ public class Navigation{
 	
 	void doZipline(double distance){
 		//drive forward
-		leftMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
-		rightMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
-		leftMotor.rotate(convertDistance(ZiplineLab.RADIUS, distance/2), true);
-		rightMotor.rotate(convertDistance(ZiplineLab.RADIUS, distance/2), true);
+		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
+		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
+		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance/2), true);
+		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance/2), true);
 		
-		ziplineMotor.setSpeed(2*ZiplineLab.FORWARD_SPEED);
-		ziplineMotor.rotate(-convertDistance(ZiplineLab.RADIUS, 6*ZiplineLab.ZIPLENGTH), false);
+		ziplineMotor.setSpeed(2*CaptureFlag.FORWARD_SPEED);
+		ziplineMotor.rotate(-convertDistance(CaptureFlag.RADIUS, 6*CaptureFlag.ZIPLENGTH), false);
 		
-		leftMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
-		rightMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
-		leftMotor.rotate(convertDistance(ZiplineLab.RADIUS, 5), true);
-		rightMotor.rotate(convertDistance(ZiplineLab.RADIUS, 5), true);
+		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
+		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
+		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);
+		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);
 	}
 	
 	/**
@@ -89,12 +89,12 @@ public class Navigation{
 	 * @param theta 		angle of rotation
 	 */
 	void makeTurn(double theta) {
-	    leftMotor.setSpeed(ZiplineLab.ROTATE_SPEED);
-	    rightMotor.setSpeed(ZiplineLab.ROTATE_SPEED);
+	    leftMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
+	    rightMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
 
 	    // Rotate to new angle
-	    leftMotor.rotate(convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, theta), true);
-	    rightMotor.rotate(-convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, theta), true);
+	    leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, theta), true);
+	    rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, theta), true);
 	  }
 
 
@@ -106,12 +106,12 @@ public class Navigation{
 	void makeMinimumTurn(double theta){
 		 theta = ((theta % 360) + 360) % 360;
 		 if (theta >= 180) theta-=360;
-		 leftMotor.setSpeed(ZiplineLab.ROTATE_SPEED);
-		 rightMotor.setSpeed(ZiplineLab.ROTATE_SPEED);
+		 leftMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
+		 rightMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
 
 		 // Rotate to new angle
-		 leftMotor.rotate(convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, theta), true);
-		 rightMotor.rotate(-convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, theta), false);
+		 leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, theta), true);
+		 rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, theta), false);
 	}
 	
 	/**
@@ -153,7 +153,7 @@ public class Navigation{
 	 * @param distance 		the distance between the wheels. 
 	 * @return 			    the distance that has been calculated 
 	 */
-	public static int convertDistance(double radius, double distance) {
+	private static int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
 	
@@ -164,7 +164,7 @@ public class Navigation{
 	 * @param angle			the angle we wish to convert 
 	 * @return 				conversion from angle to wheel rotation distance
 	 */
-	public static int convertAngle(double radius, double width, double angle) {
+	private static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
 	
@@ -207,11 +207,11 @@ public class Navigation{
 	    //calculate the distance the robot has to cover
 	    double distance = Math.sqrt(Math.pow(y-nowY,2) + Math.pow(x-nowX,2));
 	    ///rotate for this distance in cm'
-		leftMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
-		rightMotor.setSpeed(ZiplineLab.FORWARD_SPEED);
+		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
+		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
 		
-		leftMotor.rotate(convertDistance(ZiplineLab.RADIUS, distance), true);
-	    rightMotor.rotate(convertDistance(ZiplineLab.RADIUS, distance), false);
+		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance), true);
+	    rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance), false);
 	}
 	
 	public void raphTurnTo(double theta){
@@ -221,21 +221,21 @@ public class Navigation{
 		//turn accordingly, making sure it is the minimal angles
 		if (theta < nowTheta){
 			if(displacement < 180){
-				leftMotor.rotate(-convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, displacement), true);
-				rightMotor.rotate(convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, displacement), false);
+				leftMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
+				rightMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
 			}else{
 				displacement = 360 - displacement;
-				leftMotor.rotate(convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, displacement), true);
-				rightMotor.rotate(-convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, displacement), false);
+				leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
+				rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
 			}
 		}else{
 			if(displacement < 180){
-				leftMotor.rotate(convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, displacement), true);
-				rightMotor.rotate(-convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, displacement), false);
+				leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
+				rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
 			}else{
 				displacement = 360 - displacement;
-				leftMotor.rotate(-convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, displacement), true);
-				rightMotor.rotate(convertAngle(ZiplineLab.RADIUS, ZiplineLab.TRACK, displacement), false);
+				leftMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
+				rightMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
 			}
 		}
 	}

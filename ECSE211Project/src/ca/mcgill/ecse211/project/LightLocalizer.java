@@ -1,4 +1,4 @@
-package ca.mcgill.ecse211.lab5;
+package ca.mcgill.ecse211.project;
 /**
  * This class implements the Light Localization
  * @author Antonios Valkanas, Borui Tao
@@ -12,7 +12,7 @@ import lejos.robotics.SampleProvider;
 import lejos.hardware.Sound;
 
 public class LightLocalizer extends Thread {
-	private static final long CORRECTION_PERIOD = 11;
+	private static final long CORRECTION_PERIOD = 10;
 	private Odometer odometer;
 	private Navigation navigation;
 	private static EV3ColorSensor lightSensor = new EV3ColorSensor(LocalEV3.get().getPort("S4")); //setup light sensor
@@ -38,29 +38,29 @@ public class LightLocalizer extends Thread {
 		doLightLocalization();
 		while (navigation.isNavigating()) {
 		}
-		switch (ZiplineLab.cornerCounter) {
+		switch (CaptureFlag.cornerCounter) {
 		case 0:
-			odometer.setX(ZiplineLab.CORNERS[0][0]*ZiplineLab.SQUARE_LENGTH);
-			odometer.setY(ZiplineLab.CORNERS[0][1]*ZiplineLab.SQUARE_LENGTH);
-			odometer.setTheta(ZiplineLab.CORNERS[0][2]);
+			odometer.setX(CaptureFlag.CORNERS[0][0]*CaptureFlag.SQUARE_LENGTH);
+			odometer.setY(CaptureFlag.CORNERS[0][1]*CaptureFlag.SQUARE_LENGTH);
+			odometer.setTheta(CaptureFlag.CORNERS[0][2]);
 			System.out.println("         set 0!");
 			break;
 		case 1:
-			odometer.setX(ZiplineLab.CORNERS[1][0]*ZiplineLab.SQUARE_LENGTH);
-			odometer.setY(ZiplineLab.CORNERS[1][1]*ZiplineLab.SQUARE_LENGTH);
-			odometer.setTheta(ZiplineLab.CORNERS[1][2]);
+			odometer.setX(CaptureFlag.CORNERS[1][0]*CaptureFlag.SQUARE_LENGTH);
+			odometer.setY(CaptureFlag.CORNERS[1][1]*CaptureFlag.SQUARE_LENGTH);
+			odometer.setTheta(CaptureFlag.CORNERS[1][2]);
 			System.out.println("         set 1!");
 			break;
 		case 2:
-			odometer.setX(ZiplineLab.CORNERS[2][0]*ZiplineLab.SQUARE_LENGTH);
-			odometer.setY(ZiplineLab.CORNERS[2][1]*ZiplineLab.SQUARE_LENGTH);
-			odometer.setTheta(ZiplineLab.CORNERS[2][2]);
+			odometer.setX(CaptureFlag.CORNERS[2][0]*CaptureFlag.SQUARE_LENGTH);
+			odometer.setY(CaptureFlag.CORNERS[2][1]*CaptureFlag.SQUARE_LENGTH);
+			odometer.setTheta(CaptureFlag.CORNERS[2][2]);
 			System.out.println("         set 2!");
 			break;
 		case 3:
-			odometer.setX(ZiplineLab.CORNERS[3][0]*ZiplineLab.SQUARE_LENGTH);
-			odometer.setY(ZiplineLab.CORNERS[3][1]*ZiplineLab.SQUARE_LENGTH);
-			odometer.setTheta(ZiplineLab.CORNERS[3][2]);
+			odometer.setX(CaptureFlag.CORNERS[3][0]*CaptureFlag.SQUARE_LENGTH);
+			odometer.setY(CaptureFlag.CORNERS[3][1]*CaptureFlag.SQUARE_LENGTH);
+			odometer.setTheta(CaptureFlag.CORNERS[3][2]);
 			System.out.println("         set 3!");
 			break;
 		} 
