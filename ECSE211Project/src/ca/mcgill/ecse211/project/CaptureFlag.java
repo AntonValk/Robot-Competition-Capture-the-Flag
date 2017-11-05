@@ -201,15 +201,20 @@ public class CaptureFlag {
 		}
 		
 		if (TEAM_NUMBER == redTeam){
-			odometer.setX(sr_ll_x);
-			odometer.setY(sr_ur_y);
-			odometer.setTheta(90);
+			odometer.setX(sr_ll_x*SQUARE_LENGTH);
+			odometer.setY(sr_ur_y*SQUARE_LENGTH);
+			odometer.setTheta(CORNERS[redCorner-1][2]);
 			
-			//TODO:shadow crossing
+			//shadow crossing
+			na.raphTravelTo(sh_ll_x*SQUARE_LENGTH,(sh_ll_y*SQUARE_LENGTH + 0.5*SQUARE_LENGTH));
+			na.raphTravelTo((sh_ur_x-0.5)*SQUARE_LENGTH, (sh_ur_y-0.5)*SQUARE_LENGTH);
+			na.raphTravelTo((sv_ll_x+ 0.5*SQUARE_LENGTH), sv_ll_y);
+			//GO BACK TO START ZONE
+			na.raphTravelTo(sg_ur_x*SQUARE_LENGTH, sg_ur_y*SQUARE_LENGTH);
 			
 			//TODO:search for flag
 			
-			na.travelTo(zo_g_x, zo_g_y);
+			na.travelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
 			while(na.isNavigating()){
 				
 			}
@@ -218,19 +223,19 @@ public class CaptureFlag {
 			while(na.isNavigating()){
 				
 			}
-			odometer.setX(zc_r_x);
-			odometer.setY(zc_r_y);
+			odometer.setX(zc_r_x*SQUARE_LENGTH);
+			odometer.setY(zc_r_y*SQUARE_LENGTH);
 			odometer.setTheta(-Math.atan((4/5)*360.0/(2*Math.PI)));
 			
-			na.travelTo(sr_ll_x, sr_ur_y);
+			na.travelTo(sr_ll_x*SQUARE_LENGTH, sr_ur_y*SQUARE_LENGTH);
 			
 		}
 		else if(TEAM_NUMBER == greenTeam){
-			odometer.setX(sg_ll_x);
-			odometer.setY(sg_ur_y);
-			odometer.setTheta(-90);
+			odometer.setX(sg_ll_x*SQUARE_LENGTH);
+			odometer.setY(sg_ur_y*SQUARE_LENGTH);
+			odometer.setTheta(CORNERS[greenCorner-1][2]);
 			
-			na.travelTo(zo_g_x, zo_g_y);
+			na.travelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
 			while(na.isNavigating()){
 				
 			}
@@ -239,24 +244,26 @@ public class CaptureFlag {
 			while(na.isNavigating()){
 				
 			}
-			odometer.setX(zc_r_x);
-			odometer.setY(zc_r_y);
+			odometer.setX(zc_r_x*SQUARE_LENGTH);
+			odometer.setY(zc_r_y*SQUARE_LENGTH);
 			odometer.setTheta(-Math.atan((4/5)*360.0/(2*Math.PI)));
 			
-			//TODO:search for flag
+			//search for flag
 			
 			Sound.playNote(Sound.FLUTE, 440, 250);
 			Sound.playNote(Sound.FLUTE, 440, 250);
 			Sound.playNote(Sound.FLUTE, 440, 250);
 			
 			//TODO:shadow crossing
-			na.travelTo(sg_ll_x, sg_ur_y);
+			//cross shallow
+    		na.raphTravelTo(sh_ll_x*SQUARE_LENGTH,(sh_ll_y*SQUARE_LENGTH + 0.5*SQUARE_LENGTH));
+			na.raphTravelTo((sh_ur_x-0.5)*SQUARE_LENGTH, (sh_ur_y-0.5)*SQUARE_LENGTH);
+			na.raphTravelTo((sv_ll_x+ 0.5*SQUARE_LENGTH), sv_ll_y);
+			//GO BACK TO START ZONE
+			na.raphTravelTo(sg_ur_x*SQUARE_LENGTH, sg_ur_y*SQUARE_LENGTH);
+			
+			na.travelTo(sg_ll_x*SQUARE_LENGTH, sg_ur_y*SQUARE_LENGTH);
 		}
-
-		//hardcode
-		//	odometer.setX(xcCounter*SQUARE_LENGTH+10);
-		//odometer.setY(ycCounter*SQUARE_LENGTH);
-		na.doZipline(3*ZIPLENGTH);
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 	}
