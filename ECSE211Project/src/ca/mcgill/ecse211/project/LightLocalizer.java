@@ -33,37 +33,7 @@ public class LightLocalizer extends Thread {
 	}
 	
 	public void run(){
-		// run method
-
 		doLightLocalization();
-		while (navigation.isNavigating()) {
-		}
-		switch (CaptureFlag.cornerCounter) {
-		case 0:
-			odometer.setX(CaptureFlag.CORNERS[0][0]*CaptureFlag.SQUARE_LENGTH);
-			odometer.setY(CaptureFlag.CORNERS[0][1]*CaptureFlag.SQUARE_LENGTH);
-			odometer.setTheta(CaptureFlag.CORNERS[0][2]);
-			System.out.println("         set 0!");
-			break;
-		case 1:
-			odometer.setX(CaptureFlag.CORNERS[1][0]*CaptureFlag.SQUARE_LENGTH);
-			odometer.setY(CaptureFlag.CORNERS[1][1]*CaptureFlag.SQUARE_LENGTH);
-			odometer.setTheta(CaptureFlag.CORNERS[1][2]);
-			System.out.println("         set 1!");
-			break;
-		case 2:
-			odometer.setX(CaptureFlag.CORNERS[2][0]*CaptureFlag.SQUARE_LENGTH);
-			odometer.setY(CaptureFlag.CORNERS[2][1]*CaptureFlag.SQUARE_LENGTH);
-			odometer.setTheta(CaptureFlag.CORNERS[2][2]);
-			System.out.println("         set 2!");
-			break;
-		case 3:
-			odometer.setX(CaptureFlag.CORNERS[3][0]*CaptureFlag.SQUARE_LENGTH);
-			odometer.setY(CaptureFlag.CORNERS[3][1]*CaptureFlag.SQUARE_LENGTH);
-			odometer.setTheta(CaptureFlag.CORNERS[3][2]);
-			System.out.println("         set 3!");
-			break;
-		} 
 	}
 
 	public void doLightLocalization() {
