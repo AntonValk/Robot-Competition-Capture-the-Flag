@@ -35,6 +35,7 @@ public class CaptureFlag {
 
 	private static UltrasonicLocalizer ultraLoc;
 	private static LightLocalizer lightLoc;
+	public static float lightValue;
 
 	//static values
 	public static final int FORWARD_SPEED = 140;		  // the speed at which the robot is traveling straight
@@ -145,7 +146,10 @@ public class CaptureFlag {
 		SampleProvider usDistance = ultrasonicSensor.getMode("Distance");	// usDistance provides samples from this instance
 		float[] usData = new float[1];		// usData is the buffer in which data are returned
 		UltrasonicPoller usPoller = null;									// the selected controller on each cycle
-
+		
+		//two classes to perform wall following on the flags and detect the color of each one.
+		BangBangController bb = new BangBangController(5,1,FORWARD_SPEED,ROTATE_SPEED,leftMotor,rightMotor);
+		LightSensor ls = new LightSensor();
 
 		final TextLCD t = LocalEV3.get().getTextLCD();
 		Odometer odometer = new Odometer(leftMotor, rightMotor);
@@ -156,7 +160,7 @@ public class CaptureFlag {
 		odometer.start();
 		OdometryDisplay od = new OdometryDisplay(odometer, t,ultraLoc);
 		od.start();
-		usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc);
+		usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc, bb);
 
 		usPoller.start();
 		ultraLoc.start();
@@ -212,7 +216,18 @@ public class CaptureFlag {
 			//GO BACK TO START ZONE
 			na.raphTravelTo(sg_ur_x*SQUARE_LENGTH, sg_ur_y*SQUARE_LENGTH);
 			
-			//TODO:search for flag
+			//search for flag
+			ls.start();
+			bb.start();
+			while(true){
+				if(lightValue == or){
+					Sound.playNote(Sound.FLUTE, 440, 250);
+					Sound.playNote(Sound.FLUTE, 440, 250);
+					Sound.playNote(Sound.FLUTE, 440, 250);
+					break;
+				}
+			}
+			
 			
 			na.travelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
 			while(na.isNavigating()){
@@ -249,6 +264,16 @@ public class CaptureFlag {
 			odometer.setTheta(-Math.atan((4/5)*360.0/(2*Math.PI)));
 			
 			//search for flag
+			ls.start();
+			bb.start();
+			while(true){
+				if(lightValue == og){
+					Sound.playNote(Sound.FLUTE, 440, 250);
+					Sound.playNote(Sound.FLUTE, 440, 250);
+					Sound.playNote(Sound.FLUTE, 440, 250);
+					break;
+				}
+			}
 			
 			Sound.playNote(Sound.FLUTE, 440, 250);
 			Sound.playNote(Sound.FLUTE, 440, 250);
