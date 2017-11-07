@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project;
 
 /**
+ * Odometry Display class
  * @author Antonios Valkanas, Borui Tao
  * @version 1.0
  * 
@@ -8,20 +9,27 @@ package ca.mcgill.ecse211.project;
 
 import lejos.hardware.lcd.TextLCD;
 
+/**
+ * Displays the values that the odometer updates.
+ */
 public class OdometryDisplay extends Thread {
 	private static final long DISPLAY_PERIOD = 250;
 	private Odometer odometer;
 	private TextLCD t;
 	private UltrasonicLocalizer ul;
 
-	// constructor
+	/**
+	 * The constructor for the odometry display that sets the odometer, the text lcd and the US localizer
+	 */
 	public OdometryDisplay(Odometer odometer, TextLCD t, UltrasonicLocalizer ul) {
 		this.odometer = odometer;
 		this.t = t;
 		this.ul = ul;
 	}
 
-	// run method (required for Thread)
+	/**
+	 * The method runs in a thread and keeps updating the robot's screen
+	 */
 	public void run() {
 		long displayStart, displayEnd;
 		double[] position = new double[3];
@@ -57,6 +65,12 @@ public class OdometryDisplay extends Thread {
 		}
 	}
 
+	/**
+	 * The methods formats an number (double) into a String.
+	 * @param x			the number to format
+	 * @param places	the number of decimals to add 
+	 * @return			the String of the number.
+	 */
 	private static String formattedDoubleToString(double x, int places) {
 		String result = "";
 		String stack = "";

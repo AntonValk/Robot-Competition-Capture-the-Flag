@@ -1,14 +1,17 @@
 package ca.mcgill.ecse211.project;
 
-/** This class takes care of the robot navigation. It controls the movement by
- * 	implementing movement, turning, distance & angle methods.
- * 	@author Antonios Valkanas, Borui Tao
+/** 
+ * Navigation class
+ * 	@author Raphael Di Piazza
  * 	@version 1.0
  * 
  */
-
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
+/** 
+ * 	This class takes care of the robot navigation. It controls the movement by
+ * 	implementing movement, turning, distance & angle methods.
+ */
 public class Navigation{
 	//variables only set once
 	private Odometer odometer; 
@@ -25,7 +28,9 @@ public class Navigation{
 	private double nowTheta;
 	private double thetaObj;
 
-	//constructor
+	/**
+	 * The constructor for the Navigation that sets the 3 motors (left, right and zipline) as well as the odometer.
+	 */
 	public Navigation(Odometer odometer,EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, EV3LargeRegulatedMotor ziplineMotor) {
 		this.odometer = odometer;
 		this.leftMotor = leftMotor;
@@ -43,7 +48,6 @@ public class Navigation{
 	 * @param  x   The x-coordinate of the destination point 
 	 * @param  y   The y-coordinate of the destination point 
 	 */
-	
 	void travelTo(double x, double y){
 
 		isNavigating=true;
@@ -68,6 +72,12 @@ public class Navigation{
 		isNavigating=false;
 	}
 	
+	/**
+	 * This method performs the Zipline traversal. by making the robot gowing towards the start point.
+	 * It then starts the zipline motor to traverse the river.
+	 * 
+	 * @param  distance		the total length of the zipline.
+	 */
 	void doZipline(double distance){
 		//drive forward
 		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
@@ -169,7 +179,11 @@ public class Navigation{
 	}
 	
 	
-	//Raphael's methods
+	/**
+	 * This method makes the robot navigate to a set of coordinates.
+	 * @param x		the x coordinate where the robot must go.
+	 * @param y		the y coordinate where the robot must go.
+	 */
 	public void raphTravelTo(double x, double y){
 		//get the current values for x, y and theta
 		nowX = odometer.getX();
@@ -214,6 +228,10 @@ public class Navigation{
 	    rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance), false);
 	}
 	
+	/**
+	 * This method makes the robot turn theta degrees. It uses a different method from the one above.
+	 * @param theta 		angle of rotation
+	 */
 	public void raphTurnTo(double theta){
 		nowTheta = odometer.getTheta();
 		//get the displacement (difference between the current angle and where you want to go.

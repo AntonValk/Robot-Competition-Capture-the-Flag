@@ -11,6 +11,9 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
 import lejos.hardware.Sound;
 
+/**
+ * The light localization uses the color sensor to know where the robot is from the origin.
+ */
 public class LightLocalizer extends Thread {
 	private static final long CORRECTION_PERIOD = 10;
 	private Odometer odometer;
@@ -22,7 +25,10 @@ public class LightLocalizer extends Thread {
 	private int lineCounter; // keeps track of the amount of lines crossed
 	private final double DISTANCE = 13; //distance from light sensor to center of rotation
 
-	// constructor
+	/**
+	 * The constructor for the class that sets the odometer and navigation objects as well as the fields utilized
+	 * to update the sensor's data.
+	 */
 	public LightLocalizer(Odometer odometer, Navigation navigation) {
 		this.navigation = navigation;
 		this.odometer = odometer;
@@ -32,10 +38,21 @@ public class LightLocalizer extends Thread {
 
 	}
 	
+	/** 
+	 * This method runs the LightLocalization in a separate thread.
+	 * It performs the light localization using the helper method.
+	 * 
+	 */
 	public void run(){
 		doLightLocalization();
 	}
 
+	/** 
+	 * This method performs the light localization. It will make a 360 degrees turn and capture the angles at which
+	 * it detects the 4 axis (x-,y+,x+,y-). Based on these values, it computes x and y and travels to the origin.
+	 * The robot then orientates to the 0 degrees direction.
+	 * 
+	 */
 	public void doLightLocalization() {
 		long correctionStart = 0;	//used to keep track of correction period
 		long correctionEnd;			//used to keep track of correction period

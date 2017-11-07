@@ -1,10 +1,10 @@
 package ca.mcgill.ecse211.project;
 
-import lejos.hardware.motor.*;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 public class BangBangController extends Thread {
+	
 	private static final int FILTER_OUT = 20;
-
 	private final int bandCenter;
 	private final int bandwidth;
 	private final int motorLow;
@@ -14,8 +14,16 @@ public class BangBangController extends Thread {
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
 
+	/**
+	 * The constructor initializes the values for all the parameters of the wall following and starts the motors.
+	 * @param bandCenter	The distance from the wall
+	 * @param bandwidth		The error margin
+	 * @param motorLow		The low motor speed
+	 * @param motorHigh		The high motor speed
+	 * @param leftMotor		The pointer to the left motor
+	 * @param rightMotor	The pointer to the right motor
+	 */
 	public BangBangController(int bandCenter, int bandwidth, int motorLow, int motorHigh, EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
-		// Default Constructor
 		this.bandCenter = bandCenter;
 		this.bandwidth = bandwidth;
 		this.motorLow = motorLow;
@@ -23,12 +31,15 @@ public class BangBangController extends Thread {
 		this.filterControl = 0;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
-		this.leftMotor.setSpeed(motorHigh); // Start robot moving forward
+		this.leftMotor.setSpeed(motorHigh);
 		this.rightMotor.setSpeed(motorHigh);
 		this.leftMotor.forward();
 		this.rightMotor.forward();
 	}
 
+	/**
+	 * The method runs in a thread to allow the wall following as well as the flag recognition (with light sensor) to be performed in parallel.
+	 */
 	public void run() {
 		float forwardLimit = 180;
 		float backwardLimit = 2;
@@ -63,6 +74,10 @@ public class BangBangController extends Thread {
 		} 
 	}
 
+	/**
+	 * This method is called outside this class to set the value of the distance from the wall. A filter is applied.
+	 * @param distance
+	 */
 	public void processUSData(int distance) {
 		
 		// rudimentary filter - toss out invalid samples corresponding to null
@@ -86,7 +101,12 @@ public class BangBangController extends Thread {
 		}
 	}
 
+	/**
+	 * This method returns the distance from the wall (to be displayed on the screen for example).
+	 * @return	the distance from the wall.
+	 */
 	public int readUSDistance() {
 		return this.distance;
 	}
+
 }
