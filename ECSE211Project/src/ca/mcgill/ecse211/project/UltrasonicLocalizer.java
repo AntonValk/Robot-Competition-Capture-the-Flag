@@ -9,7 +9,7 @@ package ca.mcgill.ecse211.project;
 
 import lejos.hardware.Sound;
 
-public class UltrasonicLocalizer extends Thread{
+public class UltrasonicLocalizer{
 	private int choice;				// 0 for rising edge, 1 for falling edge
 	private Navigation na;
 	private Odometer odometer;
@@ -53,7 +53,7 @@ public class UltrasonicLocalizer extends Thread{
 	/** 
 	 * This method runs the thread 
 	 */
-	public void run(){
+	public void doUltrasonicLocalization(){
 		na.makeTurn(360);
 
 		while (distance == 1){

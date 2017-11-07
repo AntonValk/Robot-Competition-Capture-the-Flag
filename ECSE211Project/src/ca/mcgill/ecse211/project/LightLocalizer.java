@@ -11,7 +11,7 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
 import lejos.hardware.Sound;
 
-public class LightLocalizer extends Thread {
+public class LightLocalizer{
 	private static final long CORRECTION_PERIOD = 10;
 	private Odometer odometer;
 	private Navigation navigation;
@@ -30,10 +30,6 @@ public class LightLocalizer extends Thread {
 		prevLightValue = lightValue[0];
 		lineCounter = 0;
 
-	}
-	
-	public void run(){
-		doLightLocalization();
 	}
 
 	public void doLightLocalization() {

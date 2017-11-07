@@ -35,7 +35,6 @@ public class CaptureFlag {
 
 	private static UltrasonicLocalizer ultraLoc;
 	private static LightLocalizer lightLoc;
-	public static float lightValue;
 
 	//static values
 	public static final int FORWARD_SPEED = 140;		  // the speed at which the robot is traveling straight
@@ -146,10 +145,7 @@ public class CaptureFlag {
 		SampleProvider usDistance = ultrasonicSensor.getMode("Distance");	// usDistance provides samples from this instance
 		float[] usData = new float[1];		// usData is the buffer in which data are returned
 		UltrasonicPoller usPoller = null;									// the selected controller on each cycle
-		
-		//two classes to perform wall following on the flags and detect the color of each one.
-		BangBangController bb = new BangBangController(5,1,FORWARD_SPEED,ROTATE_SPEED,leftMotor,rightMotor);
-		LightSensor ls = new LightSensor();
+
 
 		final TextLCD t = LocalEV3.get().getTextLCD();
 		Odometer odometer = new Odometer(leftMotor, rightMotor);
@@ -160,18 +156,13 @@ public class CaptureFlag {
 		odometer.start();
 		OdometryDisplay od = new OdometryDisplay(odometer, t,ultraLoc);
 		od.start();
-		usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc, bb);
+		usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc);
 
 		usPoller.start();
-		ultraLoc.start();
-
-		try {
-			ultraLoc.join();
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		ultraLoc.doUltrasonicLocalization();
+		while(na.isNavigating()){
 		}
-
+		
 		try { 
 			Thread.sleep(500);
 		} catch (Exception e) {
@@ -193,41 +184,37 @@ public class CaptureFlag {
 		//Wait until the robot stops moving, start the lightLocalization thread
 		while(na.isNavigating()){
 		}
-		lightLoc.start();
+		lightLoc.doLightLocalization();
 		while(na.isNavigating()){
 		}
 
-		try {
-			lightLoc.join();
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
 		if (TEAM_NUMBER == redTeam){
-			odometer.setX(sr_ll_x*SQUARE_LENGTH);
-			odometer.setY(sr_ur_y*SQUARE_LENGTH);
+			odometer.setX(CORNERS[redCorner-1][0]*SQUARE_LENGTH);
+			odometer.setY(CORNERS[redCorner-1][1]*SQUARE_LENGTH);
 			odometer.setTheta(CORNERS[redCorner-1][2]);
+			
+			na.travelTo(zo_r_x*SQUARE_LENGTH, CORNERS[redCorner-1][1]*SQUARE_LENGTH);
+			na.travelTo(zo_r_x*SQUARE_LENGTH, zo_r_y*SQUARE_LENGTH);
+
+			na.raphTravelTo((sh_ll_x - 1)*SQUARE_LENGTH,(sh_ll_y + 1)*SQUARE_LENGTH);
+    		lightLoc.doLightLocalization();
+			na.makeTurn(90);
+			odometer.setX((sh_ll_x - 1)*SQUARE_LENGTH);
+			odometer.setY((sh_ll_y + 1)*SQUARE_LENGTH);
 			
 			//shadow crossing
 			na.raphTravelTo(sh_ll_x*SQUARE_LENGTH,(sh_ll_y*SQUARE_LENGTH + 0.5*SQUARE_LENGTH));
 			na.raphTravelTo((sh_ur_x-0.5)*SQUARE_LENGTH, (sh_ur_y-0.5)*SQUARE_LENGTH);
 			na.raphTravelTo((sv_ll_x+ 0.5*SQUARE_LENGTH), sv_ll_y);
 			//GO BACK TO START ZONE
+			na.raphTravelTo((sv_ll_x+ 1)*SQUARE_LENGTH, (sv_ll_y-1)*SQUARE_LENGTH);
+    		lightLoc.doLightLocalization();
+    		na.makeTurn(90);
+			odometer.setX((sh_ll_x + 1)*SQUARE_LENGTH);
+			odometer.setY((sh_ll_y - 1)*SQUARE_LENGTH);
+    		
 			na.raphTravelTo(sg_ur_x*SQUARE_LENGTH, sg_ur_y*SQUARE_LENGTH);
-			
-			//search for flag
-			ls.start();
-			bb.start();
-			while(true){
-				if(lightValue == or){
-					Sound.playNote(Sound.FLUTE, 440, 250);
-					Sound.playNote(Sound.FLUTE, 440, 250);
-					Sound.playNote(Sound.FLUTE, 440, 250);
-					break;
-				}
-			}
-			
+			//TODO:search for flag
 			
 			na.travelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
 			while(na.isNavigating()){
@@ -242,18 +229,34 @@ public class CaptureFlag {
 			odometer.setY(zc_r_y*SQUARE_LENGTH);
 			odometer.setTheta(-Math.atan((4/5)*360.0/(2*Math.PI)));
 			
-			na.travelTo(sr_ll_x*SQUARE_LENGTH, sr_ur_y*SQUARE_LENGTH);
+			na.raphTravelTo(zo_r_x*SQUARE_LENGTH, zo_r_y*SQUARE_LENGTH);
+			lightLoc.doLightLocalization();
+			na.makeTurn(90);
+			odometer.setX(zo_r_x*SQUARE_LENGTH);
+			odometer.setY(zo_r_y*SQUARE_LENGTH);
+			odometer.setTheta(0);
 			
+			na.travelTo(zo_r_y*SQUARE_LENGTH, CORNERS[redCorner-1][1]*SQUARE_LENGTH);
+
+			na.raphTravelTo(CORNERS[redCorner-1][0]*SQUARE_LENGTH, CORNERS[redCorner-1][1]*SQUARE_LENGTH);			
 		}
 		else if(TEAM_NUMBER == greenTeam){
-			odometer.setX(sg_ll_x*SQUARE_LENGTH);
-			odometer.setY(sg_ur_y*SQUARE_LENGTH);
+			odometer.setX(CORNERS[greenCorner-1][0]*SQUARE_LENGTH);
+			odometer.setY(CORNERS[greenCorner-1][1]*SQUARE_LENGTH);
 			odometer.setTheta(CORNERS[greenCorner-1][2]);
 			
-			na.travelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
+			na.raphTravelTo(CORNERS[greenCorner-1][0]*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
+			na.raphTravelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
+			lightLoc.doLightLocalization();
 			while(na.isNavigating()){
 				
 			}
+			na.makeTurn(180);
+			odometer.setX(zo_g_x*SQUARE_LENGTH);
+			odometer.setY(zo_g_y*SQUARE_LENGTH);
+			odometer.setTheta(0);
+			
+			na.raphTravelTo(zc_g_x*SQUARE_LENGTH, zc_g_y*SQUARE_LENGTH);
 			na.raphTurnTo(-Math.atan((4/5)*360.0/(2*Math.PI)));
 			na.doZipline(3*ZIPLENGTH);
 			while(na.isNavigating()){
@@ -263,31 +266,40 @@ public class CaptureFlag {
 			odometer.setY(zc_r_y*SQUARE_LENGTH);
 			odometer.setTheta(-Math.atan((4/5)*360.0/(2*Math.PI)));
 			
+			na.raphTravelTo(zo_r_x*SQUARE_LENGTH, zo_r_y*SQUARE_LENGTH);
+			lightLoc.doLightLocalization();
+			na.makeTurn(90);
+			odometer.setX(zo_r_x*SQUARE_LENGTH);
+			odometer.setY(zo_r_y*SQUARE_LENGTH);
+			odometer.setTheta(0);
+			
 			//search for flag
-			ls.start();
-			bb.start();
-			while(true){
-				if(lightValue == og){
-					Sound.playNote(Sound.FLUTE, 440, 250);
-					Sound.playNote(Sound.FLUTE, 440, 250);
-					Sound.playNote(Sound.FLUTE, 440, 250);
-					break;
-				}
-			}
 			
 			Sound.playNote(Sound.FLUTE, 440, 250);
 			Sound.playNote(Sound.FLUTE, 440, 250);
 			Sound.playNote(Sound.FLUTE, 440, 250);
 			
-			//TODO:shadow crossing
+    		na.raphTravelTo((sh_ll_x - 1)*SQUARE_LENGTH,(sh_ll_y + 1)*SQUARE_LENGTH);
+    		lightLoc.doLightLocalization();
+			na.makeTurn(90);
+			odometer.setX((sh_ll_x - 1)*SQUARE_LENGTH);
+			odometer.setY((sh_ll_y + 1)*SQUARE_LENGTH);
+			
 			//cross shallow
     		na.raphTravelTo(sh_ll_x*SQUARE_LENGTH,(sh_ll_y*SQUARE_LENGTH + 0.5*SQUARE_LENGTH));
 			na.raphTravelTo((sh_ur_x-0.5)*SQUARE_LENGTH, (sh_ur_y-0.5)*SQUARE_LENGTH);
-			na.raphTravelTo((sv_ll_x+ 0.5*SQUARE_LENGTH), sv_ll_y);
+			na.raphTravelTo((sv_ll_x+ 0.5)*SQUARE_LENGTH, sv_ll_y*SQUARE_LENGTH);
 			//GO BACK TO START ZONE
+			
+			na.raphTravelTo((sv_ll_x+ 1)*SQUARE_LENGTH, (sv_ll_y-1)*SQUARE_LENGTH);
+    		lightLoc.doLightLocalization();
+    		na.makeTurn(90);
+			odometer.setX((sh_ll_x + 1)*SQUARE_LENGTH);
+			odometer.setY((sh_ll_y - 1)*SQUARE_LENGTH);
+    		
 			na.raphTravelTo(sg_ur_x*SQUARE_LENGTH, sg_ur_y*SQUARE_LENGTH);
 			
-			na.travelTo(sg_ll_x*SQUARE_LENGTH, sg_ur_y*SQUARE_LENGTH);
+			na.raphTravelTo(CORNERS[greenCorner-1][0]*SQUARE_LENGTH, CORNERS[greenCorner-1][1]*SQUARE_LENGTH);
 		}
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
