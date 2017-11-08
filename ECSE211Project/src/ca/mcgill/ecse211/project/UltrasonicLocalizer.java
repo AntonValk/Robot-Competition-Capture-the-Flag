@@ -1,7 +1,7 @@
 package ca.mcgill.ecse211.project;
 
 /** 
- * This class implements the ultrasonic localization.
+ * US localization class
  * @author Antonios Valkanas, Borui Tao
  * @version 1.0
  *  
@@ -10,6 +10,10 @@ package ca.mcgill.ecse211.project;
 import lejos.hardware.Sound;
 
 public class UltrasonicLocalizer{
+/**
+ * This class uses the ultrasonic sensor as well as falling / rising edge routine to know what is the 0 degrees direction.
+ */
+
 	private int choice;				// 0 for rising edge, 1 for falling edge
 	private Navigation na;
 	private Odometer odometer;
@@ -27,7 +31,9 @@ public class UltrasonicLocalizer{
 	private double locationY;	// current Y
 	private double locationTheta;
 
-	//This is the constructor
+	/**
+	 * The constructor for this class sets the navigation and odometer objects.
+	 */
 	public UltrasonicLocalizer(int choice, Navigation navigation, Odometer odometer) {
 		this.na = navigation;
 		this.odometer = odometer;

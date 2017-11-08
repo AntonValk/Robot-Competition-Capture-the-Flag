@@ -21,13 +21,16 @@ public class UltrasonicPoller extends Thread {
 	  private UltrasonicLocalizer ul;
 	  private float[] usData;
 
-	  public UltrasonicPoller(SampleProvider us, float[] usData, UltrasonicLocalizer ul) {
+	  /**
+	   * The constructor sets the objects used to updte the sensor's data.
+	   */
+	  public UltrasonicPoller(SampleProvider us, float[] usData, UltrasonicLocalizer ul, BangBangController bb) {
 	    this.us = us;
 	    this.ul = ul;
 	    this.usData = usData;
 	  }
 
-	  /*
+	  /**
 	   * Sensors now return floats using a uniform protocol. Need to convert US result to an integer
 	   * [0,255] (non-Javadoc)
 	   * 

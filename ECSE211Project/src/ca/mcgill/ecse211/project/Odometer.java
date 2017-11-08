@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project;
 
 /**
+ * Odometer class
  * @author Antonios Valkanas, Borui Tao
  * @version 1.0
  * 
@@ -8,6 +9,11 @@ package ca.mcgill.ecse211.project;
 
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
+
+/**
+ * The odometer takes care of updating the values for X, Y and Theta based on the wheel
+ * motors tacho count.
+ */
 public class Odometer extends Thread {
 	  // robot position
 	  private double x;
@@ -23,7 +29,9 @@ public class Odometer extends Thread {
 
 	  private Object lock; /*lock object for mutual exclusion*/
 
-	  // default constructor
+	  /**
+	   * The constructor for the odometer which sets the two motors (left and right) and resets the values fr x,y,theta and tacho counts.
+	   */
 	  public Odometer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
 	    this.leftMotor = leftMotor;
 	    this.rightMotor = rightMotor;
@@ -194,6 +202,7 @@ public class Odometer extends Thread {
 	  }
 
 	  /**
+	   * This method returns the left motor tacho count.
 	   * @return 		the leftMotorTachoCount
 	   */
 	  public int getLeftMotorTachoCount() {
@@ -201,6 +210,7 @@ public class Odometer extends Thread {
 	  }
 
 	  /**
+	   * This method sets the left motor tacho count.
 	   * @param leftMotorTachoCount			 the leftMotorTachoCount to set
 	   */
 	  public void setLeftMotorTachoCount(int leftMotorTachoCount) {
@@ -210,6 +220,7 @@ public class Odometer extends Thread {
 	  }
 
 	  /**
+	   * This method returns the right motor tacho count.
 	   * @return 		the rightMotorTachoCount
 	   */
 	  public int getRightMotorTachoCount() {
@@ -217,6 +228,7 @@ public class Odometer extends Thread {
 	  }
 
 	  /**
+	   * This method sets the right motor tacho count.
 	   * @param rightMotorTachoCount 		the rightMotorTachoCount to set
 	   */
 	  public void setRightMotorTachoCount(int rightMotorTachoCount) {
