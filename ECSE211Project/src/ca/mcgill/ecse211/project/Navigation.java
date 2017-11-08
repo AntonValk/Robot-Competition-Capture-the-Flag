@@ -1,17 +1,14 @@
 package ca.mcgill.ecse211.project;
 
-/** 
- * Navigation class
- * 	@author Raphael Di Piazza
+/** This class takes care of the robot navigation. It controls the movement by
+ * 	implementing movement, turning, distance & angle methods.
+ * 	@author Antonios Valkanas, Borui Tao
  * 	@version 1.0
  * 
  */
+
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
-/** 
- * 	This class takes care of the robot navigation. It controls the movement by
- * 	implementing movement, turning, distance & angle methods.
- */
 public class Navigation{
 	//variables only set once
 	private Odometer odometer; 
@@ -28,56 +25,14 @@ public class Navigation{
 	private double nowTheta;
 	private double thetaObj;
 
-	/**
-	 * The constructor for the Navigation that sets the 3 motors (left, right and zipline) as well as the odometer.
-	 */
+	//constructor
 	public Navigation(Odometer odometer,EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, EV3LargeRegulatedMotor ziplineMotor) {
 		this.odometer = odometer;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
 		this.ziplineMotor = ziplineMotor;
 	} 
-
-	/**
-	 * This method makes the robot to travel to a specific location (x,y)
-	 * First it calculates the heading angle that the robot must face
-	 * Then it gets the minimum turning angle which the robot must turn to
-	 * Afterwards it calls the method makeCorrectedTurn() to turn to that angle.
-	 * Finally it calculates the traveling distance and travel to that distance.
-	 * 
-	 * @param  x   The x-coordinate of the destination point 
-	 * @param  y   The y-coordinate of the destination point 
-	 */
-	void travelTo(double x, double y){
-
-		isNavigating=true;
-
-		nowX = odometer.getX();
-		nowY = odometer.getY();
-		//calculate the angle we need to turn to
-		double theta1 = Math.atan((x-nowX)/(y-nowY))*360.0/(2*Math.PI);
-		if(x-nowX<0) theta1= 180.0 + theta1;
-		//turn to the proper angle
-		makeMinimumTurn(theta1);
-		
-		double travellingDis = Math.sqrt(Math.pow(x-nowX, 2) + Math.pow(y-nowY, 2));
-
-		//drive forward
-		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
-		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
-		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, travellingDis), true);
-		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, travellingDis), true);
-
-		//keep calling turnto and checking the distance
-		isNavigating=false;
-	}
 	
-	/**
-	 * This method performs the Zipline traversal. by making the robot gowing towards the start point.
-	 * It then starts the zipline motor to traverse the river.
-	 * 
-	 * @param  distance		the total length of the zipline.
-	 */
 	void doZipline(double distance){
 		//drive forward
 		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
@@ -94,35 +49,104 @@ public class Navigation{
 		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);
 	}
 	
+
+	//Raphael's methods
+	/**
+	 * This method makes the robot to travel to a specific location (x,y)
+	 * First it calculates the heading angle that the robot must face
+	 * Then it gets the minimum turning angle which the robot must turn to
+	 * Afterwards it calls the method makeCorrectedTurn() to turn to that angle.
+	 * Finally it calculates the traveling distance and travel to that distance.
+	 * 
+	 * @param  x   The x-coordinate of the destination point 
+	 * @param  y   The y-coordinate of the destination point 
+	 */
+	public void travelTo(double x, double y){
+		//get the current values for x, y and theta
+		nowX = odometer.getX();
+		nowY = odometer.getY();
+		nowTheta = odometer.getTheta();
+		double alpha;
+		//get the distance in cm for x and y
+		//x *= 30.48;
+		//y *= 30.48;
+		alpha = Math.atan(Math.abs(x-nowX)/Math.abs(y-nowY));//get the angle alpha 
+		alpha = (180*alpha)/(Math.PI);					//convert in degrees
+		//in this if conditions, it will get the real angle it has to go (from the "origin", the y axis)
+		if(y > nowY){
+			if(x < nowX){
+				thetaObj = 360 - alpha;
+			}else if(x > nowX){
+				thetaObj = alpha;
+			}else{
+				thetaObj = 0;
+			}
+		}else if(y < nowY){
+			if(x < nowX){
+				thetaObj = 180 + alpha;
+			}else if(x > nowX){
+				thetaObj = 180 - alpha;
+			}else{
+				thetaObj = 180;
+			}
+		}else if(x < nowX){ //here y = yCur
+			thetaObj = 270;
+		}else{ //here y = yCur and x > xCur
+			thetaObj = 90;
+		}
+		turnTo(thetaObj);//turn to this angle
+	    //calculate the distance the robot has to cover
+	    double distance = Math.sqrt(Math.pow(y-nowY,2) + Math.pow(x-nowX,2));
+	    ///rotate for this distance in cm'
+		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
+		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
+		
+		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance), true);
+	    rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance), false);
+	}
+	
+	public void turnTo(double theta){
+		nowTheta = odometer.getTheta();
+		//get the displacement (difference between the current angle and where you want to go.
+		double displacement = Math.abs(nowTheta - theta);
+		//turn accordingly, making sure it is the minimal angles
+		if (theta < nowTheta){
+			if(displacement < 180){
+				leftMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
+				rightMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
+			}else{
+				displacement = 360 - displacement;
+				leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
+				rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
+			}
+		}else{
+			if(displacement < 180){
+				leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
+				rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
+			}else{
+				displacement = 360 - displacement;
+				leftMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
+				rightMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
+			}
+		}
+	}
+	
 	/**
 	 * This method makes the robot turn theta degrees.
 	 * @param theta 		angle of rotation
 	 */
-	void makeTurn(double theta) {
+	void makeTurn(double theta, boolean isMin, boolean immediate) {
+		if (isMin){
+			 theta = ((theta % 360) + 360) % 360;
+			 if (theta >= 180) theta-=360;
+		}
 	    leftMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
 	    rightMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
 
 	    // Rotate to new angle
 	    leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, theta), true);
-	    rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, theta), true);
+	    rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, theta), true && immediate);
 	  }
-
-
-	/**
-	 * This method makes the robot turn using the minimal angle. 
-	 * The point is to avoid turns greater than 180 degrees by changing direction.
-	 * @param theta 		angle of rotation
-	 */
-	void makeMinimumTurn(double theta){
-		 theta = ((theta % 360) + 360) % 360;
-		 if (theta >= 180) theta-=360;
-		 leftMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
-		 rightMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
-
-		 // Rotate to new angle
-		 leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, theta), true);
-		 rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, theta), false);
-	}
 	
 	/**
 	 * This method return true if both motors are moving or the robot is traveling or is turning
@@ -176,86 +200,6 @@ public class Navigation{
 	 */
 	private static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
-	}
-	
-	
-	/**
-	 * This method makes the robot navigate to a set of coordinates.
-	 * @param x		the x coordinate where the robot must go.
-	 * @param y		the y coordinate where the robot must go.
-	 */
-	public void raphTravelTo(double x, double y){
-		//get the current values for x, y and theta
-		nowX = odometer.getX();
-		nowY = odometer.getY();
-		nowTheta = odometer.getTheta();
-		double alpha;
-		//get the distance in cm for x and y
-		//x *= 30.48;
-		//y *= 30.48;
-		alpha = Math.atan(Math.abs(x-nowX)/Math.abs(y-nowY));//get the angle alpha 
-		alpha = (180*alpha)/(Math.PI);					//convert in degrees
-		//in this if conditions, it will get the real angle it has to go (from the "origin", the y axis)
-		if(y > nowY){
-			if(x < nowX){
-				thetaObj = 360 - alpha;
-			}else if(x > nowX){
-				thetaObj = alpha;
-			}else{
-				thetaObj = 0;
-			}
-		}else if(y < nowY){
-			if(x < nowX){
-				thetaObj = 180 + alpha;
-			}else if(x > nowX){
-				thetaObj = 180 - alpha;
-			}else{
-				thetaObj = 180;
-			}
-		}else if(x < nowX){ //here y = yCur
-			thetaObj = 270;
-		}else{ //here y = yCur and x > xCur
-			thetaObj = 90;
-		}
-		raphTurnTo(thetaObj);//turn to this angle
-	    //calculate the distance the robot has to cover
-	    double distance = Math.sqrt(Math.pow(y-nowY,2) + Math.pow(x-nowX,2));
-	    ///rotate for this distance in cm'
-		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
-		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
-		
-		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance), true);
-	    rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance), false);
-	}
-	
-	/**
-	 * This method makes the robot turn theta degrees. It uses a different method from the one above.
-	 * @param theta 		angle of rotation
-	 */
-	public void raphTurnTo(double theta){
-		nowTheta = odometer.getTheta();
-		//get the displacement (difference between the current angle and where you want to go.
-		double displacement = Math.abs(nowTheta - theta);
-		//turn accordingly, making sure it is the minimal angles
-		if (theta < nowTheta){
-			if(displacement < 180){
-				leftMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
-				rightMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
-			}else{
-				displacement = 360 - displacement;
-				leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
-				rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
-			}
-		}else{
-			if(displacement < 180){
-				leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
-				rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
-			}else{
-				displacement = 360 - displacement;
-				leftMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
-				rightMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
-			}
-		}
 	}
 	
 }

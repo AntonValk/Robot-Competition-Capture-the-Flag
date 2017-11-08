@@ -1,7 +1,7 @@
 package ca.mcgill.ecse211.project;
 
 /** 
- * US localization class
+ * This class implements the ultrasonic localization.
  * @author Antonios Valkanas, Borui Tao
  * @version 1.0
  *  
@@ -10,10 +10,6 @@ package ca.mcgill.ecse211.project;
 import lejos.hardware.Sound;
 
 public class UltrasonicLocalizer{
-/**
- * This class uses the ultrasonic sensor as well as falling / rising edge routine to know what is the 0 degrees direction.
- */
-
 	private int choice;				// 0 for rising edge, 1 for falling edge
 	private Navigation na;
 	private Odometer odometer;
@@ -31,9 +27,7 @@ public class UltrasonicLocalizer{
 	private double locationY;	// current Y
 	private double locationTheta;
 
-	/**
-	 * The constructor for this class sets the navigation and odometer objects.
-	 */
+	//This is the constructor
 	public UltrasonicLocalizer(int choice, Navigation navigation, Odometer odometer) {
 		this.na = navigation;
 		this.odometer = odometer;
@@ -57,10 +51,10 @@ public class UltrasonicLocalizer{
 	}
 
 	/** 
-	 * This method runs the thread 
+	 * This method execute the ultrasonic localization
 	 */
 	public void doUltrasonicLocalization(){
-		na.makeTurn(360);
+		na.makeTurn(360, false, true);
 
 		while (distance == 1){
 
@@ -101,7 +95,7 @@ public class UltrasonicLocalizer{
 		}
 		//stop the motors and make it turn the opposite direction
 		na.motorStop();
-		na.makeTurn(-360);
+		na.makeTurn(-360, false, true);
 
 		try {
 			Thread.sleep(2000);
@@ -160,7 +154,7 @@ public class UltrasonicLocalizer{
 		}
 		//stop the motors and make it turn the opposite direction
 		na.motorStop();
-		na.makeTurn(-360);
+		na.makeTurn(-360, false, true);
 
 		try {
 			Thread.sleep(2000);
@@ -219,7 +213,7 @@ public class UltrasonicLocalizer{
 		correctedTheta += t;
 		correctedTheta = ((correctedTheta % 360) + 360) % 360;
 		odometer.setTheta(correctedTheta);	
-		na.makeMinimumTurn(-correctedTheta);
+		na.makeTurn(-correctedTheta, true, false);
 	}
 
 	/**

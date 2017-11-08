@@ -12,9 +12,6 @@ import lejos.robotics.SampleProvider;
 import lejos.hardware.Sound;
 
 public class LightLocalizer{
-/**
- * The light localization uses the color sensor to know where the robot is from the origin.
- */
 	private static final long CORRECTION_PERIOD = 10;
 	private Odometer odometer;
 	private Navigation navigation;
@@ -25,10 +22,7 @@ public class LightLocalizer{
 	private int lineCounter; // keeps track of the amount of lines crossed
 	private final double DISTANCE = 13; //distance from light sensor to center of rotation
 
-	/**
-	 * The constructor for the class that sets the odometer and navigation objects as well as the fields utilized
-	 * to update the sensor's data.
-	 */
+	// constructor
 	public LightLocalizer(Odometer odometer, Navigation navigation) {
 		this.navigation = navigation;
 		this.odometer = odometer;
@@ -39,11 +33,9 @@ public class LightLocalizer{
 	}
 
 	/** 
-	 * This method performs the light localization. It will make a 360 degrees turn and capture the angles at which
-	 * it detects the 4 axis (x-,y+,x+,y-). Based on these values, it computes x and y and travels to the origin.
-	 * The robot then orientates to the 0 degrees direction.
-	 * 
+	 * This method execute the light localization
 	 */
+	
 	public void doLightLocalization() {
 		long correctionStart = 0;	//used to keep track of correction period
 		long correctionEnd;			//used to keep track of correction period
@@ -51,7 +43,7 @@ public class LightLocalizer{
 		colorSensor.fetchSample(lightValue,0); 
 		prevLightValue = lightValue[0]; 
 
-		navigation.makeTurn(360);
+		navigation.makeTurn(360, false, true);
 
 		while (navigation.isNavigating()) {
 			correctionStart = System.currentTimeMillis();
@@ -118,7 +110,7 @@ public class LightLocalizer{
 		while (navigation.isNavigating()) {
 		}
 		// apply angle correction - according to the tutorial formula
-		navigation.makeMinimumTurn(-odometer.getTheta() + thetaYminus - 270 - thetaY); //I think this will take care of theta, if the test fails I will implement the math from tutorial that I proved on your notebook yesterday
+		navigation.makeTurn((-odometer.getTheta() + thetaYminus - 270 - thetaY), true, false); //I think this will take care of theta, if the test fails I will implement the math from tutorial that I proved on your notebook yesterday
 	}
 	
 }
