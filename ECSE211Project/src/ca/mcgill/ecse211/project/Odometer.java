@@ -31,6 +31,8 @@ public class Odometer extends Thread {
 
 	  /**
 	   * The constructor for the odometer which sets the two motors (left and right) and resets the values fr x,y,theta and tacho counts.
+	   * @param	leftMotor	pointer to the left motor
+	   * @param rightMotor	pointer to the right motor
 	   */
 	  public Odometer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
 	    this.leftMotor = leftMotor;

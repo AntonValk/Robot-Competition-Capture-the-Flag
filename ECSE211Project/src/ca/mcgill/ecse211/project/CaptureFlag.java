@@ -196,12 +196,12 @@ public class CaptureFlag {
 		Odometer odometer = new Odometer(leftMotor, rightMotor);
 		Navigation na = new Navigation(odometer,leftMotor, rightMotor, ziplineMotor);
 
-		ultraLoc = new UltrasonicLocalizer(0, na, odometer);
+		ultraLoc = new UltrasonicLocalizer(na, odometer);
 
 		odometer.start();
 		OdometryDisplay od = new OdometryDisplay(odometer, t,ultraLoc);
 		od.start();
-		usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc);
+		usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc, bb);
 
 		usPoller.start();
 		ultraLoc.doUltrasonicLocalization();

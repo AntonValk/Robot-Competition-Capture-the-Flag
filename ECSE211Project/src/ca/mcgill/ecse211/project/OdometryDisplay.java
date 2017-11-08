@@ -20,6 +20,9 @@ public class OdometryDisplay extends Thread {
 
 	/**
 	 * The constructor for the odometry display that sets the odometer, the text lcd and the US localizer
+	 * @param odometer		pointer to the Odometer
+	 * @param t				pointer to the LCT text
+	 * @param ul			pointer to the UltrasonicLocalizer
 	 */
 	public OdometryDisplay(Odometer odometer, TextLCD t, UltrasonicLocalizer ul) {
 		this.odometer = odometer;

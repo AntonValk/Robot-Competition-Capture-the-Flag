@@ -11,6 +11,9 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
 import lejos.hardware.Sound;
 
+/**
+ * The light localization uses the color sensor to know where the robot is from the origin.
+ */
 public class LightLocalizer{
 	private static final long CORRECTION_PERIOD = 10;
 	private Odometer odometer;
@@ -22,7 +25,12 @@ public class LightLocalizer{
 	private int lineCounter; // keeps track of the amount of lines crossed
 	private final double DISTANCE = 13; //distance from light sensor to center of rotation
 
-	// constructor
+	/**
+	 * The constructor for the class that initializes the odometer and navigation objects as well as the fields utilized
+	 * to update the sensor's data.
+	 * @param odometer		pointer to the Odometer
+	 * @param navigation	pointer to the Navigation class
+	 */
 	public LightLocalizer(Odometer odometer, Navigation navigation) {
 		this.navigation = navigation;
 		this.odometer = odometer;

@@ -1,14 +1,19 @@
 package ca.mcgill.ecse211.project;
 
-/** This class takes care of the robot navigation. It controls the movement by
- * 	implementing movement, turning, distance & angle methods.
- * 	@author Antonios Valkanas, Borui Tao
+/** 
+ * Navigation class
+ * 	@author Raphael Di Piazza
  * 	@version 1.0
  * 
  */
 
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
+
+/**
+ * This class takes care of the robot navigation. It controls the movement by
+ * implementing movement, turning, distance & angle methods.
+ */
 public class Navigation{
 	//variables only set once
 	private Odometer odometer; 
@@ -25,7 +30,13 @@ public class Navigation{
 	private double nowTheta;
 	private double thetaObj;
 
-	//constructor
+	/**
+	 * The constructor for the Navigation that initializes the 3 motors as well as the odometer.
+	 * @param odometer		pointer to the Odometer
+	 * @param leftMotor		pointer to the left motor
+	 * @param rightMotor	pointer to the right motor
+	 * @param ziplineMotor	pointer to the zipline motor
+	 */
 	public Navigation(Odometer odometer,EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, EV3LargeRegulatedMotor ziplineMotor) {
 		this.odometer = odometer;
 		this.leftMotor = leftMotor;
@@ -33,6 +44,12 @@ public class Navigation{
 		this.ziplineMotor = ziplineMotor;
 	} 
 	
+	/**
+	 * This method performs the Zipline traversal. by making the robot gowing towards the start point.
+	 * It then starts the zipline motor to traverse the river.
+	 * 
+	 * @param  distance		the total length of the zipline.
+	 */
 	void doZipline(double distance){
 		//drive forward
 		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
@@ -49,14 +66,10 @@ public class Navigation{
 		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);
 	}
 	
-
-	//Raphael's methods
 	/**
 	 * This method makes the robot to travel to a specific location (x,y)
-	 * First it calculates the heading angle that the robot must face
-	 * Then it gets the minimum turning angle which the robot must turn to
-	 * Afterwards it calls the method makeCorrectedTurn() to turn to that angle.
-	 * Finally it calculates the traveling distance and travel to that distance.
+	 * From the current direction and the coordinates to go to, it calculates the angle to go to,
+	 * then calls the turnTo method to face the target point and then travels to this point.
 	 * 
 	 * @param  x   The x-coordinate of the destination point 
 	 * @param  y   The y-coordinate of the destination point 
@@ -105,6 +118,10 @@ public class Navigation{
 	    rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance), false);
 	}
 	
+	/**
+	 * This method makes the robot face the wanted angle direction from the current direction.
+	 * @param theta		the target direction.
+	 */
 	public void turnTo(double theta){
 		nowTheta = odometer.getTheta();
 		//get the displacement (difference between the current angle and where you want to go.
