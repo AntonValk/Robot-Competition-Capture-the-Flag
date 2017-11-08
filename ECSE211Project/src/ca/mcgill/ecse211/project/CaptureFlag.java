@@ -307,9 +307,6 @@ public class CaptureFlag {
 			na.travelTo(zo_r_y*SQUARE_LENGTH, CORNERS[redCorner-1][1]*SQUARE_LENGTH);
 
 			na.raphTravelTo(CORNERS[redCorner-1][0]*SQUARE_LENGTH, CORNERS[redCorner-1][1]*SQUARE_LENGTH);			
-
-			na.travelTo(sg_ll_x*SQUARE_LENGTH, sg_ur_y*SQUARE_LENGTH);
-
 		}
 		else if(TEAM_NUMBER == greenTeam){
 			odometer.setX(CORNERS[greenCorner-1][0]*SQUARE_LENGTH);
@@ -320,8 +317,8 @@ public class CaptureFlag {
 			na.raphTravelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
 			lightLoc.doLightLocalization();
 
-			//ZIPLINE TRAVERSAL
-			na.travelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
+//			//ZIPLINE TRAVERSAL
+//			na.travelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
 
 			while(na.isNavigating()){
 
@@ -376,9 +373,9 @@ public class CaptureFlag {
 			
 			na.raphTravelTo(CORNERS[greenCorner-1][0]*SQUARE_LENGTH, CORNERS[greenCorner-1][1]*SQUARE_LENGTH);
 
-			Button.waitForAnyPress();
+		//	Button.waitForAnyPress();
 
-			na.travelTo(sr_ll_x*SQUARE_LENGTH, sr_ur_y*SQUARE_LENGTH);
+		//	na.travelTo(sr_ll_x*SQUARE_LENGTH, sr_ur_y*SQUARE_LENGTH);
 
 			//FLAG SEARCH -  NOT USED FOR BETA DEMO
 			/*
