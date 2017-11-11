@@ -26,7 +26,7 @@ public class CaptureFlag {
 
 
 	//Set these as appropriate for your team and current situation
-	private static final String SERVER_IP = "192.168.2.3";
+	private static final String SERVER_IP = "192.168.2.13";
 	private static final int TEAM_NUMBER = 8;
 
 	//Enable/disable printing of debug info from the WiFi class
@@ -53,9 +53,13 @@ public class CaptureFlag {
 	 */
 	public static final int FORWARD_SPEED = 140;
 	/**
+	 * The distance between the Ultrasonic sensor and the back light sensor
+	 */
+	public static final double ROBOT_LENGTH = 10.2;
+	/**
 	 * The speed at which the robot is rotating.
 	 */
-	public static final int ROTATE_SPEED = 70;
+	public static final int ROTATE_SPEED = 90;
 	/**
 	 * The radius of the wheel.
 	 */
@@ -67,7 +71,7 @@ public class CaptureFlag {
 	/**
 	 * The distance from which the ultrasonic sensor detects the wall.
 	 */
-	public static final int DISTANCE_THRESHOLD = 30;
+	public static final int DISTANCE_THRESHOLD = 50;
 	/**
 	 * The noise margin.
 	 */
@@ -97,25 +101,25 @@ public class CaptureFlag {
 	@SuppressWarnings("rawtypes")
 	public static void main(String[] args) {
 
-		int redTeam = 0, greenTeam = 0;
+		int redTeam = 0, greenTeam = 8;
 		int redCorner = 3, greenCorner = 1;
 		int og = 1, or = 1;
 		int red_ll_x = 0, red_ll_y = 0;
 		int red_ur_x = 0, red_ur_y = 0;
 		int green_ll_x = 0, green_ll_y = 0;
 		int green_ur_x = 0, green_ur_y = 0;
-		int zc_r_x = 0, zc_r_y = 0;
-		int zo_r_x = 0, zo_r_y = 0;
-		int zc_g_x = 0, zc_g_y = 0;
-		int zo_g_x = 0, zo_g_y = 0;
-		int sh_ll_x = 0, sh_ll_y = 0;
-		int sh_ur_x = 0, sh_ur_y = 0;
-		int sv_ll_x = 0, sv_ll_y = 0;
-		int sv_ur_x = 0, sv_ur_y = 0;
-		int sr_ll_x = 0, sr_ll_y = 0;
-		int sr_ur_x = 0, sr_ur_y = 0;
-		int sg_ll_x = 0, sg_ll_y = 0;
-		int sg_ur_x = 0, sg_ur_y = 0;
+		int zc_r_x = 4, zc_r_y = 9;
+		int zo_r_x = 3, zo_r_y = 10;
+		int zc_g_x = 8, zc_g_y = 3;
+		int zo_g_x = 9, zo_g_y = 2;
+		int sh_ll_x = 8, sh_ll_y = 9;
+		int sh_ur_x = 11, sh_ur_y = 10;
+		int sv_ll_x = 10, sv_ll_y = 5;
+		int sv_ur_x = 11, sv_ur_y = 10;
+		int sr_ll_x = 1, sr_ll_y = 9;
+		int sr_ur_x = 2, sr_ur_y = 11;
+		int sg_ll_x = 9, sg_ll_y = 1;
+		int sg_ur_x = 11, sg_ur_y = 2;
 
 		WifiConnection conn = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
 
@@ -178,8 +182,6 @@ public class CaptureFlag {
 			System.err.println("Error: " + e.getMessage());
 		}
 
-		Button.waitForAnyPress();
-
 		// clear the display
 		@SuppressWarnings("resource")							    // Because we don't bother to close this resource
 		SensorModes ultrasonicSensor = new EV3UltrasonicSensor(usPort);		// usSensor is the instance
@@ -189,27 +191,32 @@ public class CaptureFlag {
 
 
 		//two classes to perform wall following on the flags and detect the color of each one.
-		BangBangController bb = new BangBangController(5,1,FORWARD_SPEED,ROTATE_SPEED,leftMotor,rightMotor);
+		//BangBangController bb = new BangBangController(5,1,FORWARD_SPEED,ROTATE_SPEED,leftMotor,rightMotor);
 		LightSensor ls = new LightSensor();
 
 		final TextLCD t = LocalEV3.get().getTextLCD();
 		Odometer odometer = new Odometer(leftMotor, rightMotor);
 		Navigation na = new Navigation(odometer,leftMotor, rightMotor, ziplineMotor);
 
+		
+		Button.waitForAnyPress();
+
 		ultraLoc = new UltrasonicLocalizer(na, odometer);
 
 		odometer.start();
 		OdometryDisplay od = new OdometryDisplay(odometer, t,ultraLoc);
 		od.start();
-		usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc, bb);
-
+	//	usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc, bb);
+		usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc);
 		usPoller.start();
+		
 		ultraLoc.doUltrasonicLocalization();
+		
 		while(na.isNavigating()){
 		}
 		
 		try { 
-			Thread.sleep(500);
+			Thread.sleep(250);
 		} catch (Exception e) {
 		}
 		lightLoc = new LightLocalizer(odometer, na);
@@ -222,13 +229,20 @@ public class CaptureFlag {
 		 * which navigates the robot to the exact (0,0) point.
 		 * 
 		 */
-		odometer.setX(x-SQUARE_LENGTH);
-		odometer.setY(y-SQUARE_LENGTH);
-		na.travelTo(3, 3);
+	//	odometer.setX(x-SQUARE_LENGTH);
+	//	odometer.setY(y-SQUARE_LENGTH);
+	//	odometer.setTheta(0);
+
+		//na.travelTo(3, 3);
 
 		//Wait until the robot stops moving, start the lightLocalization thread
-		while(na.isNavigating()){
-		}
+//		while(na.isNavigating()){
+//		}
+		
+		
+		
+		//this method make the robot close to the actual (0,0) point
+		lightLoc.adjustPosition();
 		lightLoc.doLightLocalization();
 		while(na.isNavigating()){
 		}

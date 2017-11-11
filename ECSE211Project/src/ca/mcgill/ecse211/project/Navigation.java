@@ -1,5 +1,6 @@
 package ca.mcgill.ecse211.project;
 
+
 /** 
  * Navigation class
  * 	@author Raphael Di Piazza
@@ -118,6 +119,30 @@ public class Navigation{
 	    rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance), false);
 	}
 	
+	void bTravelTo(double x, double y){
+
+		isNavigating=true;
+
+		nowX = odometer.getX();
+		nowY = odometer.getY();
+		//calculate the angle we need to turn to
+		double theta1 = Math.atan((x-nowX)/(y-nowY))*360.0/(2*Math.PI);
+		if(x-nowX<0) theta1= 180.0 + theta1;
+		//turn to the proper angle
+		makeTurn(theta1, true, false);
+		
+		double travellingDis = Math.sqrt(Math.pow(x-nowX, 2) + Math.pow(y-nowY, 2));
+
+		//drive forward
+		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
+		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
+		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, travellingDis), true);
+		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, travellingDis), true);
+
+		//keep calling turnto and checking the distance
+		isNavigating=false;
+	}
+	
 	/**
 	 * This method makes the robot face the wanted angle direction from the current direction.
 	 * @param theta		the target direction.
@@ -173,6 +198,31 @@ public class Navigation{
 	boolean isNavigating(){
 		//returns true if the robot is either Navigating or Turning
 		return isNavigating || isTurning || leftMotor.isMoving() && rightMotor.isMoving();
+	}
+	
+	/**
+	 * This method makes the motors move
+	 */
+
+	public void motorMoveForward(){
+		leftMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
+		rightMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
+		leftMotor.forward();
+		rightMotor.forward();
+	}
+	
+	/**
+	 * This method makes the motors move backwards for a fixed distance
+	 * 
+	 * @param distance		the distance for the motor to move
+	 */
+	
+	public void motorMoveBackward(double distance){
+		leftMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
+		rightMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
+			
+		leftMotor.rotate(-convertDistance(CaptureFlag.RADIUS, distance), true);
+		rightMotor.rotate(-convertDistance(CaptureFlag.RADIUS, distance), false);
 	}
 	
 	/**

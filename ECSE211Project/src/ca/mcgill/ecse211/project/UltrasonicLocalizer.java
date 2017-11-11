@@ -44,7 +44,8 @@ public class UltrasonicLocalizer{
 		this.correctedTheta = 0;
 		this.firstPointDetected = false;
 		this.secondPointDetected = false;
-
+		
+		this.choice = 0;
 		this.locationX = 0;
 		this.locationY = 0;
 	}
@@ -67,8 +68,17 @@ public class UltrasonicLocalizer{
 		while (distance == 1){
 
 		}
-		if (choice == 0) risingEdge();
-		else fallingEdge();
+		
+		choice = (distance > (CaptureFlag.DISTANCE_THRESHOLD + CaptureFlag.NOISE_MARGIN+2)) ? 1 : 0;
+
+		if (choice == 0) {
+			risingEdge();
+			System.out.println("we are using risingEdge!");
+		}
+		else {
+			fallingEdge();
+			System.out.println("we are using fallingEdge!");
+		}
 	}
 
 	/**
