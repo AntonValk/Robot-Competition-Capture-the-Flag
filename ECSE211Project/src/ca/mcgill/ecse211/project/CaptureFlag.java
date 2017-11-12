@@ -210,7 +210,7 @@ public class CaptureFlag {
 		usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc);
 		usPoller.start();
 		
-		ultraLoc.doUltrasonicLocalization();
+		//ultraLoc.doUltrasonicLocalization();
 		
 		while(na.isNavigating()){
 		}
@@ -239,13 +239,22 @@ public class CaptureFlag {
 //		while(na.isNavigating()){
 //		}
 		
-		
+		/*
+		 * Raphael testing
+		 * */
+		greenTeam = 8;
+		odometer.setX(7*SQUARE_LENGTH);
+		odometer.setY(1*SQUARE_LENGTH);
+		odometer.setTheta(0);
+		zo_g_y = 1;
+		zo_g_x = 1;
+		Button.waitForAnyPress();
 		
 		//this method make the robot close to the actual (0,0) point
-		lightLoc.adjustPosition();
-		lightLoc.doLightLocalization();
-		while(na.isNavigating()){
-		}
+		//lightLoc.adjustPosition();
+		//lightLoc.doLightLocalization();
+		//while(na.isNavigating()){
+		//}r
 
 		if (TEAM_NUMBER == redTeam){
 			odometer.setX(CORNERS[redCorner-1][0]*SQUARE_LENGTH);
@@ -324,16 +333,32 @@ public class CaptureFlag {
 			na.travelTo(CORNERS[redCorner-1][0]*SQUARE_LENGTH, CORNERS[redCorner-1][1]*SQUARE_LENGTH);			
 		}
 		else if(TEAM_NUMBER == greenTeam){
-			odometer.setX(CORNERS[greenCorner-1][0]*SQUARE_LENGTH);
+			/*odometer.setX(CORNERS[greenCorner-1][0]*SQUARE_LENGTH);
 			odometer.setY(CORNERS[greenCorner-1][1]*SQUARE_LENGTH);
-			odometer.setTheta(CORNERS[greenCorner-1][2]);
+			odometer.setTheta(CORNERS[greenCorner-1][2]);*/
 			
-			na.travelTo(CORNERS[greenCorner-1][0]*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
-			na.travelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
-			lightLoc.doLightLocalization();
-
-//			//ZIPLINE TRAVERSAL
-//			na.travelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
+			//na.travelTo(CORNERS[greenCorner-1][0]*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
+			boolean gotToDestination = false;
+			System.out.println("X: " + odometer.getX());
+			System.out.println("Y: " + odometer.getY());
+			System.out.println("Theta: " + odometer.getTheta());
+			while(!gotToDestination){
+				System.out.println("X before loc: " + odometer.getX());
+				System.out.println("Y before loc: " + odometer.getY());
+				System.out.println("Theta be loc: " + odometer.getTheta());
+				gotToDestination = na.travelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
+				lightLoc.doLightLocalization();
+				odometer.setX(na.currentX);
+				odometer.setY(na.currentY);
+				odometer.setTheta(na.currentTheta);
+				System.out.println("X after loc: " + odometer.getX());
+				System.out.println("Y after loc: " + odometer.getY());
+				System.out.println("Theta a loc: " + odometer.getTheta());
+				Button.waitForAnyPress();
+			}
+			
+			//ZIPLINE TRAVERSAL
+			//na.travelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
 
 			while(na.isNavigating()){
 
@@ -342,6 +367,8 @@ public class CaptureFlag {
 			odometer.setX(zo_g_x*SQUARE_LENGTH);
 			odometer.setY(zo_g_y*SQUARE_LENGTH);
 			odometer.setTheta(0);
+			
+			Button.waitForAnyPress();
 			
 			na.travelTo(zc_g_x*SQUARE_LENGTH, zc_g_y*SQUARE_LENGTH);
 			na.turnTo(-Math.atan((4/5)*360.0/(2*Math.PI)));
