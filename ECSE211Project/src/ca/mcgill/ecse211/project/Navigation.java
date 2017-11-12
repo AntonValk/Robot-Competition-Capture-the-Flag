@@ -147,11 +147,14 @@ public class Navigation{
 		}else{
 			this.currentY = odometer.getY() - shiftY;
 		}
-		double shiftTheta = odometer.getTheta() % 90;
+		double curTheta = odometer.getTheta() - 90;
+		if(curTheta < 0) curTheta = 360 - curTheta;
+		System.out.println("the theta i am recalculating " + curTheta);
+		double shiftTheta = curTheta % 90;
 		if(shiftTheta > 45){
-			this.currentTheta = odometer.getTheta() + (90 - shiftTheta);
+			this.currentTheta = curTheta + (90 - shiftTheta);
 		}else{
-			this.currentTheta = odometer.getTheta() - shiftTheta;
+			this.currentTheta = curTheta - shiftTheta;
 		}
 	}
 
