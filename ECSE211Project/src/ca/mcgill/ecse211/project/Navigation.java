@@ -181,6 +181,7 @@ public class Navigation{
 		nowTheta = odometer.getTheta();
 		//get the displacement (difference between the current angle and where you want to go.
 		double displacement = Math.abs(nowTheta - theta);
+		double shift = (displacement/10);
 		leftMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
 		rightMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
 		//turn accordingly, making sure it is the minimal angles
@@ -190,13 +191,13 @@ public class Navigation{
 				rightMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
 			}else{
 				displacement = 360 - displacement;
-				leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement+(displacement/10)), true);
-				rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement+(displacement/10)), false);
+				leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement+shift), true);
+				rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement+shift), false);
 			}
 		}else{
 			if(displacement < 180){
-				leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement+(displacement/10)), true);
-				rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement+(displacement/10)), false);
+				leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement+shift), true);
+				rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement+shift), false);
 			}else{
 				displacement = 360 - displacement;
 				leftMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
