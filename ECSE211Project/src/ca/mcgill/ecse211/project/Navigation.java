@@ -57,8 +57,8 @@ public class Navigation{
 	 */
 	void doZipline(double distance){
 		//drive forward
-		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
-		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
+		leftMotor.setSpeed(CaptureFlag.ZIPLINE_SPEED);
+		rightMotor.setSpeed(CaptureFlag.ZIPLINE_SPEED);
 		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance/2), true);
 		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance/2), true);
 
@@ -70,16 +70,16 @@ public class Navigation{
 		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);
 		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);
 	}
-
+	
 	/**
 	 * This method makes the robot to travel to a specific location (x,y)
 	 * From the current direction and the coordinates to go to, it calculates the angle to go to,
 	 * then calls the turnTo method to face the target point and then travels to this point.
 	 * 
-	 * @param  x   The x-coordinate of the destination point 
-	 * @param  y   The y-coordinate of the destination point 
+	 * @param  x   			The x-coordinate of the destination point 
+	 * @param  y   			The y-coordinate of the destination point
 	 */
-	public boolean travelTo(double x, double y){
+	public void doZipline(double x, double y){
 		//get the current values for x, y and theta
 		nowX = odometer.getX();
 		nowY = odometer.getY();
@@ -117,8 +117,75 @@ public class Navigation{
 		double distance = Math.sqrt(Math.pow(y-nowY,2) + Math.pow(x-nowX,2));
 
 		///rotate for this distance in cm'
+		leftMotor.setSpeed(CaptureFlag.ZIPLINE_SPEED);
+		rightMotor.setSpeed(CaptureFlag.ZIPLINE_SPEED);
+		
+		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS,distance + (CaptureFlag.SQUARE_LENGTH)/2), true);
+		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS,distance + (CaptureFlag.SQUARE_LENGTH)/2), true);
+		
+		ziplineMotor.setSpeed(2*CaptureFlag.FORWARD_SPEED);
+		ziplineMotor.rotate(-convertDistance(CaptureFlag.RADIUS, 6*CaptureFlag.ZIPLENGTH), false);
+
 		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
 		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
+		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);
+		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);
+	}
+
+	/**
+	 * This method makes the robot to travel to a specific location (x,y)
+	 * From the current direction and the coordinates to go to, it calculates the angle to go to,
+	 * then calls the turnTo method to face the target point and then travels to this point.
+	 * 
+	 * @param  x   			The x-coordinate of the destination point 
+	 * @param  y   			The y-coordinate of the destination point
+	 * @param  isZipline	boolean to know if it is for the zipline traversal
+	 */
+	public boolean travelTo(double x, double y, boolean isZipline){
+		//get the current values for x, y and theta
+		nowX = odometer.getX();
+		nowY = odometer.getY();
+		nowTheta = odometer.getTheta();
+		double alpha;
+		//get the distance in cm for x and y
+		//x *= 30.48;
+		//y *= 30.48;
+		alpha = Math.atan(Math.abs(x-nowX)/Math.abs(y-nowY));//get the angle alpha 
+		alpha = (180*alpha)/(Math.PI);					//convert in degrees
+		//in this if conditions, it will get the real angle it has to go (from the "origin", the y axis)
+		if(y > nowY){
+			if(x < nowX){
+				thetaObj = 360 - alpha;
+			}else if(x > nowX){
+				thetaObj = alpha;
+			}else{
+				thetaObj = 0;
+			}
+		}else if(y < nowY){
+			if(x < nowX){
+				thetaObj = 180 + alpha;
+			}else if(x > nowX){
+				thetaObj = 180 - alpha;
+			}else{
+				thetaObj = 180;
+			}
+		}else if(x < nowX){ //here y = yCur
+			thetaObj = 270;
+		}else{ //here y = yCur and x > xCur
+			thetaObj = 90;
+		}
+		turnTo(thetaObj);//turn to this angle
+		//calculate the distance the robot has to cover
+		double distance = Math.sqrt(Math.pow(y-nowY,2) + Math.pow(x-nowX,2));
+
+		///rotate for this distance in cm'
+		if(isZipline){
+			leftMotor.setSpeed(CaptureFlag.ZIPLINE_SPEED);
+			rightMotor.setSpeed(CaptureFlag.ZIPLINE_SPEED);
+		}else{
+			leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
+			rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
+		}
 
 		//do lightLocalization if distance > 3 tiles
 		if(distance > 3*CaptureFlag.SQUARE_LENGTH){
@@ -181,7 +248,8 @@ public class Navigation{
 		nowTheta = odometer.getTheta();
 		//get the displacement (difference between the current angle and where you want to go.
 		double displacement = Math.abs(nowTheta - theta);
-		double shift = (displacement/10);
+		double shift = (displacement/12);
+		shift = 0;
 		leftMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
 		rightMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
 		//turn accordingly, making sure it is the minimal angles
