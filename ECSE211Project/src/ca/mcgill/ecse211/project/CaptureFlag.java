@@ -198,7 +198,7 @@ public class CaptureFlag {
 		Odometer odometer = new Odometer(leftMotor, rightMotor);
 		Navigation na = new Navigation(odometer,leftMotor, rightMotor, ziplineMotor);
 
-		
+
 		Button.waitForAnyPress();
 
 		ultraLoc = new UltrasonicLocalizer(na, odometer);
@@ -206,15 +206,15 @@ public class CaptureFlag {
 		odometer.start();
 		OdometryDisplay od = new OdometryDisplay(odometer, t,ultraLoc);
 		od.start();
-	//	usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc, bb);
+		//	usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc, bb);
 		usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc);
 		usPoller.start();
-		
+
 		//ultraLoc.doUltrasonicLocalization();
-		
+
 		while(na.isNavigating()){
 		}
-		
+
 		try { 
 			Thread.sleep(250);
 		} catch (Exception e) {
@@ -229,27 +229,29 @@ public class CaptureFlag {
 		 * which navigates the robot to the exact (0,0) point.
 		 * 
 		 */
-	//	odometer.setX(x-SQUARE_LENGTH);
-	//	odometer.setY(y-SQUARE_LENGTH);
-	//	odometer.setTheta(0);
+		//	odometer.setX(x-SQUARE_LENGTH);
+		//	odometer.setY(y-SQUARE_LENGTH);
+		//	odometer.setTheta(0);
 
 		//na.travelTo(3, 3);
 
 		//Wait until the robot stops moving, start the lightLocalization thread
-//		while(na.isNavigating()){
-//		}
-		
+		//		while(na.isNavigating()){
+		//		}
+
 		/*
-		 * Raphael testing
+		 * Raphael testing values
 		 * */
 		greenTeam = 8;
-		odometer.setX(7*SQUARE_LENGTH);
-		odometer.setY(1*SQUARE_LENGTH);
-		odometer.setTheta(0);
-		zo_g_y = 1;
-		zo_g_x = 1;
+		odometer.setX(3*SQUARE_LENGTH);
+		odometer.setY(7*SQUARE_LENGTH);
+		odometer.setTheta(180);
+		zo_g_x = 2;
+		zo_g_y = 1;		
+		zc_g_x = 2;
+		zc_g_y = 2;
 		Button.waitForAnyPress();
-		
+
 		//this method make the robot close to the actual (0,0) point
 		//lightLoc.adjustPosition();
 		//lightLoc.doLightLocalization();
@@ -260,30 +262,30 @@ public class CaptureFlag {
 			odometer.setX(CORNERS[redCorner-1][0]*SQUARE_LENGTH);
 			odometer.setY(CORNERS[redCorner-1][1]*SQUARE_LENGTH);
 			odometer.setTheta(CORNERS[redCorner-1][2]);
-			
+
 			na.travelTo(zo_r_x*SQUARE_LENGTH, CORNERS[redCorner-1][1]*SQUARE_LENGTH);
 			na.travelTo(zo_r_x*SQUARE_LENGTH, zo_r_y*SQUARE_LENGTH);
 
 			na.travelTo((sh_ll_x - 1)*SQUARE_LENGTH,(sh_ll_y + 1)*SQUARE_LENGTH);
-    		lightLoc.doLightLocalization();
+			lightLoc.doLightLocalization();
 			na.makeTurn(90, false, true);
 			odometer.setX((sh_ll_x - 1)*SQUARE_LENGTH);
 			odometer.setY((sh_ll_y + 1)*SQUARE_LENGTH);
-			
+
 			//shadow crossing
 			na.travelTo(sh_ll_x*SQUARE_LENGTH,(sh_ll_y*SQUARE_LENGTH + 0.5*SQUARE_LENGTH));
 			na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH, (sh_ur_y-0.5)*SQUARE_LENGTH);
 			na.travelTo((sv_ll_x+ 0.5*SQUARE_LENGTH), sv_ll_y);
 			//GO BACK TO START ZONE
 			na.travelTo((sv_ll_x+ 1)*SQUARE_LENGTH, (sv_ll_y-1)*SQUARE_LENGTH);
-    		lightLoc.doLightLocalization();
+			lightLoc.doLightLocalization();
 			na.makeTurn(90, false, true);
 			odometer.setX((sh_ll_x + 1)*SQUARE_LENGTH);
 			odometer.setY((sh_ll_y - 1)*SQUARE_LENGTH);
-    		
+
 			na.travelTo(sg_ur_x*SQUARE_LENGTH, sg_ur_y*SQUARE_LENGTH);
 			//TODO:search for flag
-			
+
 			//GO BACK TO START ZONE - NOT USED FOR BETA DEMO
 			//na.travelTo(sg_ur_x*SQUARE_LENGTH, sg_ur_y*SQUARE_LENGTH);
 
@@ -320,14 +322,14 @@ public class CaptureFlag {
 			odometer.setX(zc_r_x*SQUARE_LENGTH);
 			odometer.setY(zc_r_y*SQUARE_LENGTH);
 			odometer.setTheta(-Math.atan((4/5)*360.0/(2*Math.PI)));
-			
+
 			na.travelTo(zo_r_x*SQUARE_LENGTH, zo_r_y*SQUARE_LENGTH);
 			lightLoc.doLightLocalization();
 			na.makeTurn(90, false, true);
 			odometer.setX(zo_r_x*SQUARE_LENGTH);
 			odometer.setY(zo_r_y*SQUARE_LENGTH);
 			odometer.setTheta(0);
-			
+
 			na.travelTo(zo_r_y*SQUARE_LENGTH, CORNERS[redCorner-1][1]*SQUARE_LENGTH);
 
 			na.travelTo(CORNERS[redCorner-1][0]*SQUARE_LENGTH, CORNERS[redCorner-1][1]*SQUARE_LENGTH);			
@@ -336,30 +338,71 @@ public class CaptureFlag {
 			/*odometer.setX(CORNERS[greenCorner-1][0]*SQUARE_LENGTH);
 			odometer.setY(CORNERS[greenCorner-1][1]*SQUARE_LENGTH);
 			odometer.setTheta(CORNERS[greenCorner-1][2]);*/
-			
-			//na.travelTo(CORNERS[greenCorner-1][0]*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
-			boolean gotToDestination = false;
-			System.out.println("X: " + odometer.getX());
-			System.out.println("Y: " + odometer.getY());
-			System.out.println("Theta: " + odometer.getTheta());
-			while(!gotToDestination){
-				System.out.println("X before loc: " + odometer.getX());
-				System.out.println("Y before loc: " + odometer.getY());
-				System.out.println("Theta be loc: " + odometer.getTheta());
-				gotToDestination = na.travelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
-				lightLoc.doLightLocalization();
-				odometer.setX(na.currentX);
-				odometer.setY(na.currentY);
-				odometer.setTheta(na.currentTheta);
-				System.out.println("X after loc: " + odometer.getX());
-				System.out.println("Y after loc: " + odometer.getY());
-				System.out.println("Theta a loc: " + odometer.getTheta());
-				Button.waitForAnyPress();
-			}
-			
-			//ZIPLINE TRAVERSAL
-			//na.travelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
 
+			//na.travelTo(CORNERS[greenCorner-1][0]*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
+			
+			//beta demo routine
+			boolean gotToDestination = false;
+			System.out.println("X start: " + odometer.getX());
+			System.out.println("Y start: " + odometer.getY());
+			System.out.println("Theta s: " + odometer.getTheta());
+			if(odometer.getY() > zo_g_y){//to avoid crossing with the zip line., go to the y axis without changing x
+				while(!gotToDestination){
+					gotToDestination = na.travelTo(odometer.getX(), zo_g_y*SQUARE_LENGTH);
+					na.securityTurn();//turn a bit on the right to make sure we get the first axis during midpoint localization
+					System.out.println("X before loc: " + odometer.getX());
+					System.out.println("Y before loc: " + odometer.getY());
+					System.out.println("Theta be loc: " + odometer.getTheta());
+					lightLoc.midpointLocalization(); //perform localization to get back on track
+					odometer.setX(na.currentX); //set the good values for coordinates and direction
+					odometer.setY(na.currentY);
+					odometer.setTheta(lightLoc.currentTheta);
+					System.out.println("X after loc: " + odometer.getX());
+					System.out.println("Y after loc: " + odometer.getY());
+					System.out.println("Theta a loc: " + odometer.getTheta());
+					Button.waitForAnyPress();
+				}
+				gotToDestination = false;
+				while(!gotToDestination){ //go to the zipline starting point.
+					gotToDestination = na.travelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
+					na.securityTurn();
+					System.out.println("X before loc: " + odometer.getX());
+					System.out.println("Y before loc: " + odometer.getY());
+					System.out.println("Theta be loc: " + odometer.getTheta());
+					lightLoc.midpointLocalization();
+					odometer.setX(na.currentX);
+					odometer.setY(na.currentY);
+					odometer.setTheta(lightLoc.currentTheta);
+					System.out.println("X after loc: " + odometer.getX());
+					System.out.println("Y after loc: " + odometer.getY());
+					System.out.println("Theta a loc: " + odometer.getTheta());
+					Button.waitForAnyPress();
+				}
+			}else{//go directly to zip line start
+				while(!gotToDestination){
+					gotToDestination = na.travelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
+					na.securityTurn();
+					System.out.println("X before loc: " + odometer.getX());
+					System.out.println("Y before loc: " + odometer.getY());
+					System.out.println("Theta be loc: " + odometer.getTheta());
+					lightLoc.midpointLocalization();
+					odometer.setX(na.currentX);
+					odometer.setY(na.currentY);
+					odometer.setTheta(lightLoc.currentTheta);
+					System.out.println("X after loc: " + odometer.getX());
+					System.out.println("Y after loc: " + odometer.getY());
+					System.out.println("Theta a loc: " + odometer.getTheta());
+					Button.waitForAnyPress();
+				}
+			}
+
+			//ZIPLINE TRAVERSAL
+			na.travelTo(zc_g_x*SQUARE_LENGTH, zc_g_y*SQUARE_LENGTH);
+			na.doZipline(3*ZIPLENGTH);
+			
+			//end beta demo routine
+			
+			/*
 			while(na.isNavigating()){
 
 			}
@@ -367,9 +410,9 @@ public class CaptureFlag {
 			odometer.setX(zo_g_x*SQUARE_LENGTH);
 			odometer.setY(zo_g_y*SQUARE_LENGTH);
 			odometer.setTheta(0);
-			
+
 			Button.waitForAnyPress();
-			
+
 			na.travelTo(zc_g_x*SQUARE_LENGTH, zc_g_y*SQUARE_LENGTH);
 			na.turnTo(-Math.atan((4/5)*360.0/(2*Math.PI)));
 			na.doZipline(3*ZIPLENGTH);
@@ -379,45 +422,46 @@ public class CaptureFlag {
 			odometer.setX(zc_r_x*SQUARE_LENGTH);
 			odometer.setY(zc_r_y*SQUARE_LENGTH);
 			odometer.setTheta(-Math.atan((4/5)*360.0/(2*Math.PI)));
-			
+			 */
+
 			na.travelTo(zo_r_x*SQUARE_LENGTH, zo_r_y*SQUARE_LENGTH);
 			lightLoc.doLightLocalization();
 			na.makeTurn(90, false, true);
 			odometer.setX(zo_r_x*SQUARE_LENGTH);
 			odometer.setY(zo_r_y*SQUARE_LENGTH);
 			odometer.setTheta(0);
-			
+
 			//search for flag
-			
+
 			Sound.playNote(Sound.FLUTE, 440, 250);
 			Sound.playNote(Sound.FLUTE, 440, 250);
 			Sound.playNote(Sound.FLUTE, 440, 250);
-			
-    		na.travelTo((sh_ll_x - 1)*SQUARE_LENGTH,(sh_ll_y + 1)*SQUARE_LENGTH);
-    		lightLoc.doLightLocalization();
+
+			na.travelTo((sh_ll_x - 1)*SQUARE_LENGTH,(sh_ll_y + 1)*SQUARE_LENGTH);
+			lightLoc.doLightLocalization();
 			na.makeTurn(90, false, true);
 			odometer.setX((sh_ll_x - 1)*SQUARE_LENGTH);
 			odometer.setY((sh_ll_y + 1)*SQUARE_LENGTH);
-			
+
 			//cross shallow
-    		na.travelTo(sh_ll_x*SQUARE_LENGTH,(sh_ll_y*SQUARE_LENGTH + 0.5*SQUARE_LENGTH));
+			na.travelTo(sh_ll_x*SQUARE_LENGTH,(sh_ll_y*SQUARE_LENGTH + 0.5*SQUARE_LENGTH));
 			na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH, (sh_ur_y-0.5)*SQUARE_LENGTH);
 			na.travelTo((sv_ll_x+ 0.5)*SQUARE_LENGTH, sv_ll_y*SQUARE_LENGTH);
 			//GO BACK TO START ZONE
-			
+
 			na.travelTo((sv_ll_x+ 1)*SQUARE_LENGTH, (sv_ll_y-1)*SQUARE_LENGTH);
-    		lightLoc.doLightLocalization();
+			lightLoc.doLightLocalization();
 			na.makeTurn(90, false, true);
 			odometer.setX((sh_ll_x + 1)*SQUARE_LENGTH);
 			odometer.setY((sh_ll_y - 1)*SQUARE_LENGTH);
-    		
+
 			na.travelTo(sg_ur_x*SQUARE_LENGTH, sg_ur_y*SQUARE_LENGTH);
-			
+
 			na.travelTo(CORNERS[greenCorner-1][0]*SQUARE_LENGTH, CORNERS[greenCorner-1][1]*SQUARE_LENGTH);
 
-		//	Button.waitForAnyPress();
+			//	Button.waitForAnyPress();
 
-		//	na.travelTo(sr_ll_x*SQUARE_LENGTH, sr_ur_y*SQUARE_LENGTH);
+			//	na.travelTo(sr_ll_x*SQUARE_LENGTH, sr_ur_y*SQUARE_LENGTH);
 
 			//FLAG SEARCH -  NOT USED FOR BETA DEMO
 			/*

@@ -31,9 +31,9 @@ public class Navigation{
 	private double nowTheta;
 	private double thetaObj;
 	
+
 	public double currentX;
 	public double currentY;
-	public double currentTheta;
 
 	/**
 	 * The constructor for the Navigation that initializes the 3 motors as well as the odometer.
@@ -147,15 +147,6 @@ public class Navigation{
 		}else{
 			this.currentY = odometer.getY() - shiftY;
 		}
-		double curTheta = odometer.getTheta() - 90;
-		if(curTheta < 0) curTheta = 360 - curTheta;
-		System.out.println("the theta i am recalculating " + curTheta);
-		double shiftTheta = curTheta % 90;
-		if(shiftTheta > 45){
-			this.currentTheta = curTheta + (90 - shiftTheta);
-		}else{
-			this.currentTheta = curTheta - shiftTheta;
-		}
 	}
 
 	void bTravelTo(double x, double y){
@@ -190,6 +181,8 @@ public class Navigation{
 		nowTheta = odometer.getTheta();
 		//get the displacement (difference between the current angle and where you want to go.
 		double displacement = Math.abs(nowTheta - theta);
+		leftMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
+		rightMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
 		//turn accordingly, making sure it is the minimal angles
 		if (theta < nowTheta){
 			if(displacement < 180){
@@ -197,13 +190,13 @@ public class Navigation{
 				rightMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
 			}else{
 				displacement = 360 - displacement;
-				leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
-				rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
+				leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement+(displacement/10)), true);
+				rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement+(displacement/10)), false);
 			}
 		}else{
 			if(displacement < 180){
-				leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
-				rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
+				leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement+(displacement/10)), true);
+				rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement+(displacement/10)), false);
 			}else{
 				displacement = 360 - displacement;
 				leftMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
@@ -306,6 +299,13 @@ public class Navigation{
 	 */
 	private static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
+	}
+	
+	void securityTurn(){
+		leftMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
+		rightMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
+		leftMotor.rotate(-100, true);
+		rightMotor.rotate(100, false);
 	}
 
 }

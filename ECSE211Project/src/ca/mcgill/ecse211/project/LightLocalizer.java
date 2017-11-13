@@ -9,6 +9,7 @@ import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
+import lejos.hardware.Button;
 import lejos.hardware.Sound;
 
 /**
@@ -24,6 +25,8 @@ public class LightLocalizer{
 	private float prevLightValue; // previous value of light sensor
 	private int lineCounter; // keeps track of the amount of lines crossed
 	private final double DISTANCE = 13; //distance from light sensor to center of rotation
+	
+	public double currentTheta;
 
 	/**
 	 * The constructor for the class that initializes the odometer and navigation objects as well as the fields utilized
@@ -70,15 +73,19 @@ public class LightLocalizer{
 				switch (lineCounter) {
 				case 1:
 					thetaXminus = curTheta;
+					System.out.println("X- " + thetaXminus);
 					break;
 				case 2:
 					thetaYplus = curTheta;
+					System.out.println("Y+ " + thetaYplus);
 					break;
 				case 3:
 					thetaXplus = curTheta;
+					System.out.println("X+ " + thetaXplus);
 					break;
 				case 4:
 					thetaYminus = curTheta;
+					System.out.println("Y- " + thetaYminus);
 					navigation.motorStop(); //stop rotating after intercepting the fourth line (we already have all the information we want)
 					break;
 				}
@@ -177,7 +184,7 @@ public class LightLocalizer{
 		double thetaXminus = 0, thetaXplus = 0, thetaYplus = 0, thetaYminus = 0; //value of theta at intersection of X+,X-,Y+,Y- axis
 		colorSensor.fetchSample(lightValue,0); 
 		prevLightValue = lightValue[0]; 
-
+		int lineCounter = 0;
 		navigation.makeTurn(360, false, true);
 
 		while (navigation.isNavigating()) {
@@ -240,7 +247,7 @@ public class LightLocalizer{
 
 		System.out.println("The x is" + odometer.getX());
 		System.out.println("The y is" + odometer.getY());
-		System.out.println("The theta angle is" + odometer.getTheta());
+		System.out.println("Theta before travel to" + odometer.getTheta());
 		// move to the origin
 		navigation.bTravelTo(0, 0);
 
@@ -249,6 +256,18 @@ public class LightLocalizer{
 		}
 		// apply angle correction - according to the tutorial formula
 		navigation.makeTurn((-odometer.getTheta() + thetaYminus - 270 - thetaY), true, false); //I think this will take care of theta, if the test fails I will implement the math from tutorial that I proved on your notebook yesterday
+		setCurrentTheta();
 	}
-
+	
+	private void setCurrentTheta(){
+		double curTheta = odometer.getTheta();
+		System.out.println("the theta i am recalculating " + curTheta);
+		double shiftTheta = curTheta % 90;
+		if(shiftTheta > 45){
+			this.currentTheta = curTheta + (90 - shiftTheta);
+		}else{
+			this.currentTheta = curTheta - shiftTheta;
+		}
+	}
+	
 }
