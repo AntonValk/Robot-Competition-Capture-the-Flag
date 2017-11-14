@@ -30,6 +30,9 @@ public class Navigation{
 	private double nowY;
 	private double nowTheta;
 	private double thetaObj;
+	
+	public double currentX;
+	public double currentY;
 
 	/**
 	 * The constructor for the Navigation that initializes the 3 motors as well as the odometer.
@@ -55,16 +58,28 @@ public class Navigation{
 		//drive forward
 		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
 		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
-		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance/2), true);
-		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance/2), true);
+		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, 0.77*distance), true);
+		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 0.77*distance), true);
 		
 		ziplineMotor.setSpeed(2*CaptureFlag.FORWARD_SPEED);
-		ziplineMotor.rotate(-convertDistance(CaptureFlag.RADIUS, 6*CaptureFlag.ZIPLENGTH), false);
+		ziplineMotor.rotate(-convertDistance(CaptureFlag.RADIUS, 3.5*CaptureFlag.ZIPLENGTH), false);
 		
-		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
+		/*leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
 		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
 		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);
-		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);
+		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);*/
+	}
+	
+	void securityTurn(){
+		leftMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
+		rightMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
+		leftMotor.rotate(-100, true);
+		rightMotor.rotate(100, false);
+	}
+	
+	boolean onZipline(){
+		//returns true if the robot is either Navigating or Turning
+		return ziplineMotor.isMoving();
 	}
 	
 	/**
@@ -75,7 +90,7 @@ public class Navigation{
 	 * @param  x   The x-coordinate of the destination point 
 	 * @param  y   The y-coordinate of the destination point 
 	 */
-	public void travelTo(double x, double y){
+	public boolean travelTo(double x, double y){
 		//get the current values for x, y and theta
 		nowX = odometer.getX();
 		nowY = odometer.getY();
@@ -115,8 +130,21 @@ public class Navigation{
 		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
 		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
 		
-		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance), true);
-	    rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance), false);
+//		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance), true);
+//	    rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance), false);
+	    
+	  //do lightLocalization if distance > 3 tiles
+	  	if(distance > 3*CaptureFlag.SQUARE_LENGTH){
+	  			leftMotor.rotate(convertDistance(CaptureFlag.RADIUS,3*CaptureFlag.SQUARE_LENGTH), true);
+	  			rightMotor.rotate(convertDistance(CaptureFlag.RADIUS,3*CaptureFlag.SQUARE_LENGTH), false);
+	  			setCurrentCoordinates();
+	  			return false;
+	  		}else{
+	  			leftMotor.rotate(convertDistance(CaptureFlag.RADIUS,distance), true);
+	  			rightMotor.rotate(convertDistance(CaptureFlag.RADIUS,distance), false);
+	  			setCurrentCoordinates();
+	  			return true;
+	  		}
 	}
 	
 	void bTravelTo(double x, double y){
@@ -267,6 +295,21 @@ public class Navigation{
 	 */
 	private static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
+	}
+	
+	private void setCurrentCoordinates(){
+		double shiftX = odometer.getX() % CaptureFlag.SQUARE_LENGTH;
+		if(shiftX > (CaptureFlag.SQUARE_LENGTH / 2)){
+			this.currentX = odometer.getX() + (CaptureFlag.SQUARE_LENGTH - shiftX);
+		}else{
+			this.currentX = odometer.getX() - shiftX;
+		}
+		double shiftY = odometer.getY() % CaptureFlag.SQUARE_LENGTH;
+		if(shiftY > (CaptureFlag.SQUARE_LENGTH / 2)){
+			this.currentY = odometer.getY() + (CaptureFlag.SQUARE_LENGTH - shiftY);
+		}else{
+			this.currentY = odometer.getY() - shiftY;
+		}
 	}
 	
 }
