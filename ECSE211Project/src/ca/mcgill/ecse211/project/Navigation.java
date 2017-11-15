@@ -56,14 +56,67 @@ public class Navigation{
 	 */
 	void doZipline(double distance){
 		//drive forward
-		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
-		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
-		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, 0.77*distance), true);
-		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 0.77*distance), true);
+		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED + 120);
+		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED + 120);
+		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, 0.71*distance), true);
+		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 0.71*distance), true);
 		
 		ziplineMotor.setSpeed(2*CaptureFlag.FORWARD_SPEED);
 		ziplineMotor.rotate(-convertDistance(CaptureFlag.RADIUS, 3.5*CaptureFlag.ZIPLENGTH), false);
 		
+		/*leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
+		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
+		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);
+		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);*/
+	}
+	
+	public void doZipline(double x, double y, double zipdistance){
+		//get the current values for x, y and theta
+		nowX = odometer.getX();
+		nowY = odometer.getY();
+		nowTheta = odometer.getTheta();
+		double alpha;
+		//get the distance in cm for x and y
+		//x *= 30.48;
+		//y *= 30.48;
+		alpha = Math.atan(Math.abs(x-nowX)/Math.abs(y-nowY));//get the angle alpha 
+		alpha = (180*alpha)/(Math.PI);					//convert in degrees
+		//in this if conditions, it will get the real angle it has to go (from the "origin", the y axis)
+		if(y > nowY){
+			if(x < nowX){
+				thetaObj = 360 - alpha;
+			}else if(x > nowX){
+				thetaObj = alpha;
+			}else{
+				thetaObj = 0;
+			}
+		}else if(y < nowY){
+			if(x < nowX){
+				thetaObj = 180 + alpha;
+			}else if(x > nowX){
+				thetaObj = 180 - alpha;
+			}else{
+				thetaObj = 180;
+			}
+		}else if(x < nowX){ //here y = yCur
+			thetaObj = 270;
+		}else{ //here y = yCur and x > xCur
+			thetaObj = 90;
+		}
+		turnTo(thetaObj);//turn to this angle
+		//calculate the distance the robot has to cover
+		double distance = Math.sqrt(Math.pow(y-nowY,2) + Math.pow(x-nowX,2));
+
+		///rotate for this distance in cm'
+		//drive forward
+		leftMotor.setSpeed(CaptureFlag.ZIPLINE_SPEED);
+		rightMotor.setSpeed(CaptureFlag.ZIPLINE_SPEED);
+		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, 0.77*zipdistance), true);   //0.77*distance
+		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 0.77*zipdistance), true);
+		
+		ziplineMotor.setSpeed(2*CaptureFlag.FORWARD_SPEED);
+		ziplineMotor.rotate(-convertDistance(CaptureFlag.RADIUS, 3.5*CaptureFlag.ZIPLENGTH), false);
+
 		/*leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
 		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
 		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);
