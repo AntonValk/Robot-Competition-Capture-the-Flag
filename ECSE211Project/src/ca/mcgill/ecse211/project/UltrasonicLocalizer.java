@@ -51,7 +51,7 @@ public class UltrasonicLocalizer{
 	}
 
 	/** 
-	 * This method updates the distance
+	 * This method updates the distance.
 	 * 
 	 * @param  distance   The distance from the object detected by the Ultrasonic Sensor
 	 */
@@ -60,7 +60,7 @@ public class UltrasonicLocalizer{
 	}
 
 	/** 
-	 * This method execute the ultrasonic localization
+	 * This method executes the ultrasonic localization.
 	 */
 	public void doUltrasonicLocalization(){
 		na.makeTurn(360, false, true);
@@ -227,7 +227,7 @@ public class UltrasonicLocalizer{
 
 		// Get the current odometer reading theta, add its value to the calculated theta correction. Then set the result
 		// to the odometer. 
-		Double t = odometer.getTheta();
+		double t = odometer.getTheta();
 		correctedTheta += t;
 		correctedTheta = ((correctedTheta % 360) + 360) % 360;
 		odometer.setTheta(correctedTheta);	
@@ -249,14 +249,14 @@ public class UltrasonicLocalizer{
 	}
 
 	/**
-	 * This method returns the value of the x coordinate
+	 * This method returns the value of the x coordinate.
 	 * @return 	x value
 	 */
 	public double getLocX(){
 		return this.locationX;
 	}
 	/**
-	 * This method returns the value of the y coordinate
+	 * This method returns the value of the y coordinate.
 	 * @return 	y value
 	 */
 	public double getLocY(){

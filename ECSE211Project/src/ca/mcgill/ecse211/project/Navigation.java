@@ -2,7 +2,7 @@ package ca.mcgill.ecse211.project;
 
 
 /** 
- * Navigation class
+ * Navigation class - test javadoc generation
  * 	@author Raphael Di Piazza
  * 	@version 1.0
  * 
@@ -31,7 +31,14 @@ public class Navigation{
 	private double nowTheta;
 	private double thetaObj;
 	
+	/**
+	 * The corrected X coordinate (the exact location where the robot is).
+	 */
 	public double currentX;
+	
+	/**
+	 * The corrected Y coordinate (the exact location where the robot is).
+	 */
 	public double currentY;
 
 	/**
@@ -70,6 +77,12 @@ public class Navigation{
 		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);*/
 	}
 	
+	/**
+	 * This methods performs the zipline traversal by firstly going to the input target coordinates (start of the zipline).
+	 * @param x				the x coordinate for the start of the zipline.
+	 * @param y				the y coordinate for the start of the zipline.
+	 * @param zipdistance	the distance of the zipline.
+	 */
 	public void doZipline(double x, double y, double zipdistance){
 		//get the current values for x, y and theta
 		nowX = odometer.getX();
@@ -140,8 +153,9 @@ public class Navigation{
 	 * From the current direction and the coordinates to go to, it calculates the angle to go to,
 	 * then calls the turnTo method to face the target point and then travels to this point.
 	 * 
-	 * @param  x   The x-coordinate of the destination point 
-	 * @param  y   The y-coordinate of the destination point 
+	 * @param  x	The x-coordinate of the destination point.
+	 * @param  y	The y-coordinate of the destination point.
+	 * @return		Whether the robot arrived to its target destination or stopped at midpoint to allow localization.
 	 */
 	public boolean travelTo(double x, double y){
 		//get the current values for x, y and theta
@@ -282,7 +296,7 @@ public class Navigation{
 	}
 	
 	/**
-	 * This method makes the motors move
+	 * This method makes the motors move forward.
 	 */
 
 	public void motorMoveForward(){
@@ -293,9 +307,9 @@ public class Navigation{
 	}
 	
 	/**
-	 * This method makes the motors move backwards for a fixed distance
+	 * This method makes the motors move backwards for a fixed distance.
 	 * 
-	 * @param distance		the distance for the motor to move
+	 * @param distance		the distance for the motor to move.
 	 */
 	
 	public void motorMoveBackward(double distance){
@@ -307,7 +321,7 @@ public class Navigation{
 	}
 	
 	/**
-	 * This method stops the robot from moving by setting the speed of motors to zero
+	 * This method stops the robot from moving by setting the speed of motors to zero.
 	 */
 
 	public void motorStop(){

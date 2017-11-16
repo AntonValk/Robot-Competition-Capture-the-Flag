@@ -46,14 +46,16 @@ public class CaptureFlag {
 
 	private static UltrasonicLocalizer ultraLoc;
 	private static LightLocalizer lightLoc;
+	/**
+	 * The value got by the front light sensor an updated by the LightSensor class.
+	 */
 	public static float lightValue;
-
 	/**
 	 * The speed at which the robot is traveling straight.
 	 */
 	public static final int FORWARD_SPEED = 140;
 	/**
-	 * The distance between the Ultrasonic sensor and the back light sensor
+	 * The distance between the Ultrasonic sensor and the back light sensor.
 	 */
 	public static final double ROBOT_LENGTH = 10.2;
 	/**
@@ -102,7 +104,7 @@ public class CaptureFlag {
 	 * Using the helper classes, the main method takes care of the localization, navigation and river traversal.
 	 * 
 	 */
-	@SuppressWarnings("rawtypes")
+	//@SuppressWarnings("rawtypes")
 	public static void main(String[] args) {
 
 //		int redTeam = 0, greenTeam = 0;
@@ -239,7 +241,7 @@ public class CaptureFlag {
 		}
 
 		// clear the display
-		@SuppressWarnings("resource")							    // Because we don't bother to close this resource
+		//@SuppressWarnings("resource")							    // Because we don't bother to close this resource
 		SensorModes ultrasonicSensor = new EV3UltrasonicSensor(usPort);		// usSensor is the instance
 		SampleProvider usDistance = ultrasonicSensor.getMode("Distance");	// usDistance provides samples from this instance
 		float[] usData = new float[1];		// usData is the buffer in which data are returned

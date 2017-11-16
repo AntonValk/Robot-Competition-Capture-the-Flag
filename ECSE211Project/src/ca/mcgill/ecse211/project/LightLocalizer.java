@@ -12,7 +12,8 @@ import lejos.robotics.SampleProvider;
 import lejos.hardware.Sound;
 
 /**
- * The light localization uses the color sensor to know where the robot is from the origin.
+ * This class implements the light localization which
+ * uses the color sensor to know where the robot is from the origin.
  */
 public class LightLocalizer{
 	private static final long CORRECTION_PERIOD = 9;
@@ -25,6 +26,9 @@ public class LightLocalizer{
 	private int lineCounter; // keeps track of the amount of lines crossed
 	private final double DISTANCE = 13; //distance from light sensor to center of rotation
 	
+	/**
+	 * The corrected theta (the exact direction the robot is facing).
+	 */
 	public double currentTheta;
 	/**
 	 * The constructor for the class that initializes the odometer and navigation objects as well as the fields utilized
@@ -42,7 +46,7 @@ public class LightLocalizer{
 	}
 
 	/** 
-	 * This method execute the light localization
+	 * This method executes the first light localization.
 	 */
 	
 	public void doLightLocalization() {
@@ -125,6 +129,9 @@ public class LightLocalizer{
 		navigation.makeTurn((-odometer.getTheta() + thetaYminus - 270 - thetaY), true, false); //I think this will take care of theta, if the test fails I will implement the math from tutorial that I proved on your notebook yesterday
 	}
 	
+	/**
+	 * This method is used before the first localization to make sure the robot will hit the 4 axes during the light localization.
+	 */
 	public void adjustPosition(){
 	//	odometer.setTheta(0);
 		long correctionStart = 0;	//used to keep track of correction period
@@ -172,6 +179,10 @@ public class LightLocalizer{
 		}
 	}
 	
+	/**
+	 * This method executes all light localizations during the Navigation.
+	 * It uses mostly the same structure as the doLightLocalization() method.
+	 */
 	public void midpointLocalization() {
 		long correctionStart = 0;	//used to keep track of correction period
 		long correctionEnd;			//used to keep track of correction period
