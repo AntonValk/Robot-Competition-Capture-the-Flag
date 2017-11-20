@@ -10,6 +10,7 @@ package ca.mcgill.ecse211.project;
 import lejos.robotics.SampleProvider;
 
 /**
+ * This class implements the UltrasonicPoller which periodically updates the value of the distance from the wall.
  * Control of the wall follower is applied periodically by the UltrasonicPoller thread. The while
  * loop at the bottom executes in a loop. Assuming that the us.fetchSample, and cont.processUSData
  * methods operate in about 20mS, and that the thread sleeps for 50 mS at the end of each loop, then
@@ -27,7 +28,6 @@ public class UltrasonicPoller extends Thread {
 	   */
 	 // public UltrasonicPoller(SampleProvider us, float[] usData, UltrasonicLocalizer ul, BangBangController bb) {
 	  public UltrasonicPoller(SampleProvider us, float[] usData, UltrasonicLocalizer ul) {
-
 	    this.us = us;
 	    this.ul = ul;
 	    this.usData = usData;
@@ -35,7 +35,7 @@ public class UltrasonicPoller extends Thread {
 	  }
 
 	  /**
-	   * Sensors now return floats using a uniform protocol. Need to convert US result to an integer
+	   * The run method makes the sensors now return floats using a uniform protocol. Need to convert US result to an integer
 	   * [0,255] (non-Javadoc)
 	   * 
 	   * @see java.lang.Thread#run()
