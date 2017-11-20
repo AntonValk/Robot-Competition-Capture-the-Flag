@@ -1,8 +1,9 @@
 package ca.mcgill.ecse211.project;
 
+import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
-public class BangBangController extends Thread {
+public class BangBangController {
 	
 	private static final int FILTER_OUT = 20;
 	private final int bandCenter;
@@ -13,6 +14,8 @@ public class BangBangController extends Thread {
 	private int filterControl;
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
+	private Navigation na;
+	private Odometer od;
 
 	/**
 	 * The constructor initializes the values for all the parameters of the wall following and starts the motors.
@@ -23,7 +26,8 @@ public class BangBangController extends Thread {
 	 * @param leftMotor		The pointer to the left motor
 	 * @param rightMotor	The pointer to the right motor
 	 */
-	public BangBangController(int bandCenter, int bandwidth, int motorLow, int motorHigh, EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
+	public BangBangController(Navigation na, Odometer od, int bandCenter, int bandwidth, int motorLow, int motorHigh, 
+			EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
 		this.bandCenter = bandCenter;
 		this.bandwidth = bandwidth;
 		this.motorLow = motorLow;
@@ -35,6 +39,8 @@ public class BangBangController extends Thread {
 		this.rightMotor.setSpeed(motorHigh);
 		this.leftMotor.forward();
 		this.rightMotor.forward();
+		this.na = na;
+		this.od = od;
 	}
 
 	/**
@@ -73,34 +79,63 @@ public class BangBangController extends Thread {
 
 		} 
 	}
+	
+	public void doGridTraversal(double nX, double nY, double x, double y, int length){
+
+		double curDestX = nX;
+		double curDestY = nY;
+		boolean hasBlock = false;
+
+		int counter = 2 * length;
+		while(counter > 0){
+			curDestX += (nX + x)/(length*2);
+			curDestY += (nY + y)/(length*2);
+			na.travelTo(curDestX, curDestY);
+			while(na.isNavigating()){
+			}
+			na.rotateUltraMotor(false);
+			System.out.println("The distance is " + distance);
+			if (distance < 30){
+				Sound.playNote(Sound.FLUTE, 440, 250); // sound to let us know robot sees the line
+			}
+			na.rotateUltraMotor(true);
+			counter--;
+		}
+	}
+
 
 	/**
 	 * This method is called outside this class to set the value of the distance from the wall. A filter is applied.
 	 * @param distance
 	 */
+	
 	public void processUSData(int distance) {
-		
-		// rudimentary filter - toss out invalid samples corresponding to null
-		// signal.
-		// (n.b. this was not included in the Bang-bang controller, but easily
-		// could have).
-		//
-		if (distance >= 120 && filterControl < FILTER_OUT) {
-			// bad value, do not set the distance var, however do increment the
-			// filter value
-			filterControl++;
-		} else if (distance >= 120) {
-			// We have repeated large values, so there must actually be nothing
-			// there: leave the distance alone
-			this.distance = distance;
-		} else {
-			// distance went below 255: reset filter and leave
-			// distance alone.
-			filterControl = 0;
-			this.distance = distance;
-		}
+		this.distance = distance;
 	}
-
+	
+//	public void processUSData(int distance) {
+//		
+//		// rudimentary filter - toss out invalid samples corresponding to null
+//		// signal.
+//		// (n.b. this was not included in the Bang-bang controller, but easily
+//		// could have).
+//		//
+//		if (distance >= 120 && filterControl < FILTER_OUT) {
+//			// bad value, do not set the distance var, however do increment the
+//			// filter value
+//			filterControl++;
+//		} else if (distance >= 120) {
+//			// We have repeated large values, so there must actually be nothing
+//			// there: leave the distance alone
+//			this.distance = distance;
+//		} else {
+//			// distance went below 255: reset filter and leave
+//			// distance alone.
+//			filterControl = 0;
+//			this.distance = distance;
+//		}
+//	}
+	
 	/**
 	 * This method returns the distance from the wall (to be displayed on the screen for example).
 	 * @return	the distance from the wall.

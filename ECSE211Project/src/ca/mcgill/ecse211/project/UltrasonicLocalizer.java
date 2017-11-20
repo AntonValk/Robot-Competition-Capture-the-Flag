@@ -80,6 +80,31 @@ public class UltrasonicLocalizer{
 			System.out.println("we are using fallingEdge!");
 		}
 	}
+	
+	public void doGridTraversal(double nX, double nY, double x, double y, int length){
+
+		double curDestX = nX;
+		double curDestY = nY;
+		boolean hasBlock = false;
+
+		int counter = 2 * length;
+		while(counter > 0){
+			curDestX += (x-nX)/(length*2);
+			curDestY += (y-nY)/(length*2);
+			na.travelTo(curDestX, curDestY);
+			while(na.isNavigating()){
+			}
+			if(counter != 1){
+				na.rotateUltraMotor(false);
+				System.out.println("The distance is " + distance);
+				if (distance < 25){
+					Sound.playNote(Sound.FLUTE, 440, 250); // sound to let us know robot sees the line
+				}
+				na.rotateUltraMotor(true);
+			}
+			counter--;
+		}
+	}
 
 	/**
 	 * This method localizes the robot in the falling edge mode

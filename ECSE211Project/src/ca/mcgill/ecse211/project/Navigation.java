@@ -20,6 +20,7 @@ public class Navigation{
 	private Odometer odometer; 
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
+	private EV3LargeRegulatedMotor ulMotor;
 	private EV3LargeRegulatedMotor ziplineMotor;
 
 	//changing variables 
@@ -33,6 +34,8 @@ public class Navigation{
 	
 	public double currentX;
 	public double currentY;
+	
+
 
 	/**
 	 * The constructor for the Navigation that initializes the 3 motors as well as the odometer.
@@ -41,10 +44,12 @@ public class Navigation{
 	 * @param rightMotor	pointer to the right motor
 	 * @param ziplineMotor	pointer to the zipline motor
 	 */
-	public Navigation(Odometer odometer,EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, EV3LargeRegulatedMotor ziplineMotor) {
+	public Navigation(Odometer odometer,EV3LargeRegulatedMotor leftMotor, 
+			EV3LargeRegulatedMotor rightMotor, EV3LargeRegulatedMotor ziplineMotor, EV3LargeRegulatedMotor ulMotor) {
 		this.odometer = odometer;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
+		this.ulMotor = ulMotor;
 		this.ziplineMotor = ziplineMotor;
 	} 
 	
@@ -271,6 +276,14 @@ public class Navigation{
 	    rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, theta), true && immediate);
 	  }
 	
+	void rotateUltraMotor(boolean back) {
+		ulMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
+
+	    // Rotate to new angle
+		if (!back) ulMotor.rotate(-100, false);
+		else ulMotor.rotate(100, false);
+	  }
+	
 	/**
 	 * This method return true if both motors are moving or the robot is traveling or is turning
 	 * 
@@ -280,6 +293,8 @@ public class Navigation{
 		//returns true if the robot is either Navigating or Turning
 		return isNavigating || isTurning || leftMotor.isMoving() && rightMotor.isMoving();
 	}
+	
+	
 	
 	/**
 	 * This method makes the motors move

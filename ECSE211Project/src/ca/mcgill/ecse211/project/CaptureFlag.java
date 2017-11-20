@@ -26,7 +26,7 @@ public class CaptureFlag {
 
 
 	//Set these as appropriate for your team and current situation
-	private static final String SERVER_IP = "192.168.2.3";
+	private static final String SERVER_IP = "192.168.2.26";
 	private static final int TEAM_NUMBER = 8;
 
 	//Enable/disable printing of debug info from the WiFi class
@@ -41,10 +41,15 @@ public class CaptureFlag {
 
 	private static final EV3LargeRegulatedMotor ziplineMotor =
 			new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
+	
+	private static final EV3LargeRegulatedMotor ultrasonicMotor =
+			new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 
 	private static final Port usPort = LocalEV3.get().getPort("S1");
 
 	private static UltrasonicLocalizer ultraLoc;
+//	private static BangBangController bb;
+
 	private static LightLocalizer lightLoc;
 	public static float lightValue;
 
@@ -93,9 +98,9 @@ public class CaptureFlag {
 	 */
 	public static final int[][] CORNERS = new int[][] {
 		{1,1,0},
-		{7,1,270},
-		{7,7,180},
-		{1,7,90}
+		{11,1,270},
+		{11,11,180},
+		{1,11,90}
 	};
 
 	/**
@@ -104,28 +109,6 @@ public class CaptureFlag {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static void main(String[] args) {
-
-//		int redTeam = 0, greenTeam = 0;
-//		int redCorner = 3, greenCorner = 1;
-//		int og = 1, or = 1;
-//		int red_ll_x = 0, red_ll_y = 0;
-//		int red_ur_x = 0, red_ur_y = 0;
-//		int green_ll_x = 0, green_ll_y = 0;
-//		int green_ur_x = 0, green_ur_y = 0;
-//		int zc_r_x = 4, zc_r_y = 9;
-//		int zo_r_x = 3, zo_r_y = 10;
-//		int zc_g_x = 8, zc_g_y = 3;
-//		int zo_g_x = 9, zo_g_y = 2;
-//		int sh_ll_x = 8, sh_ll_y = 9;
-//		int sh_ur_x = 11, sh_ur_y = 10;
-//		int sv_ll_x = 10, sv_ll_y = 5;
-//		int sv_ur_x = 11, sv_ur_y = 10;
-//		int sr_ll_x = 1, sr_ll_y = 9;
-//		int sr_ur_x = 2, sr_ur_y = 11;
-//		int sg_ll_x = 9, sg_ll_y = 1;
-//		int sg_ur_x = 11, sg_ur_y = 2;
-
-
 
 		int redTeam = 0, greenTeam = 0;
 		int redCorner = 0, greenCorner = 0;
@@ -247,15 +230,12 @@ public class CaptureFlag {
 
 
 		//two classes to perform wall following on the flags and detect the color of each one.
-		//BangBangController bb = new BangBangController(5,1,FORWARD_SPEED,ROTATE_SPEED,leftMotor,rightMotor);
 		LightSensor ls = new LightSensor();
 
 		final TextLCD t = LocalEV3.get().getTextLCD();
 		Odometer odometer = new Odometer(leftMotor, rightMotor);
-		Navigation na = new Navigation(odometer,leftMotor, rightMotor, ziplineMotor);
-
-		
-	//	Button.waitForAnyPress();
+		Navigation na = new Navigation(odometer,leftMotor, rightMotor, ziplineMotor, ultrasonicMotor);
+	//	bb = new BangBangController(na,odometer, 5,1,FORWARD_SPEED,ROTATE_SPEED,leftMotor,rightMotor);
 
 		ultraLoc = new UltrasonicLocalizer(na, odometer);
 
@@ -266,25 +246,116 @@ public class CaptureFlag {
 		usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc);
 		usPoller.start();
 		
-		ultraLoc.doUltrasonicLocalization();
-		
-		while(na.isNavigating()){
-		}
-		
-		try { 
-			Thread.sleep(250);
-		} catch (Exception e) {
-		}
-		lightLoc = new LightLocalizer(odometer, na);
-		double x = ultraLoc.getLocX();
-		double y = ultraLoc.getLocY();
-		
-		//this method make the robot close to the actual (0,0) point
-		lightLoc.adjustPosition();
-		lightLoc.doLightLocalization();
-		while(na.isNavigating()){
-		}
+		//test
+		odometer.setX(2*SQUARE_LENGTH);
+		odometer.setY(SQUARE_LENGTH);
+		odometer.setTheta(0);
+		na.doZipline(zc_g_x * SQUARE_LENGTH, zc_g_y * SQUARE_LENGTH, 3*ZIPLENGTH);
+		//for test purpose, the robot will go to (1, 3), (3, 3), (3, 1), (1,1)
+		ultraLoc.doGridTraversal(SQUARE_LENGTH,SQUARE_LENGTH,SQUARE_LENGTH, 3*SQUARE_LENGTH, 2);
+		ultraLoc.doGridTraversal(SQUARE_LENGTH,3*SQUARE_LENGTH,3*SQUARE_LENGTH, 3*SQUARE_LENGTH, 2);
+		ultraLoc.doGridTraversal(3*SQUARE_LENGTH,3*SQUARE_LENGTH,3*SQUARE_LENGTH, SQUARE_LENGTH, 2);
+		ultraLoc.doGridTraversal(3*SQUARE_LENGTH,SQUARE_LENGTH,SQUARE_LENGTH, SQUARE_LENGTH, 2);
 
+		
+		//comment for testing purpose
+//		ultraLoc.doUltrasonicLocalization();
+//		
+//		while(na.isNavigating()){
+//		}
+//		
+//		try { 
+//			Thread.sleep(250);
+//		} catch (Exception e) {
+//		}
+//		lightLoc = new LightLocalizer(odometer, na);
+//		double x = ultraLoc.getLocX();
+//		double y = ultraLoc.getLocY();
+//		
+//		//this method make the robot close to the actual (0,0) point
+//		lightLoc.adjustPosition();
+//		lightLoc.doLightLocalization();
+//		while(na.isNavigating()){
+//		}
+		
+		
+
+//		if (TEAM_NUMBER == redTeam){
+//			odometer.setX(CORNERS[redCorner][0]*SQUARE_LENGTH);
+//			odometer.setY(CORNERS[redCorner][1]*SQUARE_LENGTH);
+//			odometer.setTheta(CORNERS[redCorner][2]);
+//			
+//			na.travelTo(zo_r_x*SQUARE_LENGTH, CORNERS[redCorner][1]*SQUARE_LENGTH);
+//			na.travelTo(zo_r_x*SQUARE_LENGTH, zo_r_y*SQUARE_LENGTH);
+//
+//			na.travelTo((sh_ll_x - 1)*SQUARE_LENGTH,(sh_ll_y + 1)*SQUARE_LENGTH);
+//    		lightLoc.doLightLocalization();
+//			na.makeTurn(90, false, true);
+//			odometer.setX((sh_ll_x - 1)*SQUARE_LENGTH);
+//			odometer.setY((sh_ll_y + 1)*SQUARE_LENGTH);
+//			
+//			//shadow crossing
+//			na.travelTo(sh_ll_x*SQUARE_LENGTH,(sh_ll_y*SQUARE_LENGTH + 0.5*SQUARE_LENGTH));
+//			na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH, (sh_ur_y-0.5)*SQUARE_LENGTH);
+//			na.travelTo((sv_ll_x+ 0.5*SQUARE_LENGTH), sv_ll_y);
+//			//GO BACK TO START ZONE
+//			na.travelTo((sv_ll_x+ 1)*SQUARE_LENGTH, (sv_ll_y-1)*SQUARE_LENGTH);
+//    		lightLoc.doLightLocalization();
+//			na.makeTurn(90, false, true);
+//			odometer.setX((sh_ll_x + 1)*SQUARE_LENGTH);
+//			odometer.setY((sh_ll_y - 1)*SQUARE_LENGTH);
+//    		
+//			na.travelTo(sg_ur_x*SQUARE_LENGTH, sg_ur_y*SQUARE_LENGTH);
+//			//TODO:search for flag
+//			
+//			//GO BACK TO START ZONE - NOT USED FOR BETA DEMO
+//			//na.travelTo(sg_ur_x*SQUARE_LENGTH, sg_ur_y*SQUARE_LENGTH);
+//
+//			//SHALLOW CROSSING - NOT USED FOR BETA DEMO
+//			/*
+//			na.travelTo(sh_ll_x*SQUARE_LENGTH,(sh_ll_y*SQUARE_LENGTH + 0.5*SQUARE_LENGTH));
+//			na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH, (sh_ur_y-0.5)*SQUARE_LENGTH);
+//			na.travelTo((sv_ll_x+ 0.5*SQUARE_LENGTH), sv_ll_y);
+//			 */
+//
+//			//FLAG SEARCH -  NOT USED FOR BETA DEMO
+//			/*
+//			ls.start();
+//			bb.start();
+//			while(true){
+//				if(lightValue == or){
+//					Sound.playNote(Sound.FLUTE, 440, 250);
+//					Sound.playNote(Sound.FLUTE, 440, 250);
+//					Sound.playNote(Sound.FLUTE, 440, 250);
+//					break;
+//				}
+//			}
+//			 */
+//
+//			na.travelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
+//			while(na.isNavigating()){
+//
+//			}
+//		na.turnTo(-Math.atan(4/5)*360.0/(2*Math.PI)+360);
+//			na.doZipline(3*ZIPLENGTH);
+//			while(na.isNavigating()){
+//
+//			}
+//			odometer.setX(zc_r_x*SQUARE_LENGTH);
+//			odometer.setY(zc_r_y*SQUARE_LENGTH);
+//			odometer.setTheta(-Math.atan((4/5)*360.0/(2*Math.PI)));
+//			
+//			na.travelTo(zo_r_x*SQUARE_LENGTH, zo_r_y*SQUARE_LENGTH);
+//			lightLoc.doLightLocalization();
+//			na.makeTurn(90, false, true);
+//			odometer.setX(zo_r_x*SQUARE_LENGTH);
+//			odometer.setY(zo_r_y*SQUARE_LENGTH);
+//			odometer.setTheta(0);
+//			
+//			na.travelTo(zo_r_y*SQUARE_LENGTH, CORNERS[redCorner-1][1]*SQUARE_LENGTH);
+//
+//			na.travelTo(CORNERS[redCorner-1][0]*SQUARE_LENGTH, CORNERS[redCorner-1][1]*SQUARE_LENGTH);			
+//		}
 		if (TEAM_NUMBER == redTeam){
 			odometer.setX(CORNERS[redCorner][0]*SQUARE_LENGTH);
 			odometer.setY(CORNERS[redCorner][1]*SQUARE_LENGTH);
@@ -329,14 +400,35 @@ public class CaptureFlag {
 			na.travelTo(sg_ll_x*SQUARE_LENGTH, sg_ur_y*SQUARE_LENGTH);
 			na.travelTo(sg_ur_x*SQUARE_LENGTH, sg_ur_y*SQUARE_LENGTH);
 			
+//    		na.travelTo((sh_ll_x - 1)*SQUARE_LENGTH,(sh_ll_y + 1)*SQUARE_LENGTH);
+//			lightLoc = new LightLocalizer(odometer, na);
+//    		lightLoc.doLightLocalization();
+//			na.makeTurn(90, false, true);
+//			odometer.setX((sh_ll_x - 1)*SQUARE_LENGTH);
+//			odometer.setY((sh_ll_y + 1)*SQUARE_LENGTH);
+//			
+//			//cross shallow
+//    		na.travelTo(sh_ll_x*SQUARE_LENGTH,(sh_ll_y*SQUARE_LENGTH + 0.5*SQUARE_LENGTH));
+//			na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH, (sh_ur_y-0.5)*SQUARE_LENGTH);
+//			na.travelTo((sv_ll_x+ 0.5)*SQUARE_LENGTH, sv_ll_y*SQUARE_LENGTH);
+//			//GO BACK TO START ZONE
+//			
+//			na.travelTo((sv_ll_x+ 1)*SQUARE_LENGTH, (sv_ll_y-1)*SQUARE_LENGTH);
+//			lightLoc = new LightLocalizer(odometer, na);
+//    		lightLoc.doLightLocalization();
+//			na.makeTurn(90, false, true);
+//			odometer.setX((sh_ll_x + 1)*SQUARE_LENGTH);
+//			odometer.setY((sh_ll_y - 1)*SQUARE_LENGTH);
+//    		
+//			na.travelTo(sg_ur_x*SQUARE_LENGTH, sg_ur_y*SQUARE_LENGTH);
+//			
+//			na.travelTo(CORNERS[greenCorner-1][0]*SQUARE_LENGTH, CORNERS[greenCorner-1][1]*SQUARE_LENGTH);
 		}
 		else if (TEAM_NUMBER == greenTeam){
 			odometer.setX(CORNERS[greenCorner][0]*SQUARE_LENGTH);
 			odometer.setY(CORNERS[greenCorner][1]*SQUARE_LENGTH);
 			odometer.setTheta(CORNERS[greenCorner][2]);
-			
-//			if (!(zo_g_x == CORNERS[greenCorner][0]) && !(zo_g_y == CORNERS[greenCorner][1]))
-//					na.travelTo(CORNERS[greenCorner][0]*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
+		
 			boolean gotToDestination = false;
 			if(CORNERS[greenCorner][0] != zo_g_x){
 				while(!gotToDestination){
@@ -360,7 +452,7 @@ public class CaptureFlag {
 				odometer.setY(na.currentY);
 				odometer.setTheta(lightLoc.currentTheta);
 			}
-			
+
 			System.out.println("x before zipline: " + odometer.getX());
 			System.out.println("y before zipline: " + odometer.getY());
 			System.out.println("Theta before zipline: " + odometer.getTheta());
@@ -370,13 +462,7 @@ public class CaptureFlag {
 
 			}
 			na.motorStop();
-//			Button.waitForAnyPress();
 			
-//			odometer.setX(zc_r_x*SQUARE_LENGTH);
-//			odometer.setY(zc_r_y*SQUARE_LENGTH);
-//			odometer.setTheta(CORNERS[greenCorner][2]+ziplineTheta);
-			
-//			na.travelTo(zo_r_x*SQUARE_LENGTH, zo_r_y*SQUARE_LENGTH);
 			na.securityTurn();
 			lightLoc = new LightLocalizer(odometer, na);
 			lightLoc.doLightLocalization();
@@ -424,6 +510,60 @@ public class CaptureFlag {
 			odometer.setY(sr_ur_y*SQUARE_LENGTH);
 			odometer.setTheta(curTheta-90);
 			
+			//FLAG SEARCH
+			
+			
+			
+//			ls.start();
+//			bb.start();
+//			while(true){
+//				if(lightValue == og){
+//					Sound.playNote(Sound.FLUTE, 440, 250);
+//					Sound.playNote(Sound.FLUTE, 440, 250);
+//					Sound.playNote(Sound.FLUTE, 440, 250);
+//					break;
+//				}
+//			}
+//			 
+			
+//    		na.travelTo((sh_ll_x - 1)*SQUARE_LENGTH,(sh_ll_y + 1)*SQUARE_LENGTH);
+//			lightLoc = new LightLocalizer(odometer, na);
+//    		lightLoc.doLightLocalization();
+//			na.makeTurn(90, false, true);
+//			odometer.setX((sh_ll_x - 1)*SQUARE_LENGTH);
+//			odometer.setY((sh_ll_y + 1)*SQUARE_LENGTH);
+			
+			//cross shallow
+    		na.travelTo(sh_ll_x*SQUARE_LENGTH,(sh_ll_y*SQUARE_LENGTH + 0.5*SQUARE_LENGTH));
+			na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH, (sh_ur_y-0.5)*SQUARE_LENGTH);
+			na.travelTo((sv_ll_x+ 0.5)*SQUARE_LENGTH, sv_ll_y*SQUARE_LENGTH);
+			//GO BACK TO START ZONE
+//			
+//			na.travelTo((sv_ll_x+ 1)*SQUARE_LENGTH, (sv_ll_y-1)*SQUARE_LENGTH);
+//    		lightLoc.doLightLocalization();
+//			na.makeTurn(90, false, true);
+//			odometer.setX((sh_ll_x + 1)*SQUARE_LENGTH);
+//			odometer.setY((sh_ll_y - 1)*SQUARE_LENGTH);
+//    		
+//			na.travelTo(sg_ur_x*SQUARE_LENGTH, sg_ur_y*SQUARE_LENGTH);
+//			
+//			na.travelTo(CORNERS[greenCorner-1][0]*SQUARE_LENGTH, CORNERS[greenCorner-1][1]*SQUARE_LENGTH);
+
+		//	Button.waitForAnyPress();
+
+		//	na.travelTo(sr_ll_x*SQUARE_LENGTH, sr_ur_y*SQUARE_LENGTH);
+
+			
+
+			//SHALLOW CROSSING - NOT USED FOR BETA DEMO
+			/*
+    		na.travelTo(sh_ll_x*SQUARE_LENGTH,(sh_ll_y*SQUARE_LENGTH + 0.5*SQUARE_LENGTH));
+			na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH, (sh_ur_y-0.5)*SQUARE_LENGTH);
+			na.travelTo((sv_ll_x+ 0.5*SQUARE_LENGTH), sv_ll_y);
+			 */
+
+			//GO BACK TO START ZONE
+			//na.travelTo(sg_ll_x*SQUARE_LENGTH, sg_ur_y*SQUARE_LENGTH);
 		}
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
