@@ -17,19 +17,55 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
  */
 public class Navigation{
 	//variables only set once
-	private Odometer odometer; 
+	/**
+	 * The pointer to the odometer class.
+	 */
+	private Odometer odometer;
+	/**
+	 * The pointer to the left motor.
+	 */
 	private EV3LargeRegulatedMotor leftMotor;
+	/**
+	 * The pointer to the right motor.
+	 */
 	private EV3LargeRegulatedMotor rightMotor;
+	/**
+	 * The pointer to the motor connected to the ultrasonic sensor.
+	 */
 	private EV3LargeRegulatedMotor ulMotor;
+	/**
+	 * The pointer to the motor used for the zipline traversal.
+	 */
 	private EV3LargeRegulatedMotor ziplineMotor;
 
 	//changing variables 
+	/**
+	 * The boolean to know when the robot is navigating.
+	 */
 	private boolean isNavigating;
+	/**
+	 * The boolean to know when the robot is turning on itself.
+	 */
 	private boolean isTurning;
+	/**
+	 * The array for the robot's position (index 0 = x, index 1 = y, index 2 = theta).
+	 */
 	double[] position = new double[3];
+	/**
+	 * The value of the current x.
+	 */
 	private double nowX;
+	/**
+	 * The value of the current y.
+	 */
 	private double nowY;
+	/**
+	 * The value of the current theta.
+	 */
 	private double nowTheta;
+	/**
+	 * The objective theta: the target theta where it wants to go.
+	 */
 	private double thetaObj;
 	
 	/**
@@ -42,8 +78,6 @@ public class Navigation{
 	 */
 	public double currentY;
 	
-
-
 	/**
 	 * The constructor for the Navigation that initializes the 3 motors as well as the odometer.
 	 * @param odometer		pointer to the Odometer
@@ -141,6 +175,9 @@ public class Navigation{
 		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);*/
 	}
 	
+	/**
+	 * This method permits the robot to  performs a security turn before a midpoint localization to make sure it gets the first line.
+	 */
 	void securityTurn(){
 		leftMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
 		rightMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
@@ -148,6 +185,10 @@ public class Navigation{
 		rightMotor.rotate(100, false);
 	}
 	
+	/**
+	 * This method is to know if the robot is traversing the zipline.
+	 * @return true if the robot is currently on the zipline and false otherwise.
+	 */
 	boolean onZipline(){
 		//returns true if the robot is either Navigating or Turning
 		return ziplineMotor.isMoving();
@@ -219,7 +260,13 @@ public class Navigation{
 	  		}
 	}
 	
-	void bTravelTo(double x, double y){
+	/**
+	 * This method is used before the first localization to go to the "origin" point (its not always (0;0) because
+	 * it depends on the starting corner.
+	 * @param x		The x-coordinate of the destination point.
+	 * @param y		The y-coordinate of the destination point.
+	 */
+	void goToOrigin(double x, double y){
 
 		isNavigating=true;
 
@@ -290,6 +337,10 @@ public class Navigation{
 	    rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, theta), true && immediate);
 	  }
 	
+	/**
+	 * This method rotates the motor connected to the ultrasonic sensor to perform flag detection.
+	 * @param back	boolean to know if we turn on the right or on the left.
+	 */
 	void rotateUltraMotor(boolean back) {
 		ulMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
 
@@ -308,12 +359,9 @@ public class Navigation{
 		return isNavigating || isTurning || leftMotor.isMoving() && rightMotor.isMoving();
 	}
 	
-	
-	
 	/**
 	 * This method makes the motors move forward.
 	 */
-
 	public void motorMoveForward(){
 		leftMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
 		rightMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
@@ -326,7 +374,6 @@ public class Navigation{
 	 * 
 	 * @param distance		the distance for the motor to move.
 	 */
-	
 	public void motorMoveBackward(double distance){
 		leftMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
 		rightMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
@@ -338,7 +385,6 @@ public class Navigation{
 	/**
 	 * This method stops the robot from moving by setting the speed of motors to zero.
 	 */
-
 	public void motorStop(){
 		leftMotor.setSpeed(0);
 		rightMotor.setSpeed(0);
@@ -350,7 +396,6 @@ public class Navigation{
 	 * 
 	 * @param odometer		the odometer object
 	 */
-	
 	void getPosition(Odometer odometer){
 		odometer.getPosition(position, new boolean[] {true, true, true});
 		nowX = position[0];
@@ -379,6 +424,9 @@ public class Navigation{
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
 	
+	/**
+	 * This method is used after the midpoints localization to set the x and y to their exact values.
+	 */
 	private void setCurrentCoordinates(){
 		double shiftX = odometer.getX() % CaptureFlag.SQUARE_LENGTH;
 		if(shiftX > (CaptureFlag.SQUARE_LENGTH / 2)){

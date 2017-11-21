@@ -16,15 +16,42 @@ import lejos.hardware.Sound;
  * uses the color sensor to know where the robot is from the origin.
  */
 public class LightLocalizer{
+	/**
+	 * The correction period so that the sensor does not update the value constently.
+	 */
 	private static final long CORRECTION_PERIOD = 9;
+	/**
+	 * The pointer to the odometer class.
+	 */
 	private Odometer odometer;
+	/**
+	 * The pointer to the Navigation class.
+	 */
 	private Navigation navigation;
-	private static EV3ColorSensor lightSensor = new EV3ColorSensor(LocalEV3.get().getPort("S4")); //setup light sensor
-	private static SampleProvider colorSensor = lightSensor.getMode("Red"); 
-	private float[] lightValue; //saves the sensor data
-	private float prevLightValue; // previous value of light sensor
-	private int lineCounter; // keeps track of the amount of lines crossed
-	private final double DISTANCE = 13; //distance from light sensor to center of rotation
+	/**
+	 * The pointer to the light sensor.
+	 */
+	private static EV3ColorSensor lightSensor = new EV3ColorSensor(LocalEV3.get().getPort("S4"));
+	/**
+	 * The sample provider for the light sensor.
+	 */
+	private static SampleProvider colorSensor = lightSensor.getMode("Red");
+	/**
+	 * The array that saves the sensor data.
+	 */
+	private float[] lightValue;
+	/**
+	 * The previous value of the light sensor.
+	 */
+	private float prevLightValue;
+	/**
+	 * The counter for the amount of lines crossed during the first localization.
+	 */
+	private int lineCounter;
+	/**
+	 * The distance from the light sensor to the center of rotation.
+	 */
+	private final double DISTANCE = 13;
 	
 	/**
 	 * The corrected theta (the exact direction the robot is facing).
@@ -120,7 +147,7 @@ public class LightLocalizer{
 		System.out.println("The y is" + odometer.getY());
 		System.out.println("The theta angle is" + odometer.getTheta());
 		// move to the origin
-		navigation.bTravelTo(0, 0);
+		navigation.goToOrigin(0, 0);
 
 		//Wait to get to point
 		while (navigation.isNavigating()) {
@@ -254,7 +281,7 @@ public class LightLocalizer{
 		System.out.println("The y is" + odometer.getY());
 		System.out.println("Theta before travel to" + odometer.getTheta());
 		// move to the origin
-		navigation.bTravelTo(0, 0);
+		navigation.goToOrigin(0, 0);
 
 		//Wait to get to point
 		while (navigation.isNavigating()) {
@@ -264,6 +291,9 @@ public class LightLocalizer{
 		setCurrentTheta();
 	}
 	
+	/**
+	 * This method gets the current theta from the odometer after a midpoint localization and corrects it to the exact value it is supposed to be.
+	 */
 	private void setCurrentTheta(){
 		double curTheta = odometer.getTheta();
 		System.out.println("the theta i am recalculating " + curTheta);

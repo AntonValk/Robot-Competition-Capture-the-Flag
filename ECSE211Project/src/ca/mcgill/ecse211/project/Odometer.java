@@ -15,19 +15,51 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
  * motors tacho count.
  */
 public class Odometer extends Thread {
-	  // robot position
+	
+	/**
+	 * The x coordinate of the robot.
+	 */
 	  private double x;
+	  
+	  /**
+	   * The y coordinate of the robot.
+	   */
 	  private double y;
+	  
+	  /**
+	   * The theta angle of the robot.
+	   */
 	  private double theta;
+	  
+	  /**
+	   * The tacho count for the left motor.
+	   */
 	  private int leftMotorTachoCount;
+	  
+	  /**
+	   * The tacho count for the right motor.
+	   */
 	  private int rightMotorTachoCount;
+	  
+	  /**
+	   * The pointer to the left motor.
+	   */
 	  private EV3LargeRegulatedMotor leftMotor;
+	  
+	  /**
+	   * The pointer to the right motor.
+	   */
 	  private EV3LargeRegulatedMotor rightMotor;
 
-
-	  private static final long ODOMETER_PERIOD = 25; /*odometer update period, in ms*/
-
-	  private Object lock; /*lock object for mutual exclusion*/
+	  /**
+	   * The odometer update period in ms.
+	   */
+	  private static final long ODOMETER_PERIOD = 25;
+	  
+	  /**
+	   * The lock object for mutual exclusion.
+	   */
+	  private Object lock;
 
 	  /**
 	   * The constructor for the odometer which sets the two motors (left and right) and resets the values fr x,y,theta and tacho counts.

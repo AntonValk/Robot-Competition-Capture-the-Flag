@@ -14,27 +14,79 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
  * This class uses the ultrasonic sensor as well as falling / rising edge routine to know what is the 0 degrees direction.
  */
 public class UltrasonicLocalizer{
-	private int choice;				// 0 for rising edge, 1 for falling edge
+	/**
+	 * The choice for either rising (0) or falling (1) edge routine.
+	 */
+	private int choice;
+	
+	/**
+	 * The pointer to the Navigation class.
+	 */
 	private Navigation na;
+	
+	/**
+	 * The pointer to the Odometer clas.
+	 */
 	private Odometer odometer;
-	private EV3LargeRegulatedMotor leftMotor; 
+	
+	/**
+	 * The pointer to the left motor.
+	 */
+	private EV3LargeRegulatedMotor leftMotor;
+	
+	/**
+	 * The pointer to the right motor.
+	 */
 	private EV3LargeRegulatedMotor rightMotor;
 
 	/**
 	 * The value got by the front light sensor an updated by the LightSensor class.
 	 */
 	public static float lightValue;
-	private int distance;			// The distance between the robot and the wall
+	
+	/**
+	 * The distance between the robot and the wall.
+	 */
+	private int distance;
 
-	private double firstAngle;		// The angle where the robot detect the wall for the first time
-	private double secondAngle;		// The angle where the robot detect the wall for the second time
-	private double correctedTheta;	// The angle that the robot is away from the zero angle
+	/**
+	 * The angle where the robot detect the wall for the first time.
+	 */
+	private double firstAngle;
+	
+	/**
+	 * The angle where the robot detect the wall for the second time.
+	 */
+	private double secondAngle;
+	
+	/**
+	 * The angle that the robot is away from the zero angle.
+	 */
+	private double correctedTheta;
 
-	private boolean firstPointDetected;	 // Used to prevent the robot from detecting a point 2 times
-	private boolean secondPointDetected; // Used to prevent the robot from detecting a point 2 times
-
-	private double locationX;	// current X
-	private double locationY;	// current Y
+	/**
+	 * Used to prevent the robot from detecting a point 2 times.
+	 */
+	private boolean firstPointDetected;
+	
+	/**
+	 * Used to prevent the robot from detecting a point 2 times.
+	 */
+	private boolean secondPointDetected;
+	
+	/**
+	 * The current x coordinate.
+	 */
+	private double locationX;
+	
+	/**
+	 * The current y coordinate.
+	 */
+	private double locationY;
+	
+	/**
+	 * The current theta angle.
+	 */
 	private double locationTheta;
 
 
@@ -89,7 +141,7 @@ public class UltrasonicLocalizer{
 			System.out.println("we are using fallingEdge!");
 		}
 	}
-
+	
 	public void doGridTraversal(double nX, double nY, double x, double y, int length){
 
 		double curDestX = nX;

@@ -5,7 +5,6 @@ package ca.mcgill.ecse211.project;
  * 	@version 1.0
  * 
  */
-
 import java.util.Map;
 import ca.mcgill.ecse211.WiFiClient.WifiConnection;
 import lejos.hardware.Button;
@@ -26,30 +25,57 @@ public class CaptureFlag {
 
 
 	//Set these as appropriate for your team and current situation
-	private static final String SERVER_IP = "192.168.2.16";
+	/**
+	 * The server IP for the computer "controlling" the robot.
+	 */
+	private static final String SERVER_IP = "192.168.2.11";
+	
+	/**
+	 * The team number.
+	 */
 	private static final int TEAM_NUMBER = 8;
 
 	//Enable/disable printing of debug info from the WiFi class
 	private static final boolean ENABLE_DEBUG_WIFI_PRINT = true;
 
-
+	/**
+	 * The pointer to the left motor.
+	 */
 	private static final EV3LargeRegulatedMotor leftMotor =
 			new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
 
+	/**
+	 * The pointer to the right motor.
+	 */
 	private static final EV3LargeRegulatedMotor rightMotor =
 			new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
 
+	/**
+	 * The pointer to the zipline motor.
+	 */
 	private static final EV3LargeRegulatedMotor ziplineMotor =
 			new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
 	
+	/**
+	 * The pointer to the motor connected to the ultrasonic sensor (to turn it 45 degrees when detecting a flag).
+	 */
 	private static final EV3LargeRegulatedMotor ultrasonicMotor =
 			new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 
+	/**
+	 * The pointer to the ultrasonic sensor.
+	 */
 	private static final Port usPort = LocalEV3.get().getPort("S1");
 
+	/**
+	 * The ultrasonic localizer.
+	 */
 	private static UltrasonicLocalizer ultraLoc;
 //	private static BangBangController bb;
 
+	/**
+	 * The light localizer.
+	 */
 	private static LightLocalizer lightLoc;
 	/**
 	 * The value got by the front light sensor an updated by the LightSensor class.
@@ -253,6 +279,10 @@ public class CaptureFlag {
 		odometer.setY(SQUARE_LENGTH);
 		odometer.setTheta(0);
 		//na.doZipline(zc_g_x * SQUARE_LENGTH, zc_g_y * SQUARE_LENGTH, 3*ZIPLENGTH);
+		na.doZipline(1 * SQUARE_LENGTH, 2 * SQUARE_LENGTH, 3*ZIPLENGTH);
+		leftMotor.stop();
+		rightMotor.stop();
+		Button.waitForAnyPress();
 		
 		//test bangbang
 		System.out.println("start bangbang");

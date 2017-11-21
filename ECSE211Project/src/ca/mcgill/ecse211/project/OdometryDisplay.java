@@ -13,9 +13,25 @@ import lejos.hardware.lcd.TextLCD;
  * This class is used to displays the values that the odometer updates.
  */
 public class OdometryDisplay extends Thread {
+	
+	/**
+	 * The odometer display period.
+	 */
 	private static final long DISPLAY_PERIOD = 250;
+	
+	/**
+	 * The pointer to the odometer class.
+	 */
 	private Odometer odometer;
+	
+	/**
+	 * The pointer to the LCD screen.
+	 */
 	private TextLCD t;
+	
+	/**
+	 * The pointer to the ultrasonic localizer.
+	 */
 	private UltrasonicLocalizer ul;
 
 	/**
