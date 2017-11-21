@@ -26,7 +26,7 @@ public class CaptureFlag {
 
 
 	//Set these as appropriate for your team and current situation
-	private static final String SERVER_IP = "192.168.2.26";
+	private static final String SERVER_IP = "192.168.2.16";
 	private static final int TEAM_NUMBER = 8;
 
 	//Enable/disable printing of debug info from the WiFi class
@@ -239,7 +239,7 @@ public class CaptureFlag {
 		Navigation na = new Navigation(odometer,leftMotor, rightMotor, ziplineMotor, ultrasonicMotor);
 	//	bb = new BangBangController(na,odometer, 5,1,FORWARD_SPEED,ROTATE_SPEED,leftMotor,rightMotor);
 
-		ultraLoc = new UltrasonicLocalizer(na, odometer);
+		ultraLoc = new UltrasonicLocalizer(na, odometer, leftMotor, rightMotor);
 
 		odometer.start();
 		OdometryDisplay od = new OdometryDisplay(odometer, t,ultraLoc);
@@ -248,16 +248,23 @@ public class CaptureFlag {
 		usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc);
 		usPoller.start();
 		
-		//test
-		odometer.setX(2*SQUARE_LENGTH);
+		//test zipline
+		odometer.setX(SQUARE_LENGTH);
 		odometer.setY(SQUARE_LENGTH);
 		odometer.setTheta(0);
-		na.doZipline(zc_g_x * SQUARE_LENGTH, zc_g_y * SQUARE_LENGTH, 3*ZIPLENGTH);
-		//for test purpose, the robot will go to (1, 3), (3, 3), (3, 1), (1,1)
-		ultraLoc.doGridTraversal(SQUARE_LENGTH,SQUARE_LENGTH,SQUARE_LENGTH, 3*SQUARE_LENGTH, 2);
-		ultraLoc.doGridTraversal(SQUARE_LENGTH,3*SQUARE_LENGTH,3*SQUARE_LENGTH, 3*SQUARE_LENGTH, 2);
-		ultraLoc.doGridTraversal(3*SQUARE_LENGTH,3*SQUARE_LENGTH,3*SQUARE_LENGTH, SQUARE_LENGTH, 2);
-		ultraLoc.doGridTraversal(3*SQUARE_LENGTH,SQUARE_LENGTH,SQUARE_LENGTH, SQUARE_LENGTH, 2);
+		//na.doZipline(zc_g_x * SQUARE_LENGTH, zc_g_y * SQUARE_LENGTH, 3*ZIPLENGTH);
+		
+		//test bangbang
+		System.out.println("start bangbang");
+		ls.start();
+		ultraLoc.doBangBang(10,2,50,100);
+		Button.waitForAnyPress();
+		
+		//for test purpose, the robot will go to (1, 3), (3, 3), (3, 1), (1,1)		
+		//ultraLoc.doGridTraversal(SQUARE_LENGTH,SQUARE_LENGTH,SQUARE_LENGTH, 3*SQUARE_LENGTH, 2);
+		//ultraLoc.doGridTraversal(SQUARE_LENGTH,3*SQUARE_LENGTH,3*SQUARE_LENGTH, 3*SQUARE_LENGTH, 2);
+		//ultraLoc.doGridTraversal(3*SQUARE_LENGTH,3*SQUARE_LENGTH,3*SQUARE_LENGTH, SQUARE_LENGTH, 2);
+		//ultraLoc.doGridTraversal(3*SQUARE_LENGTH,SQUARE_LENGTH,SQUARE_LENGTH, SQUARE_LENGTH, 2);
 
 		
 		//comment for testing purpose
@@ -325,7 +332,7 @@ public class CaptureFlag {
 //			ls.start();
 //			bb.start();
 //			while(true){
-//				if(lightValue == or){
+//				if(lightValue == colorValueOf_or){
 //					Sound.playNote(Sound.FLUTE, 440, 250);
 //					Sound.playNote(Sound.FLUTE, 440, 250);
 //					Sound.playNote(Sound.FLUTE, 440, 250);

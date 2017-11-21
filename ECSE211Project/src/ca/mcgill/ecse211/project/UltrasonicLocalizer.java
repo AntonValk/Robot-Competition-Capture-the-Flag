@@ -8,6 +8,7 @@ package ca.mcgill.ecse211.project;
  */
 
 import lejos.hardware.Sound;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 /**
  * This class uses the ultrasonic sensor as well as falling / rising edge routine to know what is the 0 degrees direction.
@@ -16,7 +17,13 @@ public class UltrasonicLocalizer{
 	private int choice;				// 0 for rising edge, 1 for falling edge
 	private Navigation na;
 	private Odometer odometer;
+	private EV3LargeRegulatedMotor leftMotor; 
+	private EV3LargeRegulatedMotor rightMotor;
 
+	/**
+	 * The value got by the front light sensor an updated by the LightSensor class.
+	 */
+	public static float lightValue;
 	private int distance;			// The distance between the robot and the wall
 
 	private double firstAngle;		// The angle where the robot detect the wall for the first time
@@ -36,15 +43,17 @@ public class UltrasonicLocalizer{
 	 * @param navigation	pointer to the navigation class
 	 * @param odometer		pointer to the Odometer
 	 */
-	public UltrasonicLocalizer(Navigation navigation, Odometer odometer) {
+	public UltrasonicLocalizer(Navigation navigation, Odometer odometer, EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
 		this.na = navigation;
 		this.odometer = odometer;
+		this.leftMotor = leftMotor;
+		this.rightMotor = rightMotor;
 
 		this.distance = 0;
 		this.correctedTheta = 0;
 		this.firstPointDetected = false;
 		this.secondPointDetected = false;
-		
+
 		this.choice = 0;
 		this.locationX = 0;
 		this.locationY = 0;
@@ -68,7 +77,7 @@ public class UltrasonicLocalizer{
 		while (distance == 1){
 
 		}
-		
+
 		choice = (distance > (CaptureFlag.DISTANCE_THRESHOLD + CaptureFlag.NOISE_MARGIN+2)) ? 1 : 0;
 
 		if (choice == 0) {
@@ -80,7 +89,7 @@ public class UltrasonicLocalizer{
 			System.out.println("we are using fallingEdge!");
 		}
 	}
-	
+
 	public void doGridTraversal(double nX, double nY, double x, double y, int length){
 
 		double curDestX = nX;
@@ -104,6 +113,46 @@ public class UltrasonicLocalizer{
 			}
 			counter--;
 		}
+	}
+
+	public void doBangBang(int bandCenter, int bandWidth, int motorLow, int motorHigh){
+		float forwardLimit = 180;
+		float backwardLimit = 1;
+		float bwMotorLow = 50;
+		float fwLimitSpd = 150;
+		while(lightValue != 6.0){
+			if (distance < backwardLimit){
+				this.leftMotor.setSpeed(bwMotorLow);
+				this.rightMotor.setSpeed(motorHigh);
+				this.leftMotor.backward();
+				this.rightMotor.backward();
+			}else if(distance < (bandCenter - bandWidth) && distance > backwardLimit){
+				this.leftMotor.setSpeed(motorHigh);
+				this.rightMotor.setSpeed(motorLow);
+				this.leftMotor.forward();
+				this.rightMotor.forward();
+			}else if(distance > (bandCenter - bandWidth) && distance < (bandCenter + bandWidth)){
+				this.leftMotor.setSpeed(motorHigh);
+				this.rightMotor.setSpeed(motorHigh);
+				this.leftMotor.forward();
+				this.rightMotor.forward();
+			}else if(distance > (bandCenter + bandWidth) && distance < forwardLimit){
+				this.leftMotor.setSpeed(motorLow);
+				this.rightMotor.setSpeed(motorHigh);
+				this.leftMotor.forward();
+				this.rightMotor.forward();
+			}else if(distance > forwardLimit){
+				this.rightMotor.setSpeed(motorHigh);
+				this.leftMotor.setSpeed(fwLimitSpd);
+				this.leftMotor.forward();
+				this.rightMotor.forward();
+			}
+		}
+		this.rightMotor.stop();
+		this.leftMotor.stop();
+		Sound.playNote(Sound.FLUTE, 440, 250);
+		Sound.playNote(Sound.FLUTE, 440, 250);
+		Sound.playNote(Sound.FLUTE, 440, 250);
 	}
 
 	/**
@@ -164,7 +213,6 @@ public class UltrasonicLocalizer{
 		na.motorStop();
 		correctAngleAndLocation();
 	}
-
 
 	/**
 	 * This method localizes the robot in the rising edge mode. 
@@ -280,6 +328,7 @@ public class UltrasonicLocalizer{
 	public double getLocX(){
 		return this.locationX;
 	}
+
 	/**
 	 * This method returns the value of the y coordinate.
 	 * @return 	y value

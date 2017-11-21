@@ -79,30 +79,6 @@ public class BangBangController {
 
 		} 
 	}
-	
-	public void doGridTraversal(double nX, double nY, double x, double y, int length){
-
-		double curDestX = nX;
-		double curDestY = nY;
-		boolean hasBlock = false;
-
-		int counter = 2 * length;
-		while(counter > 0){
-			curDestX += (nX + x)/(length*2);
-			curDestY += (nY + y)/(length*2);
-			na.travelTo(curDestX, curDestY);
-			while(na.isNavigating()){
-			}
-			na.rotateUltraMotor(false);
-			System.out.println("The distance is " + distance);
-			if (distance < 30){
-				Sound.playNote(Sound.FLUTE, 440, 250); // sound to let us know robot sees the line
-			}
-			na.rotateUltraMotor(true);
-			counter--;
-		}
-	}
-
 
 	/**
 	 * This method is called outside this class to set the value of the distance from the wall. A filter is applied.
