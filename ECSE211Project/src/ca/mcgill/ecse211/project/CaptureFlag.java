@@ -1,5 +1,6 @@
 package ca.mcgill.ecse211.project;
 
+import java.util.Arrays;
 /** Main class
  * 	@author Borui Tao
  * 	@version 1.0
@@ -275,20 +276,20 @@ public class CaptureFlag {
 		usPoller.start();
 		
 		//test zipline
-		odometer.setX(SQUARE_LENGTH);
+		/*odometer.setX(SQUARE_LENGTH);
 		odometer.setY(SQUARE_LENGTH);
 		odometer.setTheta(0);
 		//na.doZipline(zc_g_x * SQUARE_LENGTH, zc_g_y * SQUARE_LENGTH, 3*ZIPLENGTH);
 		na.doZipline(1 * SQUARE_LENGTH, 2 * SQUARE_LENGTH, 3*ZIPLENGTH);
 		leftMotor.stop();
 		rightMotor.stop();
-		Button.waitForAnyPress();
+		Button.waitForAnyPress();*/
 		
 		//test bangbang
-		System.out.println("start bangbang");
+		/*System.out.println("start bangbang");
 		ls.start();
 		ultraLoc.doBangBang(10,2,50,100);
-		Button.waitForAnyPress();
+		Button.waitForAnyPress();*/
 		
 		//for test purpose, the robot will go to (1, 3), (3, 3), (3, 1), (1,1)		
 		//ultraLoc.doGridTraversal(SQUARE_LENGTH,SQUARE_LENGTH,SQUARE_LENGTH, 3*SQUARE_LENGTH, 2);
@@ -307,7 +308,7 @@ public class CaptureFlag {
 //			Thread.sleep(250);
 //		} catch (Exception e) {
 //		}
-//		lightLoc = new LightLocalizer(odometer, na);
+		lightLoc = new LightLocalizer(odometer, na);
 //		double x = ultraLoc.getLocX();
 //		double y = ultraLoc.getLocY();
 //		
@@ -396,7 +397,7 @@ public class CaptureFlag {
 //			na.travelTo(CORNERS[redCorner-1][0]*SQUARE_LENGTH, CORNERS[redCorner-1][1]*SQUARE_LENGTH);			
 //		}
 		if (TEAM_NUMBER == redTeam){
-			odometer.setX(CORNERS[redCorner][0]*SQUARE_LENGTH);
+			/*odometer.setX(CORNERS[redCorner][0]*SQUARE_LENGTH);
 			odometer.setY(CORNERS[redCorner][1]*SQUARE_LENGTH);
 			odometer.setTheta(CORNERS[redCorner][2]);
 			
@@ -411,7 +412,60 @@ public class CaptureFlag {
 			}
 			odometer.setX(zo_r_x*SQUARE_LENGTH);
 			odometer.setY(zo_r_y*SQUARE_LENGTH);
-			odometer.setTheta(CORNERS[redCorner][2]);
+			odometer.setTheta(CORNERS[redCorner][2]);*/
+			
+			
+			//SHALLOW CROSSING
+			odometer.setX(SQUARE_LENGTH);
+			odometer.setY(SQUARE_LENGTH);
+			odometer.setTheta(0);
+			
+			if(odometer.getX() < sh_ll_x*SQUARE_LENGTH){
+				if(odometer.getY() > sv_ll_y*SQUARE_LENGTH){
+					//hor right - ver down
+					na.travelTo((sh_ll_x)*SQUARE_LENGTH,(sh_ll_y+0.5)*SQUARE_LENGTH);
+					na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH,(sh_ur_y-0.5)*SQUARE_LENGTH);
+					na.travelTo((sv_ur_x-0.5)*SQUARE_LENGTH,(sv_ur_y-0.5)*SQUARE_LENGTH);
+					na.travelTo((sv_ll_x+0.5)*SQUARE_LENGTH,(sv_ll_y)*SQUARE_LENGTH);
+					na.travelTo((sv_ll_x*SQUARE_LENGTH)-5,(sv_ll_y-1)*SQUARE_LENGTH);
+				}else{
+					//hor right - ver up
+					na.travelTo((sh_ll_x)*SQUARE_LENGTH,(sh_ll_y+0.5)*SQUARE_LENGTH);
+					na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH,(sh_ur_y-0.5)*SQUARE_LENGTH);
+					na.travelTo((sv_ll_x+0.5)*SQUARE_LENGTH,(sv_ll_y+0.5)*SQUARE_LENGTH);
+					na.travelTo((sv_ur_x-0.5)*SQUARE_LENGTH,(sv_ur_y)*SQUARE_LENGTH);
+					na.travelTo((sv_ur_x-1)*SQUARE_LENGTH,(sv_ur_y+1)*SQUARE_LENGTH);
+				}
+			}else{
+				if(odometer.getY() > sv_ll_y*SQUARE_LENGTH){
+					//hor left - ver down
+					na.travelTo((sh_ur_x)*SQUARE_LENGTH,(sh_ur_y-0.5)*SQUARE_LENGTH);
+					na.travelTo((sh_ll_x+0.5)*SQUARE_LENGTH,(sh_ll_y+0.5)*SQUARE_LENGTH);
+					na.travelTo((sv_ur_x-0.5)*SQUARE_LENGTH,(sv_ur_y-0.5)*SQUARE_LENGTH);
+					na.travelTo((sv_ll_x+0.5)*SQUARE_LENGTH, sv_ll_y);
+					na.travelTo((sv_ll_x*SQUARE_LENGTH)-5,(sv_ll_y-1)*SQUARE_LENGTH);
+				}else{
+					//hor left - ver up
+					na.travelTo((sh_ur_x)*SQUARE_LENGTH,(sh_ur_y-0.5)*SQUARE_LENGTH);
+					na.travelTo((sh_ll_x+0.5)*SQUARE_LENGTH, (sh_ll_y+0.5)*SQUARE_LENGTH);
+					na.travelTo((sv_ll_x+0.5)*SQUARE_LENGTH, (sv_ll_y+0.5)*SQUARE_LENGTH);
+					na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH, (sv_ur_y)*SQUARE_LENGTH);
+					na.travelTo((sv_ur_x*SQUARE_LENGTH)+5,(sv_ur_y+1)*SQUARE_LENGTH);
+				}
+			}
+			na.securityTurn();
+			lightLoc.midpointLocalization();
+			odometer.setX(na.currentX);
+			odometer.setY(na.currentY);
+			odometer.setTheta(lightLoc.currentTheta);
+			System.out.println("X: " + odometer.getX());
+			System.out.println("Y: " + odometer.getY());
+			System.out.println("Theta: " + odometer.getTheta());
+			leftMotor.stop();
+			rightMotor.stop();
+			Button.waitForAnyPress();
+			//
+			
 			
 			na.travelTo(zc_r_x*SQUARE_LENGTH, zc_r_y*SQUARE_LENGTH);
 			double ziplineTheta = Math.atan(Math.abs(zc_r_y-zc_g_y)/Math.abs(zc_r_x-zc_g_x))*360.0/(2*Math.PI);
