@@ -122,7 +122,7 @@ public class Navigation{
 	 * @param y				the y coordinate for the start of the zipline.
 	 * @param zipdistance	the distance of the zipline.
 	 */
-	public void doZipline(double x, double y, double zipdistance){
+	public void doZipline(double x, double y, double zipdistance, double travelDis){
 		//get the current values for x, y and theta
 		nowX = odometer.getX();
 		nowY = odometer.getY();
@@ -167,10 +167,10 @@ public class Navigation{
 		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 0.77*zipdistance), true);
 		
 		ziplineMotor.setSpeed(3*CaptureFlag.FORWARD_SPEED);
-		ziplineMotor.rotate(-convertDistance(CaptureFlag.RADIUS, 4*CaptureFlag.ZIPLENGTH), false); //3.5
+		ziplineMotor.rotate(-convertDistance(CaptureFlag.RADIUS, 5*CaptureFlag.ZIPLENGTH), false); //3.5
 		
-		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, 30), true);   //0.77*distance
-		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 30), false);
+		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, travelDis), true);   //0.77*distance
+		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, travelDis), false);
 
 		/*leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
 		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);

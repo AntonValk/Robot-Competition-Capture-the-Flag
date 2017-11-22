@@ -29,7 +29,7 @@ public class CaptureFlag {
 	/**
 	 * The server IP for the computer "controlling" the robot.
 	 */
-	private static final String SERVER_IP = "192.168.2.20";
+	private static final String SERVER_IP = "192.168.2.5";
 	
 	/**
 	 * The team number.
@@ -85,7 +85,7 @@ public class CaptureFlag {
 	/**
 	 * The speed at which the robot is traveling straight.
 	 */
-	public static final int FORWARD_SPEED = 170; //140
+	public static final int FORWARD_SPEED = 200; //140
 	/**
 	 * The distance between the Ultrasonic sensor and the back light sensor.
 	 */
@@ -530,39 +530,28 @@ public class CaptureFlag {
 //			na.travelTo(CORNERS[greenCorner-1][0]*SQUARE_LENGTH, CORNERS[greenCorner-1][1]*SQUARE_LENGTH);
 		}
 		else if (TEAM_NUMBER == greenTeam){
+			na.makeTurn(3.5, false,false);
 			odometer.setX(CORNERS[greenCorner][0]*SQUARE_LENGTH);
 			odometer.setY(CORNERS[greenCorner][1]*SQUARE_LENGTH);
 			odometer.setTheta(CORNERS[greenCorner][2]);
 		
 			boolean gotToDestination = false;
 			if(CORNERS[greenCorner][0] != zo_g_x && CORNERS[greenCorner][1] != zo_g_y){
-				if (Math.abs(zo_g_x-CORNERS[greenCorner][0]) > Math.abs(zo_g_y-CORNERS[greenCorner][1])){
-					while(!gotToDestination){
+				while(!gotToDestination){
+					if (Math.abs(zo_g_x-CORNERS[greenCorner][0]) > Math.abs(zo_g_y-CORNERS[greenCorner][1]))
 						gotToDestination = na.travelTo(zo_g_x*SQUARE_LENGTH, CORNERS[greenCorner][1]*SQUARE_LENGTH);
-						na.securityTurn();
-						lightLoc = new LightLocalizer(odometer, na);
-						lightLoc.midpointLocalization();
-						na.makeTurn(5, false,false);
-						System.out.println("lightLoc1");
-						odometer.setX(na.currentX);
-						odometer.setY(na.currentY);
-						odometer.setTheta(lightLoc.currentTheta);
-					}
-					gotToDestination = false;
-				}else{
-					while(!gotToDestination){
+					else 
 						gotToDestination = na.travelTo(CORNERS[greenCorner][0]*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
-						na.securityTurn();
-						lightLoc = new LightLocalizer(odometer, na);
-						lightLoc.midpointLocalization();
-						na.makeTurn(5, false,false);
-						System.out.println("lightLoc1");
-						odometer.setX(na.currentX);
-						odometer.setY(na.currentY);
-						odometer.setTheta(lightLoc.currentTheta);
-					}
-					gotToDestination = false;
+					na.securityTurn();
+					lightLoc = new LightLocalizer(odometer, na);
+					lightLoc.midpointLocalization();
+					na.makeTurn(5, false,false);
+					System.out.println("lightLoc1");
+					odometer.setX(na.currentX);
+					odometer.setY(na.currentY);
+					odometer.setTheta(lightLoc.currentTheta);
 				}
+				gotToDestination = false;
 			}
 			while(!gotToDestination){
 				gotToDestination = na.travelTo(zo_g_x*SQUARE_LENGTH, zo_g_y*SQUARE_LENGTH);
@@ -581,13 +570,15 @@ public class CaptureFlag {
 				odometer.setY(na.currentY);
 				odometer.setTheta(lightLoc.currentTheta);
 			}
-
+			na.makeTurn(4, false,false);
+			odometer.setTheta(lightLoc.currentTheta);
 			System.out.println("x before zipline: " + odometer.getX());
 			System.out.println("y before zipline: " + odometer.getY());
 			System.out.println("Theta before zipline: " + odometer.getTheta());
 			
-
-			na.doZipline(zc_g_x * SQUARE_LENGTH, zc_g_y * SQUARE_LENGTH, 3*ZIPLENGTH);
+			if ((zo_g_x == zo_r_x) || (zo_g_x == zo_r_x))
+				na.doZipline(zc_g_x * SQUARE_LENGTH, zc_g_y * SQUARE_LENGTH, 3*ZIPLENGTH, 30);
+			else na.doZipline(zc_g_x * SQUARE_LENGTH, zc_g_y * SQUARE_LENGTH, 3*ZIPLENGTH, 40);
 			while(na.onZipline() || na.isNavigating()){
 
 			}
@@ -610,41 +601,25 @@ public class CaptureFlag {
 			
 			gotToDestination = false;
 			if(zo_r_x != sr_ur_x && zo_r_y != sr_ur_y){
-				if (zo_r_x != zc_r_x){
-					while(!gotToDestination){
+				while(!gotToDestination){
+					if (zo_r_x != zc_r_x)
 						gotToDestination = na.travelTo(zo_r_x*SQUARE_LENGTH, sr_ur_y*SQUARE_LENGTH);
-						na.securityTurn();
-						lightLoc = new LightLocalizer(odometer, na);
-						lightLoc.midpointLocalization();
-						if(!gotToDestination) {
-							na.makeTurn(5, false,true);
-							while(na.isNavigating()){
-								
-							}
-						}
-						odometer.setX(na.currentX);
-						odometer.setY(na.currentY);
-						odometer.setTheta(lightLoc.currentTheta);
-					}
-					gotToDestination = false;
-				}else if(zo_r_y != zc_r_y){
-					while(!gotToDestination){
+					else if(zo_r_y != zc_r_y)
 						gotToDestination = na.travelTo(sr_ur_x*SQUARE_LENGTH, zo_r_y*SQUARE_LENGTH);
-						na.securityTurn();
-						lightLoc = new LightLocalizer(odometer, na);
-						lightLoc.midpointLocalization();
-						if(!gotToDestination) {
-							na.makeTurn(5, false,true);
-							while(na.isNavigating()){
-								
-							}
+					na.securityTurn();
+					lightLoc = new LightLocalizer(odometer, na);
+					lightLoc.midpointLocalization();
+					if(!gotToDestination) {
+						na.makeTurn(5, false,true);
+						while(na.isNavigating()){
+
 						}
-						odometer.setX(na.currentX);
-						odometer.setY(na.currentY);
-						odometer.setTheta(lightLoc.currentTheta);
 					}
-					gotToDestination = false;
+					odometer.setX(na.currentX);
+					odometer.setY(na.currentY);
+					odometer.setTheta(lightLoc.currentTheta);
 				}
+				gotToDestination = false;
 			}
 			while(!gotToDestination){
 				gotToDestination = na.travelTo(sr_ur_x*SQUARE_LENGTH, sr_ur_y*SQUARE_LENGTH);
