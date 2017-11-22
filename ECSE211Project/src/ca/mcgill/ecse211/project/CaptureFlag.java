@@ -411,43 +411,60 @@ public class CaptureFlag {
 			
 			
 			//SHALLOW CROSSING
-			odometer.setX(SQUARE_LENGTH);
-			odometer.setY(SQUARE_LENGTH);
+			odometer.setX(sr_ur_x*SQUARE_LENGTH);
+			odometer.setY(sr_ur_y*SQUARE_LENGTH);
 			odometer.setTheta(0);
 			
-			if(odometer.getX() < sh_ll_x*SQUARE_LENGTH){
-				if(odometer.getY() > sv_ll_y*SQUARE_LENGTH){
-					//hor right - ver down
-					na.travelTo((sh_ll_x)*SQUARE_LENGTH,(sh_ll_y+0.5)*SQUARE_LENGTH);
-					na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH,(sh_ur_y-0.5)*SQUARE_LENGTH);
-					na.travelTo((sv_ur_x-0.5)*SQUARE_LENGTH,(sv_ur_y-0.5)*SQUARE_LENGTH);
-					na.travelTo((sv_ll_x+0.5)*SQUARE_LENGTH,(sv_ll_y)*SQUARE_LENGTH);
-					na.travelTo((sv_ll_x*SQUARE_LENGTH)-5,(sv_ll_y-1)*SQUARE_LENGTH);
-				}else{
-					//hor right - ver up
-					na.travelTo((sh_ll_x)*SQUARE_LENGTH,(sh_ll_y+0.5)*SQUARE_LENGTH);
-					na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH,(sh_ur_y-0.5)*SQUARE_LENGTH);
-					na.travelTo((sv_ll_x+0.5)*SQUARE_LENGTH,(sv_ll_y+0.5)*SQUARE_LENGTH);
-					na.travelTo((sv_ur_x-0.5)*SQUARE_LENGTH,(sv_ur_y)*SQUARE_LENGTH);
-					na.travelTo((sv_ur_x-1)*SQUARE_LENGTH,(sv_ur_y+1)*SQUARE_LENGTH);
-				}
-			}else{
-				if(odometer.getY() > sv_ll_y*SQUARE_LENGTH){
-					//hor left - ver down
-					na.travelTo((sh_ur_x)*SQUARE_LENGTH,(sh_ur_y-0.5)*SQUARE_LENGTH);
-					na.travelTo((sh_ll_x+0.5)*SQUARE_LENGTH,(sh_ll_y+0.5)*SQUARE_LENGTH);
-					na.travelTo((sv_ur_x-0.5)*SQUARE_LENGTH,(sv_ur_y-0.5)*SQUARE_LENGTH);
-					na.travelTo((sv_ll_x+0.5)*SQUARE_LENGTH, sv_ll_y);
-					na.travelTo((sv_ll_x*SQUARE_LENGTH)-5,(sv_ll_y-1)*SQUARE_LENGTH);
-				}else{
-					//hor left - ver up
-					na.travelTo((sh_ur_x)*SQUARE_LENGTH,(sh_ur_y-0.5)*SQUARE_LENGTH);
-					na.travelTo((sh_ll_x+0.5)*SQUARE_LENGTH, (sh_ll_y+0.5)*SQUARE_LENGTH);
-					na.travelTo((sv_ll_x+0.5)*SQUARE_LENGTH, (sv_ll_y+0.5)*SQUARE_LENGTH);
-					na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH, (sv_ur_y)*SQUARE_LENGTH);
-					na.travelTo((sv_ur_x*SQUARE_LENGTH)+5,(sv_ur_y+1)*SQUARE_LENGTH);
-				}
+			double centerRed_x = Math.abs(red_ur_x-red_ll_x/2);
+			double centerRed_y = Math.abs(red_ur_y-red_ll_y/2);
+			double[] distances = new double[4];//0: sh_ll / 1: sh_ur / 2:sv_ll / 3:sv_ur
+			distances[0] = Math.sqrt(Math.pow(sh_ll_y-centerRed_y,2) + Math.pow(sh_ll_x-centerRed_x,2));
+			distances[1] = Math.sqrt(Math.pow(sh_ur_y-centerRed_y,2) + Math.pow(sh_ur_x-centerRed_x,2));
+			distances[2] = Math.sqrt(Math.pow(sv_ll_y-centerRed_y,2) + Math.pow(sv_ll_x-centerRed_x,2));
+			distances[3] = Math.sqrt(Math.pow(sv_ur_y-centerRed_y,2) + Math.pow(sv_ur_x-centerRed_x,2));
+			int firstPoint = getMinDistance(distances);
+			if(firstPoint == 0){
+				na.travelTo((sh_ll_x)*SQUARE_LENGTH,(sh_ll_y)*SQUARE_LENGTH);
+				na.travelTo((sh_ur_x)*SQUARE_LENGTH,(sh_ur_y)*SQUARE_LENGTH);
+			}else if(firstPoint == 1){
+				na.travelTo((sh_ur_x)*SQUARE_LENGTH,(sh_ur_y)*SQUARE_LENGTH);
+				na.travelTo((sh_ll_x)*SQUARE_LENGTH,(sh_ll_y)*SQUARE_LENGTH);
 			}
+			distances = new double[2];
+			distances[0] = Math.sqrt(Math.pow(sv_ll_y-(odometer.getY()/SQUARE_LENGTH),2) + Math.pow(sv_ll_x-(odometer.getX()/SQUARE_LENGTH),2));
+			distances[1] = Math.sqrt(Math.pow(sv_ur_y-(odometer.getY()/SQUARE_LENGTH),2) + Math.pow(sv_ur_x-(odometer.getX()/SQUARE_LENGTH),2));
+			int thirdPoint = getMinDistance(distances);
+			if(thirdPoint == 0){
+				na.travelTo((sv_ll_x)*SQUARE_LENGTH,(sv_ll_y)*SQUARE_LENGTH);
+				na.travelTo((sv_ur_x)*SQUARE_LENGTH,(sv_ur_y)*SQUARE_LENGTH);
+			}else if(thirdPoint == 1){
+				na.travelTo((sv_ll_x)*SQUARE_LENGTH,(sv_ll_y)*SQUARE_LENGTH);
+				na.travelTo((sv_ur_x)*SQUARE_LENGTH,(sv_ur_y)*SQUARE_LENGTH);
+			}
+			
+			if(firstPoint == 2){
+				na.travelTo((sv_ll_x)*SQUARE_LENGTH,(sv_ll_y)*SQUARE_LENGTH);
+				na.travelTo((sv_ur_x)*SQUARE_LENGTH,(sv_ur_y)*SQUARE_LENGTH);
+			}else if(firstPoint == 3){
+				na.travelTo((sv_ur_x)*SQUARE_LENGTH,(sv_ur_y)*SQUARE_LENGTH);
+				na.travelTo((sv_ll_x)*SQUARE_LENGTH,(sv_ll_y)*SQUARE_LENGTH);
+			}
+			distances = new double[2];
+			distances[0] = Math.sqrt(Math.pow(sh_ll_y-(odometer.getY()/SQUARE_LENGTH),2) + Math.pow(sh_ll_x-(odometer.getX()/SQUARE_LENGTH),2));
+			distances[1] = Math.sqrt(Math.pow(sh_ur_y-(odometer.getY()/SQUARE_LENGTH),2) + Math.pow(sh_ur_x-(odometer.getX()/SQUARE_LENGTH),2));
+			thirdPoint = getMinDistance(distances);
+			if(thirdPoint == 0){
+				na.travelTo((sh_ll_x)*SQUARE_LENGTH,(sh_ll_y)*SQUARE_LENGTH);
+				na.travelTo((sh_ur_x)*SQUARE_LENGTH,(sh_ur_y)*SQUARE_LENGTH);
+			}else if(thirdPoint == 1){
+				na.travelTo((sh_ll_x)*SQUARE_LENGTH,(sh_ll_y)*SQUARE_LENGTH);
+				na.travelTo((sh_ur_x)*SQUARE_LENGTH,(sh_ur_y)*SQUARE_LENGTH);
+			}
+			leftMotor.stop();
+			rightMotor.stop();
+			Button.waitForAnyPress();
+			
+			//perform localization at the end
 			na.securityTurn();
 			lightLoc.midpointLocalization();
 			odometer.setX(na.currentX);
@@ -719,4 +736,17 @@ public class CaptureFlag {
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 	}
+	
+	private static int getMinDistance(double[] distances){
+		double curMax = distances[0];
+		int index = 0;
+		for(int i=1; i<distances.length;i++){
+			if(distances[i] > curMax){
+				curMax = distances[i];
+				index = i;
+			}
+		}
+		return index;
+	}
+	
 }
