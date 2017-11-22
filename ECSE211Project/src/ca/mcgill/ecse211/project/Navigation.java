@@ -166,8 +166,11 @@ public class Navigation{
 		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, 0.77*zipdistance), true);   //0.77*distance
 		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 0.77*zipdistance), true);
 		
-		ziplineMotor.setSpeed(2*CaptureFlag.FORWARD_SPEED);
-		ziplineMotor.rotate(-convertDistance(CaptureFlag.RADIUS, 3.5*CaptureFlag.ZIPLENGTH), false);
+		ziplineMotor.setSpeed(3*CaptureFlag.FORWARD_SPEED);
+		ziplineMotor.rotate(-convertDistance(CaptureFlag.RADIUS, 4*CaptureFlag.ZIPLENGTH), false); //3.5
+		
+		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, 30), true);   //0.77*distance
+		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 30), false);
 
 		/*leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
 		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
@@ -247,7 +250,7 @@ public class Navigation{
 //	    rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance), false);
 	    
 	  //do lightLocalization if distance > 3 tiles
-	  	if(distance > 3*CaptureFlag.SQUARE_LENGTH){
+	  	if(distance > (3*CaptureFlag.SQUARE_LENGTH+5)){
 	  			leftMotor.rotate(convertDistance(CaptureFlag.RADIUS,3*CaptureFlag.SQUARE_LENGTH), true);
 	  			rightMotor.rotate(convertDistance(CaptureFlag.RADIUS,3*CaptureFlag.SQUARE_LENGTH), false);
 	  			setCurrentCoordinates();
@@ -341,12 +344,12 @@ public class Navigation{
 	 * This method rotates the motor connected to the ultrasonic sensor to perform flag detection.
 	 * @param back	boolean to know if we turn on the right or on the left.
 	 */
-	void rotateUltraMotor(boolean back) {
+	void rotateUltraMotor(int deg,boolean back) {
 		ulMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
 
 	    // Rotate to new angle
-		if (!back) ulMotor.rotate(-100, false);
-		else ulMotor.rotate(100, false);
+		if (!back) ulMotor.rotate(-deg, false);
+		else ulMotor.rotate(deg,false);
 	  }
 	
 	/**
@@ -375,8 +378,8 @@ public class Navigation{
 	 * @param distance		the distance for the motor to move.
 	 */
 	public void motorMoveBackward(double distance){
-		leftMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
-		rightMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
+		leftMotor.setSpeed(CaptureFlag.ROTATE_SPEED+10);
+		rightMotor.setSpeed(CaptureFlag.ROTATE_SPEED+10);
 			
 		leftMotor.rotate(-convertDistance(CaptureFlag.RADIUS, distance), true);
 		rightMotor.rotate(-convertDistance(CaptureFlag.RADIUS, distance), false);
