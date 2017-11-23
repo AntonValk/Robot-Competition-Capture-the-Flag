@@ -10,35 +10,19 @@ package ca.mcgill.ecse211.project;
 import lejos.hardware.lcd.TextLCD;
 
 /**
- * This class is used to displays the values that the odometer updates.
+ * Displays the values that the odometer updates.
  */
 public class OdometryDisplay extends Thread {
-	
-	/**
-	 * The odometer display period.
-	 */
 	private static final long DISPLAY_PERIOD = 250;
-	
-	/**
-	 * The pointer to the odometer class.
-	 */
 	private Odometer odometer;
-	
-	/**
-	 * The pointer to the LCD screen.
-	 */
 	private TextLCD t;
-	
-	/**
-	 * The pointer to the ultrasonic localizer.
-	 */
 	private UltrasonicLocalizer ul;
 
 	/**
-	 * The constructor for the odometry display that sets the odometer, the text lcd and the US localizer.
-	 * @param odometer		pointer to the Odometer.
-	 * @param t				pointer to the LCT text.
-	 * @param ul			pointer to the UltrasonicLocalizer.
+	 * The constructor for the odometry display that sets the odometer, the text lcd and the US localizer
+	 * @param odometer		pointer to the Odometer
+	 * @param t				pointer to the LCT text
+	 * @param ul			pointer to the UltrasonicLocalizer
 	 */
 	public OdometryDisplay(Odometer odometer, TextLCD t, UltrasonicLocalizer ul) {
 		this.odometer = odometer;
@@ -47,7 +31,7 @@ public class OdometryDisplay extends Thread {
 	}
 
 	/**
-	 * The method runs in a thread and keeps updating the robot's screen.
+	 * The method runs in a thread and keeps updating the robot's screen
 	 */
 	public void run() {
 		long displayStart, displayEnd;

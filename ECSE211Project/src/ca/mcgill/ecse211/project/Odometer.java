@@ -11,55 +11,23 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 
 /**
- * This class implements the odometer which takes care of updating the values for X, Y and Theta based on the wheel
+ * The odometer takes care of updating the values for X, Y and Theta based on the wheel
  * motors tacho count.
  */
 public class Odometer extends Thread {
-	
-	/**
-	 * The x coordinate of the robot.
-	 */
+	  // robot position
 	  private double x;
-	  
-	  /**
-	   * The y coordinate of the robot.
-	   */
 	  private double y;
-	  
-	  /**
-	   * The theta angle of the robot.
-	   */
 	  private double theta;
-	  
-	  /**
-	   * The tacho count for the left motor.
-	   */
 	  private int leftMotorTachoCount;
-	  
-	  /**
-	   * The tacho count for the right motor.
-	   */
 	  private int rightMotorTachoCount;
-	  
-	  /**
-	   * The pointer to the left motor.
-	   */
 	  private EV3LargeRegulatedMotor leftMotor;
-	  
-	  /**
-	   * The pointer to the right motor.
-	   */
 	  private EV3LargeRegulatedMotor rightMotor;
 
-	  /**
-	   * The odometer update period in ms.
-	   */
-	  private static final long ODOMETER_PERIOD = 25;
-	  
-	  /**
-	   * The lock object for mutual exclusion.
-	   */
-	  private Object lock;
+
+	  private static final long ODOMETER_PERIOD = 25; /*odometer update period, in ms*/
+
+	  private Object lock; /*lock object for mutual exclusion*/
 
 	  /**
 	   * The constructor for the odometer which sets the two motors (left and right) and resets the values fr x,y,theta and tacho counts.
@@ -78,7 +46,7 @@ public class Odometer extends Thread {
 	  }
 
 	  /**
-	   * This is the run method (required for Thread).
+	   * This is the run method (required for Thread)
 	   */
 	  public void run() {
 	    long updateStart, updateEnd;
@@ -133,7 +101,7 @@ public class Odometer extends Thread {
 	  }
 
 	  /**
-	   * This method gets the current position information of the robot.
+	   * Gets the current position information of the robot.
 	   * @param position 		the current position of the robot
 	   * @param update 			set to true at postion 0 to get x, 1 to get y, 2 to get theta [x, y, z] 
 	   */
@@ -150,8 +118,8 @@ public class Odometer extends Thread {
 	  }
 
 	  /**
-	   * This method returns x.
-	   * @return 		 x value (in cm).
+	   * This method returns x
+	   * @return 		 x value
 	   */
 	  public double getX() {
 	    double result;
@@ -164,8 +132,8 @@ public class Odometer extends Thread {
 	  }
 
 	  /**
-	   * This method returns y.
-	   * @return 			y value (in cm).
+	   * This method returns y
+	   * @return 			y value
 	   */
 	  public double getY() {
 	    double result;
@@ -178,8 +146,8 @@ public class Odometer extends Thread {
 	  }
 
 	/**
-	 * This method returns theta.
-	 * @return 			theta value (in degrees).
+	 * This method returns theta
+	 * @return 			theta value
 	 */
 	  public double getTheta() {
 	    double result;
@@ -208,7 +176,7 @@ public class Odometer extends Thread {
 	    }
 	  }
 	  /**
-	   * This method allows us to set x.
+	   * This method allows us to set x
 	   * @param x 		new x value 
 	   */  
 	  public void setX(double x) {
@@ -217,7 +185,7 @@ public class Odometer extends Thread {
 	    }
 	  }
 	  /**
-	   * This method allows us to set y.
+	   * This method allows us to set y
 	   * @param y 		new y value 
 	   */  
 	  public void setY(double y) {
@@ -226,7 +194,7 @@ public class Odometer extends Thread {
 	    }
 	  }
 	 /**
-	  * This method allows us to set Theta.
+	  * This method allows us to set Theta
 	  * @param theta 		new angle value 
 	  */
 	  public void setTheta(double theta) {

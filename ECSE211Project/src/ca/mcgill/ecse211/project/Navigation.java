@@ -167,7 +167,7 @@ public class Navigation{
 		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 0.77*zipdistance), true);
 		
 		ziplineMotor.setSpeed(3*CaptureFlag.FORWARD_SPEED);
-		ziplineMotor.rotate(-convertDistance(CaptureFlag.RADIUS, 5*CaptureFlag.ZIPLENGTH), false); //3.5
+		ziplineMotor.rotate(-convertDistance(CaptureFlag.RADIUS, 4.5*CaptureFlag.ZIPLENGTH), false); //3.5
 		
 		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, travelDis), true);   //0.77*distance
 		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, travelDis), false);
@@ -368,6 +368,7 @@ public class Navigation{
 	public void motorMoveForward(){
 		leftMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
 		rightMotor.setSpeed(CaptureFlag.ROTATE_SPEED);
+		
 		leftMotor.forward();
 		rightMotor.forward();
 	}
@@ -383,6 +384,7 @@ public class Navigation{
 			
 		leftMotor.rotate(-convertDistance(CaptureFlag.RADIUS, distance), true);
 		rightMotor.rotate(-convertDistance(CaptureFlag.RADIUS, distance), false);
+
 	}
 	
 	/**

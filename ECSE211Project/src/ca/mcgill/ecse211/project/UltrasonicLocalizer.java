@@ -14,79 +14,25 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
  * This class uses the ultrasonic sensor as well as falling / rising edge routine to know what is the 0 degrees direction.
  */
 public class UltrasonicLocalizer{
-	/**
-	 * The choice for either rising (0) or falling (1) edge routine.
-	 */
-	private int choice;
-	
-	/**
-	 * The pointer to the Navigation class.
-	 */
+	private int choice;				// 0 for rising edge, 1 for falling edge
 	private Navigation na;
-	
-	/**
-	 * The pointer to the Odometer clas.
-	 */
 	private Odometer odometer;
-	
-	/**
-	 * The pointer to the left motor.
-	 */
-	private EV3LargeRegulatedMotor leftMotor;
-	
-	/**
-	 * The pointer to the right motor.
-	 */
+	private EV3LargeRegulatedMotor leftMotor; 
 	private EV3LargeRegulatedMotor rightMotor;
 
 	/**
 	 * The value got by the front light sensor an updated by the LightSensor class.
 	 */
 	public static float lightValue;
-	
-	/**
-	 * The distance between the robot and the wall.
-	 */
-	private int distance;
+	private int distance;			// The distance between the robot and the wall
 
-	/**
-	 * The angle where the robot detect the wall for the first time.
-	 */
-	private double firstAngle;
-	
-	/**
-	 * The angle where the robot detect the wall for the second time.
-	 */
-	private double secondAngle;
-	
-	/**
-	 * The angle that the robot is away from the zero angle.
-	 */
-	private double correctedTheta;
+	private double firstAngle;		// The angle where the robot detect the wall for the first time
+	private double secondAngle;		// The angle where the robot detect the wall for the second time
+	private double correctedTheta;	// The angle that the robot is away from the zero angle
 
-	/**
-	 * Used to prevent the robot from detecting a point 2 times.
-	 */
-	private boolean firstPointDetected;
-	
-	/**
-	 * Used to prevent the robot from detecting a point 2 times.
-	 */
-	private boolean secondPointDetected;
-	
-	/**
-	 * The current x coordinate.
-	 */
-	private double locationX;
-	
-	/**
-	 * The current y coordinate.
-	 */
-	private double locationY;
-	
-	/**
-	 * The current theta angle.
-	 */
+	private boolean firstPointDetected;	 // Used to prevent the robot from detecting a point 2 times
+	private boolean secondPointDetected; // Used to prevent the robot from detecting a point 2 times
+
 	private double locationTheta;
 
 
@@ -107,8 +53,6 @@ public class UltrasonicLocalizer{
 		this.secondPointDetected = false;
 
 		this.choice = 0;
-		this.locationX = 0;
-		this.locationY = 0;
 	}
 
 	/** 
@@ -141,59 +85,65 @@ public class UltrasonicLocalizer{
 			System.out.println("we are using fallingEdge!");
 		}
 	}
-	
-	public void doGridTraversal(double nX, double nY, double x, double y, int length){
 
-		double curDestX = nX;
-		double curDestY = nY;
-		boolean hasBlock = false;
-
-		int counter = 2 * length;
-		while(counter > 0){
-			curDestX += (x-nX)/(length*2);
-			curDestY += (y-nY)/(length*2);
-			na.travelTo(curDestX, curDestY);
-			while(na.isNavigating()){
-			}
-			if(counter != 1){
-				na.rotateUltraMotor(false);
-				System.out.println("The distance is " + distance);
-				if (distance < 25){
-					Sound.playNote(Sound.FLUTE, 440, 250); // sound to let us know robot sees the line
-				}
-				na.rotateUltraMotor(true);
-			}
-			counter--;
-		}
-	}
-
+//	public void doGridTraversal(double nX, double nY, double x, double y, int length){
+//
+//		double curDestX = nX;
+//		double curDestY = nY;
+//		boolean hasBlock = false;
+//
+//		int counter = 2 * length;
+//		while(counter > 0){
+//			curDestX += (x-nX)/(length*2);
+//			curDestY += (y-nY)/(length*2);
+//			na.travelTo(curDestX, curDestY);
+//			while(na.isNavigating()){
+//			}
+//			if(counter != 1){
+//				na.rotateUltraMotor(100,false);
+//				System.out.println("The distance is " + distance);
+//				if (distance < 25){
+//					Sound.playNote(Sound.FLUTE, 440, 250); // sound to let us know robot sees the line
+//				}
+//				na.rotateUltraMotor(100,true);
+//			}
+//			counter--;
+//		}
+//	}
+//
 	public void doBangBang(int bandCenter, int bandWidth, int motorLow, int motorHigh){
+		na.rotateUltraMotor(45,false);
 		float forwardLimit = 180;
 		float backwardLimit = 1;
 		float bwMotorLow = 50;
 		float fwLimitSpd = 150;
 		while(lightValue != 6.0){
+			System.out.println("The distance is "+distance);
 			if (distance < backwardLimit){
 				this.leftMotor.setSpeed(bwMotorLow);
 				this.rightMotor.setSpeed(motorHigh);
 				this.leftMotor.backward();
 				this.rightMotor.backward();
 			}else if(distance < (bandCenter - bandWidth) && distance > backwardLimit){
-				this.leftMotor.setSpeed(motorHigh);
-				this.rightMotor.setSpeed(motorLow);
+				System.out.println("a");
+				this.leftMotor.setSpeed(motorLow);
+				this.rightMotor.setSpeed(motorHigh);
 				this.leftMotor.forward();
 				this.rightMotor.forward();
 			}else if(distance > (bandCenter - bandWidth) && distance < (bandCenter + bandWidth)){
+				System.out.println("b");
 				this.leftMotor.setSpeed(motorHigh);
 				this.rightMotor.setSpeed(motorHigh);
 				this.leftMotor.forward();
 				this.rightMotor.forward();
 			}else if(distance > (bandCenter + bandWidth) && distance < forwardLimit){
-				this.leftMotor.setSpeed(motorLow);
-				this.rightMotor.setSpeed(motorHigh);
+				System.out.println("c");
+				this.leftMotor.setSpeed(motorHigh);
+				this.rightMotor.setSpeed(motorLow);
 				this.leftMotor.forward();
 				this.rightMotor.forward();
 			}else if(distance > forwardLimit){
+				System.out.println("d");
 				this.rightMotor.setSpeed(motorHigh);
 				this.leftMotor.setSpeed(fwLimitSpd);
 				this.leftMotor.forward();
@@ -242,7 +192,7 @@ public class UltrasonicLocalizer{
 		na.makeTurn(-360, false, true);
 
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(1500);
 		} catch (Exception e) {
 		}
 
@@ -300,7 +250,7 @@ public class UltrasonicLocalizer{
 		na.makeTurn(-360, false, true);
 
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(1500);
 		} catch (Exception e) {
 		}
 
@@ -331,16 +281,7 @@ public class UltrasonicLocalizer{
 	 * Finally, it set the odometer Theta to be the calculated value and turn the robot to the 0 degree direction. 
 	 *
 	 */
-	public void correctAngleAndLocation(){		  
-		locationTheta = (firstAngle + (360 - secondAngle) - 90) / 2 ;
-		if (choice == 0){
-			locationX = CaptureFlag.DISTANCE_THRESHOLD * Math.cos(Math.toRadians(locationTheta));
-			locationY = CaptureFlag.DISTANCE_THRESHOLD * Math.cos(Math.toRadians(locationTheta));
-		}else if (choice == 1){
-			locationX = CaptureFlag.DISTANCE_THRESHOLD * Math.sin(Math.toRadians(locationTheta));
-			locationY = CaptureFlag.DISTANCE_THRESHOLD * Math.sin(Math.toRadians(locationTheta));
-		}
-
+	public void correctAngleAndLocation(){		  	
 		firstAngle = ((firstAngle % 360) + 360) % 360;
 		secondAngle = ((secondAngle % 360) + 360) % 360;
 
@@ -372,22 +313,5 @@ public class UltrasonicLocalizer{
 			this.distance = 300;
 		return this.distance;
 	}
-
-	/**
-	 * This method returns the value of the x coordinate.
-	 * @return 	x value
-	 */
-	public double getLocX(){
-		return this.locationX;
-	}
-
-	/**
-	 * This method returns the value of the y coordinate.
-	 * @return 	y value
-	 */
-	public double getLocY(){
-		return this.locationY;
-	}
-
 }
 

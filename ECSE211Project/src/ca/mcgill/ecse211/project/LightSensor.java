@@ -15,21 +15,9 @@ import lejos.robotics.SampleProvider;
  * This class is used to get the color of the bricks for flag recognition.
  */
 public class LightSensor extends Thread {
-	/**
-	 * The correction period so that the sensor does not update the value constently.
-	 */
 	private static final long CORRECTION_PERIOD = 10;
-	/**
-	 * The pointer to the light sensor.
-	 */
-	private static EV3ColorSensor lightSensor = new EV3ColorSensor(LocalEV3.get().getPort("S2"));
-	/**
-	 * The sample provider for the color sensor.
-	 */
-	private static SampleProvider colorSensor = lightSensor.getMode("ColorID");
-	/**
-	 * The array that saves the sensor data.
-	 */
+	private static EV3ColorSensor lightSensor = new EV3ColorSensor(LocalEV3.get().getPort("S2")); //setup light sensor
+	private static SampleProvider colorSensor = lightSensor.getMode("ColorID"); 
 	private float[] lightValue; //saves the sensor data
 
 	/**
