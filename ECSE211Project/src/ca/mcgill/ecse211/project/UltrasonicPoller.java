@@ -17,21 +17,28 @@ import lejos.robotics.SampleProvider;
  * or about 14 Hz.
  */
 public class UltrasonicPoller extends Thread {
+	/**
+	 * The sample provider for the ultrasonic sensor.
+	 */
 	  private SampleProvider us;
+	  /**
+	   * The pointer to the ultrasonic localizer.
+	   */
 	  private UltrasonicLocalizer ul;
-	 // private BangBangController bb;
+	  /**
+	   * The array that saves the sensor data.
+	   */
 	  private float[] usData;
 
 	  /**
 	   * The constructor sets the objects used to updte the sensor's data.
 	   */
-	 // public UltrasonicPoller(SampleProvider us, float[] usData, UltrasonicLocalizer ul, BangBangController bb) {
+	  
 	  public UltrasonicPoller(SampleProvider us, float[] usData, UltrasonicLocalizer ul) {
 
 	    this.us = us;
 	    this.ul = ul;
 	    this.usData = usData;
-	  //  this.bb = bb;
 	  }
 
 	  /**

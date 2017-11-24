@@ -14,25 +14,58 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
  * This class uses the ultrasonic sensor as well as falling / rising edge routine to know what is the 0 degrees direction.
  */
 public class UltrasonicLocalizer{
-	private int choice;				// 0 for rising edge, 1 for falling edge
+	/**
+	 * The choice for either rising (0) or falling (1) edge routine.
+	 */
+	private int choice;
+	/**
+	 * The pointer to the Navigation class.
+	 */
 	private Navigation na;
+	/**
+	 * The pointer to the Odometer class.
+	 */
 	private Odometer odometer;
-	private EV3LargeRegulatedMotor leftMotor; 
+	/**
+	 * The pointer to the left motor.
+	 */
+	private EV3LargeRegulatedMotor leftMotor;
+	/**
+	 * The pointer to the right motor.
+	 */
 	private EV3LargeRegulatedMotor rightMotor;
 
 	/**
 	 * The value got by the front light sensor an updated by the LightSensor class.
 	 */
 	public static float lightValue;
-	private int distance;			// The distance between the robot and the wall
+	/**
+	 * The distance between the robot and the wall.
+	 */
+	private int distance;
 
-	private double firstAngle;		// The angle where the robot detect the wall for the first time
+	/**
+	 * The angle where the robot detect the wall for the first time.
+	 */
+	private double firstAngle;
+	
 	private double secondAngle;		// The angle where the robot detect the wall for the second time
-	private double correctedTheta;	// The angle that the robot is away from the zero angle
+	/**
+	 * The angle that the robot is away from the zero angle.
+	 */
+	private double correctedTheta;
 
-	private boolean firstPointDetected;	 // Used to prevent the robot from detecting a point 2 times
-	private boolean secondPointDetected; // Used to prevent the robot from detecting a point 2 times
-
+	/**
+	 * Used to prevent the robot from detecting a point 2 times.
+	 */
+	private boolean firstPointDetected;
+	/**
+	 * Used to prevent the robot from detecting a point 2 times.
+	 */
+	private boolean secondPointDetected;
+	/**
+	 * The current theta angle.
+	 */
 	private double locationTheta;
 
 
@@ -111,6 +144,13 @@ public class UltrasonicLocalizer{
 //		}
 //	}
 //
+	/**
+	 * This method implements the bangbang controller for the flag detection
+	 * @param bandCenter	The distance from the blocks.
+	 * @param bandWidth		The error margin.
+	 * @param motorLow		The low motor speed.
+	 * @param motorHigh		The high motor speed.
+	 */
 	public void doBangBang(int bandCenter, int bandWidth, int motorLow, int motorHigh){
 		na.rotateUltraMotor(45,false);
 		float forwardLimit = 180;

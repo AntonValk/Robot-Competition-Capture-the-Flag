@@ -7,7 +7,7 @@ import java.util.Arrays;
  * 
  */
 import java.util.Map;
-//import ca.mcgill.ecse211.WiFiClient.WifiConnection;
+import ca.mcgill.ecse211.WiFiClient.WifiConnection;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
@@ -128,7 +128,7 @@ public class CaptureFlag {
 	 */
 	public static final int[][] CORNERS = new int[][] {
 		{1,1,0},
-		{5,1,270},
+		{11,1,270},
 		{11,11,180},
 		{1,11,90}
 	};
@@ -159,10 +159,10 @@ public class CaptureFlag {
 		int sr_ur_x = 0, sr_ur_y = 0;
 		int sg_ll_x = 0, sg_ll_y = 0;
 		int sg_ur_x = 0, sg_ur_y = 0;
-		//WifiConnection conn = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
+		WifiConnection conn = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
 
 		// Connect to server and get the data, catching any errors that might occur
-		/*try {
+		try {
 			Map data = conn.getData();
 
 			// Example 1: Print out all received data
@@ -249,7 +249,7 @@ public class CaptureFlag {
 			System.out.println("Data: " + sg_ur_y);
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
-		}*/
+		}
 
 		// clear the display
 		//@SuppressWarnings("resource")							    // Because we don't bother to close this resource
