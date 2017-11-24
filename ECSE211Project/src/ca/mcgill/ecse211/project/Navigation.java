@@ -155,7 +155,7 @@ public class Navigation{
 		}else{ //here y = yCur and x > xCur
 			thetaObj = 90;
 		}
-		turnTo(thetaObj);//turn to this angle
+		ziplineTurnTo(thetaObj);//turn to this angle
 		//calculate the distance the robot has to cover
 		double distance = Math.sqrt(Math.pow(y-nowY,2) + Math.pow(x-nowX,2));
 
@@ -167,7 +167,7 @@ public class Navigation{
 		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 0.77*zipdistance), true);
 		
 		ziplineMotor.setSpeed(3*CaptureFlag.FORWARD_SPEED);
-		ziplineMotor.rotate(-convertDistance(CaptureFlag.RADIUS, 4.5*CaptureFlag.ZIPLENGTH), false); //3.5
+		ziplineMotor.rotate(-convertDistance(CaptureFlag.RADIUS, 4.4*CaptureFlag.ZIPLENGTH), false); //3.5
 		
 		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, travelDis), true);   //0.77*distance
 		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, travelDis), false);
@@ -319,6 +319,33 @@ public class Navigation{
 				displacement = 360 - displacement;
 				leftMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
 				rightMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
+			}
+		}
+	}
+	
+	public void ziplineTurnTo(double theta){
+		nowTheta = odometer.getTheta();
+		//get the displacement (difference between the current angle and where you want to go.
+		double displacement = Math.abs(nowTheta - theta);
+		double shift = displacement / 11;
+		//turn accordingly, making sure it is the minimal angles
+		if (theta < nowTheta){
+			if(displacement < 180){
+				leftMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement-shift), true);
+				rightMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement-shift), false);
+			}else{
+				displacement = 360 - displacement;
+				leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
+				rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
+			}
+		}else{
+			if(displacement < 180){
+				leftMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), true);
+				rightMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement), false);
+			}else{
+				displacement = 360 - displacement;
+				leftMotor.rotate(-convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement-shift), true);
+				rightMotor.rotate(convertAngle(CaptureFlag.RADIUS, CaptureFlag.TRACK, displacement-shift), false);
 			}
 		}
 	}
