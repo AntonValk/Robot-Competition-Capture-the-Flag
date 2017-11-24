@@ -72,7 +72,6 @@ public class CaptureFlag {
 	 * The ultrasonic localizer.
 	 */
 	private static UltrasonicLocalizer ultraLoc;
-	//	private static BangBangController bb;
 
 	/**
 	 * The light localizer.
@@ -264,24 +263,20 @@ public class CaptureFlag {
 		final TextLCD t = LocalEV3.get().getTextLCD();
 		Odometer odometer = new Odometer(leftMotor, rightMotor);
 		Navigation na = new Navigation(odometer,leftMotor, rightMotor, ziplineMotor, ultrasonicMotor);
-		//	bb = new BangBangController(na,odometer, 5,1,FORWARD_SPEED,ROTATE_SPEED,leftMotor,rightMotor);
 
 		ultraLoc = new UltrasonicLocalizer(na, odometer, leftMotor, rightMotor);
 
 		odometer.start();
 		OdometryDisplay od = new OdometryDisplay(odometer, t,ultraLoc);
 		od.start();
-		//	usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc, bb);
 		usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc);
 		lightLoc = new LightLocalizer(odometer, na);
 		usPoller.start();
 
-		//comment for testing purpose
 		ultraLoc.doUltrasonicLocalization();
 		//this method make the robot close to the actual (0,0) point
 		lightLoc.adjustPosition();
 		lightLoc.doLightLocalization();
-		//Button.waitForAnyPress();
 
 		if (TEAM_NUMBER == redTeam){
 			na.makeTurn(2.7, false,false);
@@ -346,10 +341,6 @@ public class CaptureFlag {
 					System.out.println("going to sh_ll");
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sh_ll_x+0.5)*SQUARE_LENGTH,(sh_ll_y+0.5)*SQUARE_LENGTH);
-						//lightLoc.midpointLocalization();
-						//odometer.setX(na.currentX);
-						//odometer.setY(na.currentY);
-						//odometer.setTheta(lightLoc.currentTheta);
 					}
 					gotToDestination = false;
 					System.out.println("X first point: " + odometer.getX());
@@ -357,10 +348,6 @@ public class CaptureFlag {
 					System.out.println("theta first point: " + odometer.getTheta());
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH,(sh_ur_y-0.5)*SQUARE_LENGTH);
-						//lightLoc.midpointLocalization();
-						//odometer.setX(na.currentX);
-						//odometer.setY(na.currentY);
-						//odometer.setTheta(lightLoc.currentTheta);
 					}
 					gotToDestination = false;
 					System.out.println("X second point: " + odometer.getX());
@@ -369,18 +356,10 @@ public class CaptureFlag {
 				}else if(firstPoint == 1){
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH,(sh_ur_y-0.5)*SQUARE_LENGTH);
-						//lightLoc.midpointLocalization();
-						//odometer.setX(na.currentX);
-						//odometer.setY(na.currentY);
-						//odometer.setTheta(lightLoc.currentTheta);
 					}
 					gotToDestination = false;
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sh_ll_x+0.5)*SQUARE_LENGTH,(sh_ll_y+0.5)*SQUARE_LENGTH);
-						//lightLoc.midpointLocalization();
-						//odometer.setX(na.currentX);
-						//odometer.setY(na.currentY);
-						//odometer.setTheta(lightLoc.currentTheta);
 					}
 					gotToDestination = false;
 				}
@@ -404,36 +383,20 @@ public class CaptureFlag {
 				if(thirdPoint == 0){
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sv_ll_x+0.5)*SQUARE_LENGTH,(sv_ll_y+0.5)*SQUARE_LENGTH);
-						//lightLoc.midpointLocalization();
-						//odometer.setX(na.currentX);
-						//odometer.setY(na.currentY);
-						//odometer.setTheta(lightLoc.currentTheta);
 					}
 					gotToDestination = false;
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sv_ur_x-0.5)*SQUARE_LENGTH,(sv_ur_y-0.5)*SQUARE_LENGTH);
-						//lightLoc.midpointLocalization();
-						//odometer.setX(na.currentX);
-						//odometer.setY(na.currentY);
-						//odometer.setTheta(lightLoc.currentTheta);
 					}
 					gotToDestination = false;
 					na.travelTo((sv_ur_x-1)*SQUARE_LENGTH,(sv_ur_y+1)*SQUARE_LENGTH);
 				}else if(thirdPoint == 1){
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sv_ur_x-0.5)*SQUARE_LENGTH,(sv_ur_y-0.5)*SQUARE_LENGTH);
-						//lightLoc.midpointLocalization();
-						//odometer.setX(na.currentX);
-						//odometer.setY(na.currentY);
-						//odometer.setTheta(lightLoc.currentTheta);
 					}
 					gotToDestination = false;
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sv_ll_x+0.5)*SQUARE_LENGTH,(sv_ll_y+0.5)*SQUARE_LENGTH);
-						//lightLoc.midpointLocalization();
-						//odometer.setX(na.currentX);
-						//odometer.setY(na.currentY);
-						//odometer.setTheta(lightLoc.currentTheta);
 					}
 					gotToDestination = false;
 					na.travelTo((sv_ll_x+1)*SQUARE_LENGTH,(sv_ll_y-1)*SQUARE_LENGTH);
@@ -494,7 +457,7 @@ public class CaptureFlag {
 				}
 			}
 
-			//perform localization at the end -- need to make sure this works
+			//perform localization at the end
 			na.securityTurn();
 			lightLoc = new LightLocalizer(odometer, na);
 			lightLoc.midpointLocalization();
@@ -762,10 +725,6 @@ public class CaptureFlag {
 					System.out.println("going to sh_ll");
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sh_ll_x+0.5)*SQUARE_LENGTH,(sh_ll_y+0.5)*SQUARE_LENGTH);
-						//lightLoc.midpointLocalization();
-						//odometer.setX(na.currentX);
-						//odometer.setY(na.currentY);
-						//odometer.setTheta(lightLoc.currentTheta);
 					}
 					gotToDestination = false;
 					System.out.println("X first point: " + odometer.getX());
@@ -773,10 +732,6 @@ public class CaptureFlag {
 					System.out.println("theta first point: " + odometer.getTheta());
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH,(sh_ur_y-0.5)*SQUARE_LENGTH);
-						//lightLoc.midpointLocalization();
-						//odometer.setX(na.currentX);
-						//odometer.setY(na.currentY);
-						//odometer.setTheta(lightLoc.currentTheta);
 					}
 					gotToDestination = false;
 					System.out.println("X second point: " + odometer.getX());
@@ -785,18 +740,10 @@ public class CaptureFlag {
 				}else if(firstPoint == 1){
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH,(sh_ur_y-0.5)*SQUARE_LENGTH);
-						//lightLoc.midpointLocalization();
-						//odometer.setX(na.currentX);
-						//odometer.setY(na.currentY);
-						//odometer.setTheta(lightLoc.currentTheta);
 					}
 					gotToDestination = false;
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sh_ll_x+0.5)*SQUARE_LENGTH,(sh_ll_y+0.5)*SQUARE_LENGTH);
-						//lightLoc.midpointLocalization();
-						//odometer.setX(na.currentX);
-						//odometer.setY(na.currentY);
-						//odometer.setTheta(lightLoc.currentTheta);
 					}
 					gotToDestination = false;
 				}
@@ -820,36 +767,20 @@ public class CaptureFlag {
 				if(thirdPoint == 0){
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sv_ll_x+0.5)*SQUARE_LENGTH,(sv_ll_y+0.5)*SQUARE_LENGTH);
-						//lightLoc.midpointLocalization();
-						//odometer.setX(na.currentX);
-						//odometer.setY(na.currentY);
-						//odometer.setTheta(lightLoc.currentTheta);
 					}
 					gotToDestination = false;
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sv_ur_x-0.5)*SQUARE_LENGTH,(sv_ur_y-0.5)*SQUARE_LENGTH);
-						//lightLoc.midpointLocalization();
-						//odometer.setX(na.currentX);
-						//odometer.setY(na.currentY);
-						//odometer.setTheta(lightLoc.currentTheta);
 					}
 					gotToDestination = false;
 					na.travelTo((sv_ur_x-1)*SQUARE_LENGTH,(sv_ur_y+1)*SQUARE_LENGTH);
 				}else if(thirdPoint == 1){
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sv_ur_x-0.5)*SQUARE_LENGTH,(sv_ur_y-0.5)*SQUARE_LENGTH);
-						//lightLoc.midpointLocalization();
-						//odometer.setX(na.currentX);
-						//odometer.setY(na.currentY);
-						//odometer.setTheta(lightLoc.currentTheta);
 					}
 					gotToDestination = false;
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sv_ll_x+0.5)*SQUARE_LENGTH,(sv_ll_y+0.5)*SQUARE_LENGTH);
-						//lightLoc.midpointLocalization();
-						//odometer.setX(na.currentX);
-						//odometer.setY(na.currentY);
-						//odometer.setTheta(lightLoc.currentTheta);
 					}
 					gotToDestination = false;
 					na.travelTo((sv_ll_x+1)*SQUARE_LENGTH,(sv_ll_y-1)*SQUARE_LENGTH);
