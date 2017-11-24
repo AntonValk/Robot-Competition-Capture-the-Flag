@@ -7,7 +7,7 @@ import java.util.Arrays;
  * 
  */
 import java.util.Map;
-import ca.mcgill.ecse211.WiFiClient.WifiConnection;
+//import ca.mcgill.ecse211.WiFiClient.WifiConnection;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
@@ -36,7 +36,9 @@ public class CaptureFlag {
 	 */
 	private static final int TEAM_NUMBER = 8;
 
-	//Enable/disable printing of debug info from the WiFi class
+	/**
+	 * Enable/disable printing of debug info from the WiFi class
+	 */
 	private static final boolean ENABLE_DEBUG_WIFI_PRINT = true;
 
 	/**
@@ -157,10 +159,10 @@ public class CaptureFlag {
 		int sr_ur_x = 0, sr_ur_y = 0;
 		int sg_ll_x = 0, sg_ll_y = 0;
 		int sg_ur_x = 0, sg_ur_y = 0;
-		WifiConnection conn = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
+		//WifiConnection conn = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
 
 		// Connect to server and get the data, catching any errors that might occur
-		try {
+		/*try {
 			Map data = conn.getData();
 
 			// Example 1: Print out all received data
@@ -247,7 +249,7 @@ public class CaptureFlag {
 			System.out.println("Data: " + sg_ur_y);
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
-		}
+		}*/
 
 		// clear the display
 		//@SuppressWarnings("resource")							    // Because we don't bother to close this resource
@@ -884,7 +886,13 @@ public class CaptureFlag {
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 	}
-
+	
+	/**
+	 * This method is to get the first point to go to in the shallow crossing by getting the minimal distance
+	 * from current point to these points.
+	 * @param distances		the array of points in the shallow crossing.
+	 * @return				the index corresponding to the minimal distance.
+	 */
 	private static int getMinDistance(double[] distances){
 		double curMin = distances[0];
 		int index = 0;
@@ -897,6 +905,11 @@ public class CaptureFlag {
 		return index;
 	}
 
+	/**
+	 * This method is to correct the robot's angle.
+	 * @param theta		the robot's odometer theta angle.
+	 * @return			the robot's real theta angle.
+	 */
 	private static double getThetaCorrection(double theta){
 		if(Math.abs(theta) < 15) return 0;
 		else if (Math.abs(theta-90) < 15) return 90;
