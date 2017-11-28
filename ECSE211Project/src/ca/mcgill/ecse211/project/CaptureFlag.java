@@ -1,11 +1,12 @@
 package ca.mcgill.ecse211.project;
 
-import java.util.Arrays;
 /** Main class
  * 	@author Borui Tao
  * 	@version 1.0
  * 
  */
+
+import java.util.Arrays;
 import java.util.Map;
 import ca.mcgill.ecse211.WiFiClient.WifiConnection;
 import lejos.hardware.Button;
@@ -23,7 +24,6 @@ import lejos.robotics.SampleProvider;
  * and zipline traversal.
  */
 public class CaptureFlag {
-
 
 	//Set these as appropriate for your team and current situation
 	/**
@@ -44,26 +44,22 @@ public class CaptureFlag {
 	/**
 	 * The pointer to the left motor.
 	 */
-	private static final EV3LargeRegulatedMotor leftMotor =
-			new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
+	private static final EV3LargeRegulatedMotor leftMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
 
 	/**
 	 * The pointer to the right motor.
 	 */
-	private static final EV3LargeRegulatedMotor rightMotor =
-			new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
+	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
 
 	/**
 	 * The pointer to the zipline motor.
 	 */
-	private static final EV3LargeRegulatedMotor ziplineMotor =
-			new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
+	private static final EV3LargeRegulatedMotor ziplineMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("C"));
 
 	/**
 	 * The pointer to the motor connected to the ultrasonic sensor (to turn it 45 degrees when detecting a flag).
 	 */
-	private static final EV3LargeRegulatedMotor ultrasonicMotor =
-			new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
+	private static final EV3LargeRegulatedMotor ultrasonicMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 
 	/**
 	 * The pointer to the ultrasonic sensor.
@@ -79,50 +75,62 @@ public class CaptureFlag {
 	 * The light localizer.
 	 */
 	private static LightLocalizer lightLoc;
+
 	/**
 	 * The value got by the front light sensor an updated by the LightSensor class.
 	 */
 	public static float lightValue;
+
 	/**
 	 * The speed at which the robot is traveling straight.
 	 */
-	public static final int FORWARD_SPEED = 270; //140
+	public static final int FORWARD_SPEED = 270; //previous value: 140
+
 	/**
 	 * The distance between the Ultrasonic sensor and the back light sensor.
 	 */
 	public static final double ROBOT_LENGTH = 10.2;
+
 	/**
 	 * The speed at which the robot is rotating.
 	 */
-	public static final int ROTATE_SPEED = 150; // 110
+	public static final int ROTATE_SPEED = 150; //previous value: 110
+
 	/**
 	 * The radius of the wheel.
 	 */
 	public static final double RADIUS = 2.12;
+
 	/**
 	 * The distance between the wheels.
 	 */
 	public static final double TRACK = 11.3;
+
 	/**
 	 * The distance from which the ultrasonic sensor detects the wall.
 	 */
 	public static final int DISTANCE_THRESHOLD = 50;
+
 	/**
 	 * The noise margin.
 	 */
 	public static final int NOISE_MARGIN = 1;
+
 	/**
 	 * The length of the square tile.
 	 */
 	public static final double SQUARE_LENGTH = 30.48;
+
 	/**
 	 * The speed at which the robot is traveling when mounting the zipline.
 	 */
 	public static final int ZIPLINE_SPEED = 300;
+
 	/**
 	 * The length of the zipline.
 	 */
 	public static final double ZIPLENGTH =70;
+
 	/**
 	 * The coordinates for the different corners.
 	 */
@@ -137,9 +145,8 @@ public class CaptureFlag {
 	 * Using the helper classes, the main method takes care of the localization, navigation and river traversal.
 	 * 
 	 */
-	//@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "deprecation" })
 	public static void main(String[] args) {
-
 		int redTeam = 0, greenTeam = 0;
 		int redCorner = 0, greenCorner = 0;
 		int og = 0, or = 0;
@@ -252,39 +259,43 @@ public class CaptureFlag {
 		}
 
 		// clear the display
-		//@SuppressWarnings("resource")							    // Because we don't bother to close this resource
-		SensorModes ultrasonicSensor = new EV3UltrasonicSensor(usPort);		// usSensor is the instance
+		@SuppressWarnings("resource")	// Because we don't bother to close this resource
+
+		SensorModes ultrasonicSensor = new EV3UltrasonicSensor(usPort);	// usSensor is the instance
 		SampleProvider usDistance = ultrasonicSensor.getMode("Distance");	// usDistance provides samples from this instance
-		float[] usData = new float[1];		// usData is the buffer in which data are returned
-		UltrasonicPoller usPoller = null;									// the selected controller on each cycle
-
-
-		//two classes to perform wall following on the flags and detect the color of each one.
-		LightSensor ls = new LightSensor();
-
+		float[] usData = new float[1];	// usData is the buffer in which data are returned
+		UltrasonicPoller usPoller = null;	// the selected controller on each cycle
 		final TextLCD t = LocalEV3.get().getTextLCD();
+
+		//Classes initializations
+		LightSensor ls = new LightSensor();	//class to perform wall following on the flags and detect the color of each one.
 		Odometer odometer = new Odometer(leftMotor, rightMotor);
 		Navigation na = new Navigation(odometer,leftMotor, rightMotor, ziplineMotor, ultrasonicMotor);
-
 		ultraLoc = new UltrasonicLocalizer(na, odometer, leftMotor, rightMotor);
-
-		odometer.start();
 		OdometryDisplay od = new OdometryDisplay(odometer, t,ultraLoc);
-		od.start();
 		usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc);
 		lightLoc = new LightLocalizer(odometer, na);
+
+		//Threads starts
+		odometer.start();
+		od.start();
 		usPoller.start();
 
+		//initial localization
 		ultraLoc.doUltrasonicLocalization();
-		//this method make the robot close to the actual (0,0) point
 		lightLoc.adjustPosition();
 		lightLoc.doLightLocalization();
 
 		if (TEAM_NUMBER == redTeam){
+			usPoller.stop(); //kill the ultrasonic thread.
+			
+			//SET ROBOT'S POSITION
 			na.makeTurn(2.7, false,false);
 			odometer.setX(CORNERS[redCorner][0]*SQUARE_LENGTH);
 			odometer.setY(CORNERS[redCorner][1]*SQUARE_LENGTH);
 			odometer.setTheta(CORNERS[redCorner][2]);
+			
+			//INITIAL NAVIGATION
 			boolean gotToDestination = false;
 			if(CORNERS[redCorner][0] != sr_ur_x && CORNERS[redCorner][1] != sr_ur_y){
 				while(!gotToDestination){
@@ -321,7 +332,6 @@ public class CaptureFlag {
 			}
 
 			//SHALLOW CROSSING
-
 			double centerRed_x = Math.abs(red_ur_x+red_ll_x)/2;
 			double centerRed_y = Math.abs(red_ur_y+red_ll_y)/2;
 			System.out.println("center " + centerRed_x + ";" + centerRed_y);
@@ -332,29 +342,17 @@ public class CaptureFlag {
 			distances[1] = Math.sqrt(Math.pow(sh_ur_y-centerRed_y,2) + Math.pow(sh_ur_x-centerRed_x,2));
 			distances[2] = Math.sqrt(Math.pow(sv_ll_y-centerRed_y,2) + Math.pow(sv_ll_x-centerRed_x,2));
 			distances[3] = Math.sqrt(Math.pow(sv_ur_y-centerRed_y,2) + Math.pow(sv_ur_x-centerRed_x,2));
-			for(int k=0;k<4;k++){
-				System.out.println("distance " + k + " - " + distances[k]);
-			}
 			int firstPoint = getMinDistance(distances);
-			System.out.println(firstPoint);
-			System.out.println("test print");
 			if(firstPoint == 0 || firstPoint == 1){
 				if(firstPoint == 0){
-					System.out.println("going to sh_ll");
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sh_ll_x+0.5)*SQUARE_LENGTH,(sh_ll_y+0.5)*SQUARE_LENGTH);
 					}
 					gotToDestination = false;
-					System.out.println("X first point: " + odometer.getX());
-					System.out.println("Y first point: " + odometer.getY());
-					System.out.println("theta first point: " + odometer.getTheta());
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH,(sh_ur_y-0.5)*SQUARE_LENGTH);
 					}
 					gotToDestination = false;
-					System.out.println("X second point: " + odometer.getX());
-					System.out.println("Y second point: " + odometer.getY());
-					System.out.println("theta second point: " + odometer.getTheta());
 				}else if(firstPoint == 1){
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH,(sh_ur_y-0.5)*SQUARE_LENGTH);
@@ -376,12 +374,7 @@ public class CaptureFlag {
 				if(((mid_x > sv_ll_x) && (mid_x < sv_ur_x)) && ((mid_y > sv_ll_y) && (mid_y < sv_ur_y))){
 					thirdPoint = -1;
 				}*/
-				System.out.println("X point: " + odometer.getX());
-				System.out.println("Y point: " + odometer.getY());
-				System.out.println("theta point: " + odometer.getTheta());
-				System.out.println("distance 0 " + distances[0]);
-				System.out.println("distance 1 " + distances[1]);
-				System.out.println(thirdPoint);
+				
 				if(thirdPoint == 0){
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sv_ll_x+0.5)*SQUARE_LENGTH,(sv_ll_y+0.5)*SQUARE_LENGTH);
@@ -459,17 +452,15 @@ public class CaptureFlag {
 				}
 			}
 
-			//perform localization at the end
+			//END OF SHALLOW CROSSING LOCALIZATION
 			na.securityTurn();
 			lightLoc = new LightLocalizer(odometer, na);
 			lightLoc.midpointLocalization();
 			odometer.setX(na.currentX);
 			odometer.setY(na.currentY);
 			odometer.setTheta(lightLoc.currentTheta);
-			System.out.println("X localization at the end: " + odometer.getX());
-			System.out.println("Y localization at the end: " + odometer.getY());
-			System.out.println("Theta localization at the end: " + odometer.getTheta());
-			
+
+			//NAVIGATE TO SEARCH ZONE.
 			if(na.currentX != sg_ur_x*SQUARE_LENGTH && na.currentY != sg_ur_y*SQUARE_LENGTH){
 				while(!gotToDestination){
 					gotToDestination = na.travelTo(na.currentX, sg_ur_y*SQUARE_LENGTH);
@@ -495,11 +486,12 @@ public class CaptureFlag {
 				odometer.setY(na.currentY);
 				odometer.setTheta(lightLoc.currentTheta);
 			}
+			//BEEP WHEN FLAG IS CAPTURED.
 			Sound.playNote(Sound.FLUTE, 600, 300); 
 			Sound.playNote(Sound.FLUTE, 600, 300); 
 			Sound.playNote(Sound.FLUTE, 600, 300);
-			
-			//zipline
+
+			//ZIPLINE TRAVERSAL
 			gotToDestination = false;
 			if(sg_ur_x != zo_g_x && sg_ur_y != zo_g_y){
 				while(!gotToDestination){
@@ -560,7 +552,8 @@ public class CaptureFlag {
 			na.makeTurn(3.8, false,false);
 			double th = odometer.getTheta();
 			odometer.setTheta(getThetaCorrection(th));
-	//		System.out.println("TH is " + th);
+			
+			//GO BACK TO START CORNER
 			gotToDestination = false;
 			if(zo_r_x != CORNERS[redCorner][0]*SQUARE_LENGTH && zo_r_y != CORNERS[redCorner][1]*SQUARE_LENGTH){
 				while(!gotToDestination){
@@ -589,10 +582,15 @@ public class CaptureFlag {
 			}
 		}
 		else if (TEAM_NUMBER == greenTeam){
+			usPoller.stop();	//kill ultrasonic thread.
+			
+			//SET ROBOT'S INITIAL POSITION
 			na.makeTurn(2.7, false,false);
 			odometer.setX(CORNERS[greenCorner][0]*SQUARE_LENGTH);
 			odometer.setY(CORNERS[greenCorner][1]*SQUARE_LENGTH);
 			odometer.setTheta(CORNERS[greenCorner][2]);
+			
+			//ZIPLINE TRAVERSAL
 			boolean gotToDestination = false;
 			if(CORNERS[greenCorner][0] != zo_g_x && CORNERS[greenCorner][1] != zo_g_y){
 				while(!gotToDestination){
@@ -697,6 +695,7 @@ public class CaptureFlag {
 			odometer.setY(sr_ur_y*SQUARE_LENGTH);
 			odometer.setTheta(curTheta-90);
 			
+			//BEEP WHEN FLAG CAPTURED
 			Sound.playNote(Sound.FLUTE, 600, 300); 
 			Sound.playNote(Sound.FLUTE, 600, 300); 
 			Sound.playNote(Sound.FLUTE, 600, 300); 
@@ -716,29 +715,17 @@ public class CaptureFlag {
 			distances[1] = Math.sqrt(Math.pow(sh_ur_y-centerRed_y,2) + Math.pow(sh_ur_x-centerRed_x,2));
 			distances[2] = Math.sqrt(Math.pow(sv_ll_y-centerRed_y,2) + Math.pow(sv_ll_x-centerRed_x,2));
 			distances[3] = Math.sqrt(Math.pow(sv_ur_y-centerRed_y,2) + Math.pow(sv_ur_x-centerRed_x,2));
-			for(int k=0;k<4;k++){
-				System.out.println("distance " + k + " - " + distances[k]);
-			}
 			int firstPoint = getMinDistance(distances);
-			System.out.println(firstPoint);
-			System.out.println("test print");
 			if(firstPoint == 0 || firstPoint == 1){
 				if(firstPoint == 0){
-					System.out.println("going to sh_ll");
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sh_ll_x+0.5)*SQUARE_LENGTH,(sh_ll_y+0.5)*SQUARE_LENGTH);
 					}
 					gotToDestination = false;
-					System.out.println("X first point: " + odometer.getX());
-					System.out.println("Y first point: " + odometer.getY());
-					System.out.println("theta first point: " + odometer.getTheta());
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH,(sh_ur_y-0.5)*SQUARE_LENGTH);
 					}
 					gotToDestination = false;
-					System.out.println("X second point: " + odometer.getX());
-					System.out.println("Y second point: " + odometer.getY());
-					System.out.println("theta second point: " + odometer.getTheta());
 				}else if(firstPoint == 1){
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sh_ur_x-0.5)*SQUARE_LENGTH,(sh_ur_y-0.5)*SQUARE_LENGTH);
@@ -760,12 +747,7 @@ public class CaptureFlag {
 				if(((mid_x > sv_ll_x) && (mid_x < sv_ur_x)) && ((mid_y > sv_ll_y) && (mid_y < sv_ur_y))){
 					thirdPoint = -1;
 				}*/
-				System.out.println("X point: " + odometer.getX());
-				System.out.println("Y point: " + odometer.getY());
-				System.out.println("theta point: " + odometer.getTheta());
-				System.out.println("distance 0 " + distances[0]);
-				System.out.println("distance 1 " + distances[1]);
-				System.out.println(thirdPoint);
+
 				if(thirdPoint == 0){
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sv_ll_x+0.5)*SQUARE_LENGTH,(sv_ll_y+0.5)*SQUARE_LENGTH);
@@ -843,19 +825,16 @@ public class CaptureFlag {
 				}
 			}
 
-			//perform localization at the end -- need to make sure this works
+			//END OF SHALLOW CROSSING LOCALIZATION
 			na.securityTurn();
 			lightLoc = new LightLocalizer(odometer, na);
 			lightLoc.midpointLocalization();
 			odometer.setX(na.currentX);
 			odometer.setY(na.currentY);
 			odometer.setTheta(lightLoc.currentTheta);
-			System.out.println("X localization at the end: " + odometer.getX());
-			System.out.println("Y localization at the end: " + odometer.getY());
-			System.out.println("Theta localization at the end: " + odometer.getTheta());
 			leftMotor.stop();
 			rightMotor.stop();
-			
+
 			//GO BACK TO START ZONE
 			if(na.currentX != CORNERS[greenCorner][0]*SQUARE_LENGTH && na.currentY != CORNERS[greenCorner][1]*SQUARE_LENGTH){
 				while(!gotToDestination){
@@ -886,7 +865,7 @@ public class CaptureFlag {
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 	}
-	
+
 	/**
 	 * This method is to get the first point to go to in the shallow crossing by getting the minimal distance
 	 * from current point to these points.
@@ -918,5 +897,4 @@ public class CaptureFlag {
 		else 
 			return theta;
 	}
-
 }

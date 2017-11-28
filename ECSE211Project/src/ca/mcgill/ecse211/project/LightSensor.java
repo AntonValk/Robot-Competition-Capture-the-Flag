@@ -15,19 +15,22 @@ import lejos.robotics.SampleProvider;
  * This class is used to get the color of the bricks for flag recognition.
  */
 public class LightSensor extends Thread {
+
 	/**
 	 * The correction period so that the sensor does not update the value constently.
 	 */
 	private static final long CORRECTION_PERIOD = 10;
-	
+
 	/**
 	 * The front light sensor.
 	 */
 	private static EV3ColorSensor lightSensor = new EV3ColorSensor(LocalEV3.get().getPort("S2"));
+
 	/**
 	 * The sample provider for the light sensor.
 	 */
-	private static SampleProvider colorSensor = lightSensor.getMode("ColorID"); 
+	private static SampleProvider colorSensor = lightSensor.getMode("ColorID");
+
 	/**
 	 * The array that saves the sensor data.
 	 */
@@ -38,7 +41,6 @@ public class LightSensor extends Thread {
 	 */
 	public LightSensor() {
 		lightValue = new float[colorSensor.sampleSize()];
-
 	}
 
 	/**
@@ -59,9 +61,7 @@ public class LightSensor extends Thread {
 				try {
 					Thread.sleep(CORRECTION_PERIOD - (correctionEnd - correctionStart));
 				} catch (InterruptedException e) {
-					// there is nothing to be done here because it is not
-					// expected that the odometry correction will be
-					// interrupted by another thread
+					// there is nothing to be done here because it is not expected that the odometry correction will be interrupted by another thread
 				}
 			}
 		}

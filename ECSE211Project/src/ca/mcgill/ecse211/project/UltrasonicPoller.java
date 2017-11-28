@@ -20,43 +20,43 @@ public class UltrasonicPoller extends Thread {
 	/**
 	 * The sample provider for the ultrasonic sensor.
 	 */
-	  private SampleProvider us;
-	  /**
-	   * The pointer to the ultrasonic localizer.
-	   */
-	  private UltrasonicLocalizer ul;
-	  /**
-	   * The array that saves the sensor data.
-	   */
-	  private float[] usData;
+	private SampleProvider us;
+	/**
+	 * The pointer to the ultrasonic localizer.
+	 */
+	private UltrasonicLocalizer ul;
+	/**
+	 * The array that saves the sensor data.
+	 */
+	private float[] usData;
 
-	  /**
-	   * The constructor sets the objects used to updte the sensor's data.
-	   */
-	  
-	  public UltrasonicPoller(SampleProvider us, float[] usData, UltrasonicLocalizer ul) {
+	/**
+	 * The constructor sets the objects used to updte the sensor's data.
+	 */
 
-	    this.us = us;
-	    this.ul = ul;
-	    this.usData = usData;
-	  }
+	public UltrasonicPoller(SampleProvider us, float[] usData, UltrasonicLocalizer ul) {
 
-	  /**
-	   * Sensors now return floats using a uniform protocol. Need to convert US result to an integer
-	   * [0,255] (non-Javadoc)
-	   * 
-	   * @see java.lang.Thread#run()
-	   */
-	  public void run() {
-	    int distance;
-	    while (true) {
-	      us.fetchSample(usData, 0); // acquire data
-	      distance = (int) (usData[0] * 100.0); // extract from buffer, cast to int
-	      ul.processUSData(distance); // now take action depending on value
-	    //  bb.processUSData(distance);
-	      try {
-	        Thread.sleep(50);
-	      } catch (Exception e) { } // Poor man's timed sampling
-	    }
-	  }
+		this.us = us;
+		this.ul = ul;
+		this.usData = usData;
 	}
+
+	/**
+	 * Sensors now return floats using a uniform protocol. Need to convert US result to an integer
+	 * [0,255] (non-Javadoc)
+	 * 
+	 * @see java.lang.Thread#run()
+	 */
+	public void run() {
+		int distance;
+		while (true) {
+			us.fetchSample(usData, 0); // acquire data
+			distance = (int) (usData[0] * 100.0); // extract from buffer, cast to int
+			ul.processUSData(distance); // now take action depending on value
+			//  bb.processUSData(distance);
+			try {
+				Thread.sleep(50);
+			} catch (Exception e) { } // Poor man's timed sampling
+		}
+	}
+}

@@ -1,6 +1,5 @@
 package ca.mcgill.ecse211.project;
 
-
 /** 
  * Navigation class - test javadoc generation
  * 	@author Raphael Di Piazza
@@ -10,59 +9,69 @@ package ca.mcgill.ecse211.project;
 
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
-
 /**
  * This class takes care of the robot navigation. It controls the movement by
  * implementing movement, turning, distance & angle methods.
  */
 public class Navigation{
-	//variables only set once
+	
+	//variables set only once.
 	/**
 	 * The pointer to the odometer class.
 	 */
 	private Odometer odometer;
+	
 	/**
 	 * The pointer to the left motor.
 	 */
 	private EV3LargeRegulatedMotor leftMotor;
+	
 	/**
 	 * The pointer to the right motor.
 	 */
 	private EV3LargeRegulatedMotor rightMotor;
+	
 	/**
 	 * The pointer to the motor connected to the ultrasonic sensor.
 	 */
 	private EV3LargeRegulatedMotor ulMotor;
+	
 	/**
 	 * The pointer to the motor used for the zipline traversal.
 	 */
 	private EV3LargeRegulatedMotor ziplineMotor;
 
-	//changing variables 
+	//changing variables.
 	/**
 	 * The boolean to know when the robot is navigating.
 	 */
 	private boolean isNavigating;
+	
 	/**
 	 * The boolean to know when the robot is turning on itself.
 	 */
 	private boolean isTurning;
+	
 	/**
 	 * The array for the robot's position (index 0 = x, index 1 = y, index 2 = theta).
 	 */
 	double[] position = new double[3];
+	
 	/**
 	 * The value of the current x.
 	 */
 	private double nowX;
+	
 	/**
 	 * The value of the current y.
 	 */
 	private double nowY;
+	
 	/**
 	 * The value of the current theta.
 	 */
 	private double nowTheta;
+	
 	/**
 	 * The objective theta: the target theta where it wants to go.
 	 */
@@ -85,8 +94,7 @@ public class Navigation{
 	 * @param rightMotor	pointer to the right motor
 	 * @param ziplineMotor	pointer to the zipline motor
 	 */
-	public Navigation(Odometer odometer,EV3LargeRegulatedMotor leftMotor, 
-			EV3LargeRegulatedMotor rightMotor, EV3LargeRegulatedMotor ziplineMotor, EV3LargeRegulatedMotor ulMotor) {
+	public Navigation(Odometer odometer,EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, EV3LargeRegulatedMotor ziplineMotor, EV3LargeRegulatedMotor ulMotor) {
 		this.odometer = odometer;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
@@ -109,11 +117,6 @@ public class Navigation{
 		
 		ziplineMotor.setSpeed(2*CaptureFlag.FORWARD_SPEED);
 		ziplineMotor.rotate(-convertDistance(CaptureFlag.RADIUS, 3.5*CaptureFlag.ZIPLENGTH), false);
-		
-		/*leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
-		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
-		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);
-		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);*/
 	}
 	
 	/**
@@ -169,13 +172,8 @@ public class Navigation{
 		ziplineMotor.setSpeed(3*CaptureFlag.FORWARD_SPEED);
 		ziplineMotor.rotate(-convertDistance(CaptureFlag.RADIUS, 4.5*CaptureFlag.ZIPLENGTH), false); //3.5
 		
-		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, travelDis), true);   //0.77*distance
+		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, travelDis), true);
 		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, travelDis), false);
-
-		/*leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
-		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
-		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);
-		rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, 5), true);*/
 	}
 	
 	/**
@@ -193,7 +191,6 @@ public class Navigation{
 	 * @return true if the robot is currently on the zipline and false otherwise.
 	 */
 	boolean onZipline(){
-		//returns true if the robot is either Navigating or Turning
 		return ziplineMotor.isMoving();
 	}
 	
@@ -245,9 +242,6 @@ public class Navigation{
 	    ///rotate for this distance in cm'
 		leftMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
 		rightMotor.setSpeed(CaptureFlag.FORWARD_SPEED);
-		
-//		leftMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance), true);
-//	    rightMotor.rotate(convertDistance(CaptureFlag.RADIUS, distance), false);
 	    
 	  //do lightLocalization if distance > 3 tiles
 	  	if(distance > (3*CaptureFlag.SQUARE_LENGTH+5)){
@@ -270,9 +264,7 @@ public class Navigation{
 	 * @param y		The y-coordinate of the destination point.
 	 */
 	void goToOrigin(double x, double y){
-
 		isNavigating=true;
-
 		nowX = odometer.getX();
 		nowY = odometer.getY();
 		//calculate the angle we need to turn to

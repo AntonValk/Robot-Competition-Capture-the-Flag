@@ -48,7 +48,7 @@ public class UltrasonicLocalizer{
 	 * The angle where the robot detect the wall for the first time.
 	 */
 	private double firstAngle;
-	
+
 	private double secondAngle;		// The angle where the robot detect the wall for the second time
 	/**
 	 * The angle that the robot is away from the zero angle.
@@ -119,31 +119,31 @@ public class UltrasonicLocalizer{
 		}
 	}
 
-//	public void doGridTraversal(double nX, double nY, double x, double y, int length){
-//
-//		double curDestX = nX;
-//		double curDestY = nY;
-//		boolean hasBlock = false;
-//
-//		int counter = 2 * length;
-//		while(counter > 0){
-//			curDestX += (x-nX)/(length*2);
-//			curDestY += (y-nY)/(length*2);
-//			na.travelTo(curDestX, curDestY);
-//			while(na.isNavigating()){
-//			}
-//			if(counter != 1){
-//				na.rotateUltraMotor(100,false);
-//				System.out.println("The distance is " + distance);
-//				if (distance < 25){
-//					Sound.playNote(Sound.FLUTE, 440, 250); // sound to let us know robot sees the line
-//				}
-//				na.rotateUltraMotor(100,true);
-//			}
-//			counter--;
-//		}
-//	}
-//
+	//	public void doGridTraversal(double nX, double nY, double x, double y, int length){
+	//
+	//		double curDestX = nX;
+	//		double curDestY = nY;
+	//		boolean hasBlock = false;
+	//
+	//		int counter = 2 * length;
+	//		while(counter > 0){
+	//			curDestX += (x-nX)/(length*2);
+	//			curDestY += (y-nY)/(length*2);
+	//			na.travelTo(curDestX, curDestY);
+	//			while(na.isNavigating()){
+	//			}
+	//			if(counter != 1){
+	//				na.rotateUltraMotor(100,false);
+	//				System.out.println("The distance is " + distance);
+	//				if (distance < 25){
+	//					Sound.playNote(Sound.FLUTE, 440, 250); // sound to let us know robot sees the line
+	//				}
+	//				na.rotateUltraMotor(100,true);
+	//			}
+	//			counter--;
+	//		}
+	//	}
+	//
 	/**
 	 * This method implements the bangbang controller for the flag detection
 	 * @param bandCenter	The distance from the blocks.
@@ -354,4 +354,3 @@ public class UltrasonicLocalizer{
 		return this.distance;
 	}
 }
-
