@@ -54,7 +54,7 @@ public class LightSensor extends Thread {
 			correctionStart = System.currentTimeMillis();
 			colorSensor.fetchSample(lightValue,0);
 			System.out.println("light value " + lightValue[0]);
-			UltrasonicLocalizer.lightValue = lightValue[0];
+			FlagSearchController.lightValue = lightValue[0];
 			// this ensures the light sensor check occurs only once every period
 			correctionEnd = System.currentTimeMillis();
 			if (correctionEnd - correctionStart < CORRECTION_PERIOD) {

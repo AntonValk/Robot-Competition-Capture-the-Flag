@@ -42,7 +42,7 @@ public class UltrasonicLocalizer{
 	/**
 	 * The distance between the robot and the wall.
 	 */
-	private int distance;
+	public int distance;
 
 	/**
 	 * The angle where the robot detect the wall for the first time.
@@ -118,85 +118,7 @@ public class UltrasonicLocalizer{
 			System.out.println("we are using fallingEdge!");
 		}
 	}
-
-	//	public void doGridTraversal(double nX, double nY, double x, double y, int length){
-	//
-	//		double curDestX = nX;
-	//		double curDestY = nY;
-	//		boolean hasBlock = false;
-	//
-	//		int counter = 2 * length;
-	//		while(counter > 0){
-	//			curDestX += (x-nX)/(length*2);
-	//			curDestY += (y-nY)/(length*2);
-	//			na.travelTo(curDestX, curDestY);
-	//			while(na.isNavigating()){
-	//			}
-	//			if(counter != 1){
-	//				na.rotateUltraMotor(100,false);
-	//				System.out.println("The distance is " + distance);
-	//				if (distance < 25){
-	//					Sound.playNote(Sound.FLUTE, 440, 250); // sound to let us know robot sees the line
-	//				}
-	//				na.rotateUltraMotor(100,true);
-	//			}
-	//			counter--;
-	//		}
-	//	}
-	//
-	/**
-	 * This method implements the bangbang controller for the flag detection
-	 * @param bandCenter	The distance from the blocks.
-	 * @param bandWidth		The error margin.
-	 * @param motorLow		The low motor speed.
-	 * @param motorHigh		The high motor speed.
-	 */
-	public void doBangBang(int bandCenter, int bandWidth, int motorLow, int motorHigh){
-		na.rotateUltraMotor(45,false);
-		float forwardLimit = 180;
-		float backwardLimit = 1;
-		float bwMotorLow = 50;
-		float fwLimitSpd = 150;
-		while(lightValue != 6.0){
-			System.out.println("The distance is "+distance);
-			if (distance < backwardLimit){
-				this.leftMotor.setSpeed(bwMotorLow);
-				this.rightMotor.setSpeed(motorHigh);
-				this.leftMotor.backward();
-				this.rightMotor.backward();
-			}else if(distance < (bandCenter - bandWidth) && distance > backwardLimit){
-				System.out.println("a");
-				this.leftMotor.setSpeed(motorLow);
-				this.rightMotor.setSpeed(motorHigh);
-				this.leftMotor.forward();
-				this.rightMotor.forward();
-			}else if(distance > (bandCenter - bandWidth) && distance < (bandCenter + bandWidth)){
-				System.out.println("b");
-				this.leftMotor.setSpeed(motorHigh);
-				this.rightMotor.setSpeed(motorHigh);
-				this.leftMotor.forward();
-				this.rightMotor.forward();
-			}else if(distance > (bandCenter + bandWidth) && distance < forwardLimit){
-				System.out.println("c");
-				this.leftMotor.setSpeed(motorHigh);
-				this.rightMotor.setSpeed(motorLow);
-				this.leftMotor.forward();
-				this.rightMotor.forward();
-			}else if(distance > forwardLimit){
-				System.out.println("d");
-				this.rightMotor.setSpeed(motorHigh);
-				this.leftMotor.setSpeed(fwLimitSpd);
-				this.leftMotor.forward();
-				this.rightMotor.forward();
-			}
-		}
-		this.rightMotor.stop();
-		this.leftMotor.stop();
-		Sound.playNote(Sound.FLUTE, 440, 250);
-		Sound.playNote(Sound.FLUTE, 440, 250);
-		Sound.playNote(Sound.FLUTE, 440, 250);
-	}
-
+	
 	/**
 	 * This method localizes the robot in the falling edge mode
 	 * The ultrasonic sensor in front of the robot keeps detecting the distance between the wall and the robot

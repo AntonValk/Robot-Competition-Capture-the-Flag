@@ -8,7 +8,7 @@ package ca.mcgill.ecse211.project;
 
 import java.util.Arrays;
 import java.util.Map;
-import ca.mcgill.ecse211.WiFiClient.WifiConnection;
+//import ca.mcgill.ecse211.WiFiClient.WifiConnection;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
@@ -140,6 +140,11 @@ public class CaptureFlag {
 		{11,11,180},
 		{1,11,90}
 	};
+	
+	/**
+	 * The color mapping of the flags (red, blue, yellow, white).
+	 */
+	public static final double[] flags = {0.0,2.0,3.0,6.0};
 
 	/**
 	 * Using the helper classes, the main method takes care of the localization, navigation and river traversal.
@@ -166,10 +171,10 @@ public class CaptureFlag {
 		int sr_ur_x = 0, sr_ur_y = 0;
 		int sg_ll_x = 0, sg_ll_y = 0;
 		int sg_ur_x = 0, sg_ur_y = 0;
-		WifiConnection conn = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
+		//WifiConnection conn = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
 
 		// Connect to server and get the data, catching any errors that might occur
-		try {
+		/*try {
 			Map data = conn.getData();
 
 			// Example 1: Print out all received data
@@ -256,7 +261,7 @@ public class CaptureFlag {
 			System.out.println("Data: " + sg_ur_y);
 		} catch (Exception e) {
 			System.err.println("Error: " + e.getMessage());
-		}
+		}*/
 
 		// clear the display
 		@SuppressWarnings("resource")	// Because we don't bother to close this resource
@@ -272,13 +277,12 @@ public class CaptureFlag {
 		Odometer odometer = new Odometer(leftMotor, rightMotor);
 		Navigation na = new Navigation(odometer,leftMotor, rightMotor, ziplineMotor, ultrasonicMotor);
 		ultraLoc = new UltrasonicLocalizer(na, odometer, leftMotor, rightMotor);
-		OdometryDisplay od = new OdometryDisplay(odometer, t,ultraLoc);
 		usPoller = new UltrasonicPoller(usDistance, usData, ultraLoc);
 		lightLoc = new LightLocalizer(odometer, na);
+		FlagSearchController flagSearchCtrl = new FlagSearchController(na,ultraLoc,leftMotor,rightMotor);
 
 		//Threads starts
 		odometer.start();
-		od.start();
 		usPoller.start();
 
 		//initial localization
@@ -486,10 +490,10 @@ public class CaptureFlag {
 				odometer.setY(na.currentY);
 				odometer.setTheta(lightLoc.currentTheta);
 			}
-			//BEEP WHEN FLAG IS CAPTURED.
-			Sound.playNote(Sound.FLUTE, 600, 300); 
-			Sound.playNote(Sound.FLUTE, 600, 300); 
-			Sound.playNote(Sound.FLUTE, 600, 300);
+			//FLAG SEARCH
+			usPoller.start();
+			flagSearchCtrl.detectFlag(5, 2,ROTATE_SPEED, FORWARD_SPEED, og);
+			usPoller.stop();
 
 			//ZIPLINE TRAVERSAL
 			gotToDestination = false;
@@ -695,11 +699,11 @@ public class CaptureFlag {
 			odometer.setY(sr_ur_y*SQUARE_LENGTH);
 			odometer.setTheta(curTheta-90);
 			
-			//BEEP WHEN FLAG CAPTURED
-			Sound.playNote(Sound.FLUTE, 600, 300); 
-			Sound.playNote(Sound.FLUTE, 600, 300); 
-			Sound.playNote(Sound.FLUTE, 600, 300); 
-
+			//FLAG SEARCH
+			usPoller.start();
+			flagSearchCtrl.detectFlag(5, 2,ROTATE_SPEED, FORWARD_SPEED, og);
+			usPoller.stop();
+			
 			//SHALLOW CROSSING
 			System.out.println("X start: " + odometer.getX());
 			System.out.println("Y start: " + odometer.getY());
