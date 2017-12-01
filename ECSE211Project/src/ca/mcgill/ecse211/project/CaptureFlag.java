@@ -294,7 +294,6 @@ public class CaptureFlag {
 			usPoller.stop(); //kill the ultrasonic thread.
 			
 			//SET ROBOT'S POSITION
-			na.makeTurn(2.7, false,false);
 			odometer.setX(CORNERS[redCorner][0]*SQUARE_LENGTH);
 			odometer.setY(CORNERS[redCorner][1]*SQUARE_LENGTH);
 			odometer.setTheta(CORNERS[redCorner][2]);
@@ -310,8 +309,6 @@ public class CaptureFlag {
 					na.securityTurn();
 					lightLoc = new LightLocalizer(odometer, na);
 					lightLoc.midpointLocalization();
-					na.makeTurn(5.8, false,false);
-					System.out.println("lightLoc1");
 					odometer.setX(na.currentX);
 					odometer.setY(na.currentY);
 					odometer.setTheta(lightLoc.currentTheta);
@@ -324,12 +321,6 @@ public class CaptureFlag {
 				na.securityTurn();
 				lightLoc = new LightLocalizer(odometer, na);
 				lightLoc.midpointLocalization();
-				if(!gotToDestination) {
-					na.makeTurn(5.0, false,true);
-					while(na.isNavigating()){
-					}
-				}
-				System.out.println("lightLoc2");
 				odometer.setX(na.currentX);
 				odometer.setY(na.currentY);
 				odometer.setTheta(lightLoc.currentTheta);
@@ -338,7 +329,6 @@ public class CaptureFlag {
 			//SHALLOW CROSSING
 			double centerRed_x = Math.abs(red_ur_x+red_ll_x)/2;
 			double centerRed_y = Math.abs(red_ur_y+red_ll_y)/2;
-			System.out.println("center " + centerRed_x + ";" + centerRed_y);
 			double[] distances = new double[4];//0: sh_ll / 1: sh_ur / 2:sv_ll / 3:sv_ur
 			int thirdPoint;
 			gotToDestination = false;
@@ -371,13 +361,6 @@ public class CaptureFlag {
 				distances[0] = Math.sqrt(Math.pow(sv_ll_y-(odometer.getY()/SQUARE_LENGTH),2) + Math.pow(sv_ll_x-(odometer.getX()/SQUARE_LENGTH),2));
 				distances[1] = Math.sqrt(Math.pow(sv_ur_y-(odometer.getY()/SQUARE_LENGTH),2) + Math.pow(sv_ur_x-(odometer.getX()/SQUARE_LENGTH),2));
 				thirdPoint = getMinDistance(distances);
-
-				//if the point where you go is behind you (in case the two rectangles are superimposed).
-				/*int mid_x = (sh_ur_x + sh_ll_x)/2;
-				int mid_y = (sh_ur_y + sh_ll_y)/2;
-				if(((mid_x > sv_ll_x) && (mid_x < sv_ur_x)) && ((mid_y > sv_ll_y) && (mid_y < sv_ur_y))){
-					thirdPoint = -1;
-				}*/
 				
 				if(thirdPoint == 0){
 					while(!gotToDestination){
@@ -427,12 +410,6 @@ public class CaptureFlag {
 				distances[1] = Math.sqrt(Math.pow(sh_ur_y-(odometer.getY()/SQUARE_LENGTH),2) + Math.pow(sh_ur_x-(odometer.getX()/SQUARE_LENGTH),2));
 				thirdPoint = getMinDistance(distances);
 
-				//if the point where you go is behind you (in case the two rectangles are superimposed).
-				/*int mid_x = (sh_ur_x + sh_ll_x)/2;
-				int mid_y = (sh_ur_y + sh_ll_y)/2;
-				if(((mid_x > sv_ll_x) && (mid_x < sv_ur_x)) && ((mid_y > sv_ll_y) && (mid_y < sv_ur_y))){
-					thirdPoint = -1;
-				}*/
 				if(thirdPoint == 0){
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sh_ll_x+0.5)*SQUARE_LENGTH,(sh_ll_y+0.5)*SQUARE_LENGTH);
@@ -471,7 +448,6 @@ public class CaptureFlag {
 					na.securityTurn();
 					lightLoc = new LightLocalizer(odometer, na);
 					lightLoc.midpointLocalization();
-					na.makeTurn(5, false,false);
 					odometer.setX(na.currentX);
 					odometer.setY(na.currentY);
 					odometer.setTheta(lightLoc.currentTheta);
@@ -483,9 +459,6 @@ public class CaptureFlag {
 				na.securityTurn();
 				lightLoc = new LightLocalizer(odometer, na);
 				lightLoc.midpointLocalization();
-				if(!gotToDestination) {
-					na.makeTurn(5, false,false);
-				}
 				odometer.setX(na.currentX);
 				odometer.setY(na.currentY);
 				odometer.setTheta(lightLoc.currentTheta);
@@ -506,8 +479,6 @@ public class CaptureFlag {
 					na.securityTurn();
 					lightLoc = new LightLocalizer(odometer, na);
 					lightLoc.midpointLocalization();
-					na.makeTurn(5.8, false,false);
-					System.out.println("lightLoc1");
 					odometer.setX(na.currentX);
 					odometer.setY(na.currentY);
 					odometer.setTheta(lightLoc.currentTheta);
@@ -520,28 +491,16 @@ public class CaptureFlag {
 				na.securityTurn();
 				lightLoc = new LightLocalizer(odometer, na);
 				lightLoc.midpointLocalization();
-				if(!gotToDestination) {
-					na.makeTurn(5.0, false,true);
-					while(na.isNavigating()){
-					}
-				}
-				System.out.println("lightLoc2");
 				odometer.setX(na.currentX);
 				odometer.setY(na.currentY);
 				odometer.setTheta(lightLoc.currentTheta);
 			}
-			na.makeTurn(3, false,false);
 			odometer.setTheta(lightLoc.currentTheta);
-			System.out.println("x before zipline: " + odometer.getX());
-			System.out.println("y before zipline: " + odometer.getY());
-			System.out.println("Theta before zipline: " + odometer.getTheta());
 			if ((zc_g_x == zc_r_x) || (zc_g_y == zc_r_y)){
 				na.doZipline(zc_g_x * SQUARE_LENGTH, zc_g_y * SQUARE_LENGTH, 3*ZIPLENGTH, 23);
-				System.out.println("Zipline is aligned!");
 			}
 			else{
 				na.doZipline(zc_g_x * SQUARE_LENGTH, zc_g_y * SQUARE_LENGTH, 3*ZIPLENGTH, 40);
-				System.out.println("Zipline is not aligned!");
 			}
 			while(na.onZipline() || na.isNavigating()){
 			}
@@ -553,7 +512,6 @@ public class CaptureFlag {
 			}
 			odometer.setX(zo_r_x*SQUARE_LENGTH);
 			odometer.setY(zo_r_y*SQUARE_LENGTH);
-			na.makeTurn(3.8, false,false);
 			double th = odometer.getTheta();
 			odometer.setTheta(getThetaCorrection(th));
 			
@@ -565,7 +523,6 @@ public class CaptureFlag {
 					na.securityTurn();
 					lightLoc = new LightLocalizer(odometer, na);
 					lightLoc.midpointLocalization();
-					na.makeTurn(5, false,false);
 					odometer.setX(na.currentX);
 					odometer.setY(na.currentY);
 					odometer.setTheta(lightLoc.currentTheta);
@@ -577,9 +534,6 @@ public class CaptureFlag {
 				na.securityTurn();
 				lightLoc = new LightLocalizer(odometer, na);
 				lightLoc.midpointLocalization();
-				if(!gotToDestination) {
-					na.makeTurn(5, false,false);
-				}
 				odometer.setX(na.currentX);
 				odometer.setY(na.currentY);
 				odometer.setTheta(lightLoc.currentTheta);
@@ -589,7 +543,6 @@ public class CaptureFlag {
 			usPoller.stop();	//kill ultrasonic thread.
 			
 			//SET ROBOT'S INITIAL POSITION
-			na.makeTurn(2.7, false,false);
 			odometer.setX(CORNERS[greenCorner][0]*SQUARE_LENGTH);
 			odometer.setY(CORNERS[greenCorner][1]*SQUARE_LENGTH);
 			odometer.setTheta(CORNERS[greenCorner][2]);
@@ -605,8 +558,6 @@ public class CaptureFlag {
 					na.securityTurn();
 					lightLoc = new LightLocalizer(odometer, na);
 					lightLoc.midpointLocalization();
-					na.makeTurn(5.8, false,false);
-					System.out.println("lightLoc1");
 					odometer.setX(na.currentX);
 					odometer.setY(na.currentY);
 					odometer.setTheta(lightLoc.currentTheta);
@@ -619,28 +570,16 @@ public class CaptureFlag {
 				na.securityTurn();
 				lightLoc = new LightLocalizer(odometer, na);
 				lightLoc.midpointLocalization();
-				if(!gotToDestination) {
-					na.makeTurn(5.0, false,true);
-					while(na.isNavigating()){
-					}
-				}
-				System.out.println("lightLoc2");
 				odometer.setX(na.currentX);
 				odometer.setY(na.currentY);
 				odometer.setTheta(lightLoc.currentTheta);
 			}
-			na.makeTurn(3, false,false);
 			odometer.setTheta(lightLoc.currentTheta);
-			System.out.println("x before zipline: " + odometer.getX());
-			System.out.println("y before zipline: " + odometer.getY());
-			System.out.println("Theta before zipline: " + odometer.getTheta());
 			if ((zc_g_x == zc_r_x) || (zc_g_y == zc_r_y)){
 				na.doZipline(zc_g_x * SQUARE_LENGTH, zc_g_y * SQUARE_LENGTH, 3*ZIPLENGTH, 23);
-				System.out.println("Zipline is aligned!");
 			}
 			else{
 				na.doZipline(zc_g_x * SQUARE_LENGTH, zc_g_y * SQUARE_LENGTH, 3*ZIPLENGTH, 40);
-				System.out.println("Zipline is not aligned!");
 			}
 			while(na.onZipline() || na.isNavigating()){
 			}
@@ -652,10 +591,8 @@ public class CaptureFlag {
 			}
 			odometer.setX(zo_r_x*SQUARE_LENGTH);
 			odometer.setY(zo_r_y*SQUARE_LENGTH);
-			na.makeTurn(3.8, false,false);
 			double th = odometer.getTheta();
 			odometer.setTheta(getThetaCorrection(th));
-			System.out.println("TH is " + th);
 			gotToDestination = false;
 			if(zo_r_x != sr_ur_x && zo_r_y != sr_ur_y){
 				while(!gotToDestination){
@@ -666,7 +603,6 @@ public class CaptureFlag {
 					na.securityTurn();
 					lightLoc = new LightLocalizer(odometer, na);
 					lightLoc.midpointLocalization();
-					na.makeTurn(5, false,false);
 					odometer.setX(na.currentX);
 					odometer.setY(na.currentY);
 					odometer.setTheta(lightLoc.currentTheta);
@@ -678,9 +614,6 @@ public class CaptureFlag {
 				na.securityTurn();
 				lightLoc = new LightLocalizer(odometer, na);
 				lightLoc.midpointLocalization();
-				if(!gotToDestination) {
-					na.makeTurn(5, false,false);
-				}
 				odometer.setX(na.currentX);
 				odometer.setY(na.currentY);
 				odometer.setTheta(lightLoc.currentTheta);
@@ -694,7 +627,6 @@ public class CaptureFlag {
 			lightLoc.doLightLocalization();
 			while(na.isNavigating()){
 			}
-			na.makeTurn(5, false,false);
 			odometer.setX(sr_ur_x*SQUARE_LENGTH);
 			odometer.setY(sr_ur_y*SQUARE_LENGTH);
 			odometer.setTheta(curTheta-90);
@@ -704,14 +636,8 @@ public class CaptureFlag {
 			flagSearchCtrl.detectFlag(5, 2,ROTATE_SPEED, FORWARD_SPEED, og);
 			usPoller.stop();
 			
-			//SHALLOW CROSSING
-			System.out.println("X start: " + odometer.getX());
-			System.out.println("Y start: " + odometer.getY());
-			System.out.println("theta start: " + odometer.getTheta());
-
 			double centerRed_x = Math.abs(red_ur_x+red_ll_x)/2;
 			double centerRed_y = Math.abs(red_ur_y+red_ll_y)/2;
-			System.out.println("center " + centerRed_x + ";" + centerRed_y);
 			double[] distances = new double[4];//0: sh_ll / 1: sh_ur / 2:sv_ll / 3:sv_ur
 			int thirdPoint;
 			gotToDestination = false;
@@ -744,13 +670,6 @@ public class CaptureFlag {
 				distances[0] = Math.sqrt(Math.pow(sv_ll_y-(odometer.getY()/SQUARE_LENGTH),2) + Math.pow(sv_ll_x-(odometer.getX()/SQUARE_LENGTH),2));
 				distances[1] = Math.sqrt(Math.pow(sv_ur_y-(odometer.getY()/SQUARE_LENGTH),2) + Math.pow(sv_ur_x-(odometer.getX()/SQUARE_LENGTH),2));
 				thirdPoint = getMinDistance(distances);
-
-				//if the point where you go is behind you (in case the two rectangles are superimposed).
-				/*int mid_x = (sh_ur_x + sh_ll_x)/2;
-				int mid_y = (sh_ur_y + sh_ll_y)/2;
-				if(((mid_x > sv_ll_x) && (mid_x < sv_ur_x)) && ((mid_y > sv_ll_y) && (mid_y < sv_ur_y))){
-					thirdPoint = -1;
-				}*/
 
 				if(thirdPoint == 0){
 					while(!gotToDestination){
@@ -800,12 +719,6 @@ public class CaptureFlag {
 				distances[1] = Math.sqrt(Math.pow(sh_ur_y-(odometer.getY()/SQUARE_LENGTH),2) + Math.pow(sh_ur_x-(odometer.getX()/SQUARE_LENGTH),2));
 				thirdPoint = getMinDistance(distances);
 
-				//if the point where you go is behind you (in case the two rectangles are superimposed).
-				/*int mid_x = (sh_ur_x + sh_ll_x)/2;
-				int mid_y = (sh_ur_y + sh_ll_y)/2;
-				if(((mid_x > sv_ll_x) && (mid_x < sv_ur_x)) && ((mid_y > sv_ll_y) && (mid_y < sv_ur_y))){
-					thirdPoint = -1;
-				}*/
 				if(thirdPoint == 0){
 					while(!gotToDestination){
 						gotToDestination = na.travelTo((sh_ll_x+0.5)*SQUARE_LENGTH,(sh_ll_y+0.5)*SQUARE_LENGTH);
@@ -846,7 +759,6 @@ public class CaptureFlag {
 					na.securityTurn();
 					lightLoc = new LightLocalizer(odometer, na);
 					lightLoc.midpointLocalization();
-					na.makeTurn(5, false,false);
 					odometer.setX(na.currentX);
 					odometer.setY(na.currentY);
 					odometer.setTheta(lightLoc.currentTheta);
@@ -858,9 +770,6 @@ public class CaptureFlag {
 				na.securityTurn();
 				lightLoc = new LightLocalizer(odometer, na);
 				lightLoc.midpointLocalization();
-				if(!gotToDestination) {
-					na.makeTurn(5, false,false);
-				}
 				odometer.setX(na.currentX);
 				odometer.setY(na.currentY);
 				odometer.setTheta(lightLoc.currentTheta);
